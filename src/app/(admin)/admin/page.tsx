@@ -1,14 +1,14 @@
 'use client';
-import BookingsList from '@/components/admin/bookings/BookingsList';
-import WaitingList from '@/components/admin/waitingList/WaitingList';
-import AddEvent from '@/components/admin/events/AddEvent';
-import EventDetails from '@/components/admin/events/EventDetails';
-import EventsList from '@/components/admin/events/EventsList';
-import Overlay from '@/components/global/Overlay';
-import ViewTabs from '@/components/global/ViewTabs';
+import Overlay from '@/lib/globalComponents/Overlay';
+import ViewTabs from '@/lib/globalComponents/ViewTabs';
 import { useState } from 'react';
+import BookingsList from '../components/bookings/BookingsList';
+import AddEvent from '../components/events/AddEvent';
+import EventDetails from '../components/events/EventDetails';
+import EventsList from '../components/events/EventsList';
+import WaitingList from '../components/waitingList/WaitingList';
 
-export default function AdminHome() {
+const AdminHome = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
   const [view, setView] = useState<string>('Details');
   return (
@@ -44,4 +44,6 @@ export default function AdminHome() {
       </main>
     </>
   );
-}
+};
+
+export default AdminHome;

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 
-export default function AdminLogin() {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -36,4 +36,6 @@ export default function AdminLogin() {
       </form>
     </>
   );
-}
+};
+
+export default AdminLogin;

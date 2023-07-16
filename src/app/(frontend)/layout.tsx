@@ -1,14 +1,10 @@
-import HeaderFrontend from '@/components/frontend/HeaderFrontend';
-import '../../styles/frontend/frontend.css';
-import FooterFrontend from '@/components/frontend/FooterFrontend';
 import { Providers } from '@/context/Providers';
 import Script from 'next/script';
+import FooterFrontend from './components/layout/FooterFrontend';
+import HeaderFrontend from './components/layout/HeaderFrontend';
+import './styles/frontend.css';
 
-export default function FrontendLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
@@ -28,4 +24,6 @@ export default function FrontendLayout({
       </body>
     </html>
   );
-}
+};
+
+export default FrontendLayout;

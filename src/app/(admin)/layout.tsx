@@ -1,14 +1,10 @@
-import HeaderAdmin from '@/components/admin/layout/HeaderAdmin';
-import '../../styles/admin/admin.css';
-import FooterAdmin from '@/components/admin/layout/FooterAdmin';
+import './styles/admin.css';
 import { Providers } from '@/context/Providers';
 import Script from 'next/script';
+import FooterAdmin from './components/layout/FooterAdmin';
+import HeaderAdmin from './components/layout/HeaderAdmin';
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
@@ -28,4 +24,6 @@ export default function AdminLayout({
       </body>
     </html>
   );
-}
+};
+
+export default AdminLayout;

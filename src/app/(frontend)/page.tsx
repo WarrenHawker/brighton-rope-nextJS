@@ -1,13 +1,13 @@
 'use client';
-import Overlay from '@/components/global/Overlay';
-import BookingForm from '@/components/frontend/bookingForm/bookingForm';
-import EventsDisplay from '@/components/frontend/eventsDisplay';
+import Overlay from '@/lib/globalComponents/Overlay';
 import { EventsData } from '@/lib/interfaces';
 import { useEvents } from '@/context/EventsContext';
 import { useState } from 'react';
 import { getLongDate } from '@/lib/functions';
+import BookingForm from './components/bookingForm/bookingForm';
+import EventsDisplay from './components/eventsDisplay';
 
-export default function Home() {
+const HomePage = () => {
   const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(
     null
   );
@@ -46,4 +46,6 @@ export default function Home() {
       </Overlay>
     </>
   );
-}
+};
+
+export default HomePage;

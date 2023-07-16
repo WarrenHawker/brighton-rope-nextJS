@@ -1,0 +1,76 @@
+@import url(./colors.css);
+@import url(./viewTabs.css);
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-primary-background);
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+img {
+  display: block;
+  width: 100%;
+  margin: auto;
+}
+
+header,
+footer {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  background-color: var(--color-primary-base);
+  width: 100%;
+  color: white;
+}
+
+.content-wrapper {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+  max-width: 1500px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 22px;
+}
+
+h3,
+caption {
+  font-size: 18px;
+}
+
+p,
+label,
+legend,
+input,
+textarea {
+  font-size: 16px;
+}
+
+.center {
+  text-align: center;
+}

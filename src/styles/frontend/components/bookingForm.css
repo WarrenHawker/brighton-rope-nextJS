@@ -1,0 +1,138 @@
+.event-info {
+  padding: 1em;
+  margin-bottom: 0.5em;
+}
+
+.event-info h3,
+.event-info h4 {
+  margin: 0;
+}
+
+.tickets,
+.contact,
+.agree-to-ToS {
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  margin-bottom: 1em;
+}
+
+.tickets .select-input-container {
+  margin-bottom: 1em;
+  text-align: left;
+  padding-left: 10%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1em;
+  align-items: center;
+}
+
+.tickets .select-input-container:not(:last-of-type) {
+  border-bottom: 1px solid grey;
+}
+
+.tickets .select-input-container label input {
+  margin-top: 2em;
+}
+
+.tickets .select-input-container select {
+  min-width: 64px;
+  height: 2em;
+  font-size: 16px;
+  float: right;
+  margin-right: 10%;
+  align-self: center;
+}
+
+.contact input,
+.contact label {
+  display: block;
+  margin: auto;
+  width: 100%;
+  font-size: 16px;
+}
+
+.contact label {
+  font-weight: bold;
+}
+
+.contact input {
+  padding-left: 0.5em;
+  margin-top: 0.5em;
+  height: 2em;
+  margin-bottom: 1.5em;
+}
+
+.contact textarea {
+  height: 150px;
+  width: 100%;
+  resize: vertical;
+}
+
+.name-input-container {
+  display: flex;
+  gap: 0.5em;
+}
+
+.step-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 3px solid #ddd;
+  border-radius: 50%;
+}
+
+.step.active {
+  border-color: rgb(11, 204, 108);
+}
+
+.step.finish {
+  background-color: rgb(11, 204, 108);
+  border-color: rgb(11, 204, 108);
+}
+
+input[type='range'] {
+  position: relative;
+  width: 70%;
+}
+
+input[type='range']:before {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  content: '£' attr(defaultValue) ' per ticket';
+  display: block;
+  font-weight: bold;
+  height: 10px;
+  font-size: 14px;
+}
+
+.prices-span {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.booking-form-page {
+  margin-top: 1em;
+  text-align: center;
+}
+
+@media screen and (max-width: 400px) {
+  .tickets .select-input-container label input {
+    margin-top: 2.5em;
+  }
+  input[type='range']:before {
+    top: -30px;
+  }
+}

@@ -1,0 +1,53 @@
+.button-container {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  margin: 1em auto;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.btn {
+  display: block;
+  font-size: 13px;
+  border-radius: 5px;
+  width: 100px;
+  height: 40px;
+  padding: 0.25em 0.5em;
+  border: 1px solid var(--color-primary-base);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  color: #ffffff;
+  background-color: var(--color-primary-light);
+  text-decoration: none;
+}
+
+a.btn {
+  display: flex;
+  align-items: center;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btn-delete {
+  background-color: var(--color-error);
+  margin-left: 5em;
+}
+
+.btn-large {
+  width: 200px;
+  height: 50px;
+  font-size: 20px;
+  margin: auto;
+}
+
+@media (max-width: 450px) {
+  .btn-delete {
+    margin-left: 0;
+  }
+}

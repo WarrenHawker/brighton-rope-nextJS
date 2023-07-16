@@ -1,0 +1,72 @@
+.title-input {
+  min-width: 100%;
+  font-size: 24px;
+  padding-left: 0.25em;
+  margin-top: 1em;
+  justify-self: normal;
+  grid-column: 1 /-1;
+}
+
+.description-container {
+  margin-bottom: 1em;
+  grid-column: 1 / -1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.description-container .md-editor {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.description-label {
+  text-align: left;
+  min-width: 100%;
+  font-size: 20px;
+  margin-bottom: 0.5em;
+}
+
+fieldset.location,
+.event-details-fields {
+  height: max-content;
+  margin-bottom: 1em;
+}
+
+.price-container,
+.date-time-container {
+  border: 1px dashed grey;
+  padding: 0.5em;
+  margin-bottom: 1em;
+}
+
+.price-container-header,
+.date-time-container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+.price-container-header h3,
+.date-time-container-header h3 {
+  width: 80%;
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+}
+
+.price-container-header .fa-circle-xmark,
+.date-time-container-header .fa-circle-xmark {
+  font-size: 20px;
+  color: red;
+}
+
+.amount-input-container,
+.time-input-container {
+  display: flex;
+  gap: 0.5em;
+}
+
+.amount-input-container {
+  justify-content: space-between;
+}

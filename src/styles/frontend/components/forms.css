@@ -1,0 +1,24 @@
+fieldset,
+input,
+textarea {
+  border-radius: 10px;
+}
+
+.required {
+  color: red;
+  font-size: 20px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.invalid {
+  border: 2px red dashed;
+}
+
+label,
+input {
+  display: block;
+}

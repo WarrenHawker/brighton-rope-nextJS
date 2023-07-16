@@ -1,0 +1,114 @@
+form {
+  gap: 1em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+fieldset {
+  min-width: 40%;
+}
+
+form .btn-submit-container {
+  width: 100%;
+  grid-column: 1 / -1;
+  margin: auto;
+}
+
+.login-form {
+  display: block;
+  width: 90%;
+  max-width: 500px;
+  margin: 2em auto;
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 1em;
+}
+
+.login-form > * {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-form input {
+  margin-bottom: 2em;
+}
+
+input,
+select,
+label,
+textarea {
+  font-size: 16px;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
+}
+
+legend {
+  font-size: 20px;
+}
+
+label,
+legend {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+label {
+  padding-left: 0.25em;
+}
+
+label span {
+  font-weight: normal;
+}
+
+input {
+  margin-bottom: 1em;
+  height: 37px;
+  padding-left: 0.5em;
+}
+
+select {
+  padding: 0.5em;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1em;
+}
+
+.textarea-container {
+  margin: 1em;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container label {
+  width: fit-content;
+}
+
+.checkbox-container input {
+  max-width: 20%;
+  height: 24px;
+}
+
+fieldset .btn {
+  margin: auto;
+  margin-bottom: 1em;
+}
+
+input[type='number'],
+input[type='time'] {
+  max-width: 100px;
+}
+
+input[type='date'] {
+  max-width: 200px;
+}
+
+@media (max-width: 550px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+}

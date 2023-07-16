@@ -1,0 +1,51 @@
+@import url(./colors.css);
+
+.view-tabs {
+  display: flex;
+}
+
+.tabs {
+  border: 1px solid grey;
+  padding: 15px;
+  text-align: center;
+  width: 50%;
+  background: rgba(128, 128, 128, 0.075);
+  cursor: pointer;
+  border-bottom: 1px solid grey;
+  box-sizing: content-box;
+  position: relative;
+  outline: none;
+  font-size: 16px;
+}
+.tabs:not(:last-child) {
+  border-right: 1px solid grey;
+}
+
+.active-tabs {
+  background: var(--color-primary-background);
+  border-bottom: 1px solid transparent;
+}
+
+.active-tabs::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 2px);
+  height: 5px;
+  background: var(--color-primary-base);
+}
+
+.tab-content {
+  display: none;
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  border-left: 1px solid grey;
+  padding-top: 1em;
+}
+
+.tab-content.active {
+  display: block;
+}

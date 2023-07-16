@@ -1,0 +1,15 @@
+.booking-details-header {
+  padding-bottom: 1em;
+}
+
+.booking-details-header p,
+.booking-details-header h2 {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.booking-details-info-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}

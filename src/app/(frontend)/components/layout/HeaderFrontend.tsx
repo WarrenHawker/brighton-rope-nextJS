@@ -14,19 +14,50 @@ const HeaderFrontend = () => {
           onClick={() => setShowTopNav((prev) => !prev)}
         ></i>
         <nav className={showTopNav ? 'top-nav show' : 'top-nav'}>
-          <h2>
-            <Link href="/">Brighton Rope</Link>
-          </h2>
+          <h2>Brighton Rope</h2>
           <ul>
+            <li
+              className={
+                pathname == '/' ? 'top-nav-links active' : 'top-nav-links'
+              }
+            >
+              <Link href="/">Home</Link>
+            </li>
+
+            <li
+              className={
+                pathname == '/about' ? 'top-nav-links active' : 'top-nav-links'
+              }
+            >
+              <Link href="/about">About Us</Link>
+            </li>
+
             <li
               className={
                 pathname == '/events' ? 'top-nav-links active' : 'top-nav-links'
               }
             >
-              <Link href="/admin">Events</Link>
+              <Link href="/events">Events</Link>
             </li>
-            <li className="top-nav-links">
-              <Link href="/">To Site</Link>
+
+            <li
+              className={
+                pathname == '/resources'
+                  ? 'top-nav-links active'
+                  : 'top-nav-links'
+              }
+            >
+              <Link href="/resources">Resources</Link>
+            </li>
+
+            <li
+              className={
+                pathname == '/contact'
+                  ? 'top-nav-links active'
+                  : 'top-nav-links'
+              }
+            >
+              <Link href="/contact">Contact Us</Link>
             </li>
           </ul>
         </nav>

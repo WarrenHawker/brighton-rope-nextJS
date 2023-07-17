@@ -1,6 +1,32 @@
+import Link from 'next/link';
 import EventsDisplay from './components/eventsDisplay';
 
-const HomePage = () => {
+const fetchEvents = async () => {
+  const res = await fetch(
+    'http://localhost:3000/api/events?events=3&old=false'
+  );
+  const data = await res.json();
+  if (Array.isArray(data.events)) {
+    const events = data.events.map((event: any) => {
+      return {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        location: JSON.parse(event.location),
+        maxTickets: event.maxTickets,
+        ticketsSold: event.ticketsSold,
+        ticketsRemaining: event.ticketsRemaining,
+        dateTimes: JSON.parse(event.dateTimes),
+        allowMultipleTickets: event.allowMultipleTickets,
+        prices: JSON.parse(event.prices),
+      };
+    });
+    return events;
+  } else return [data];
+};
+
+const HomePage = async () => {
+  const events = await fetchEvents();
   return (
     <>
       <main>
@@ -15,10 +41,12 @@ const HomePage = () => {
               creating meaningful connections through rope in a safe and
               consensual space for all.
             </p>
-            <button className="btn btn-primary">Learn more about us</button>
+            <Link href="/about" className="btn btn-primary">
+              Learn more about us
+            </Link>
           </div>
         </section>
-        <EventsDisplay />
+        <EventsDisplay events={events} page="home" />
       </main>
     </>
   );

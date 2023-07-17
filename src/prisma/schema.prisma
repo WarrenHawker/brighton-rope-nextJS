@@ -11,9 +11,10 @@ datasource db {
 }
 
 model Event {
-id                    Int       @id @default(autoincrement())
+id                    Int             @id @default(autoincrement())
 title                 String   
 description           String
+startDate             DateTime
 dateTimes             Json 
 location              Json
 maxTickets            Int

@@ -277,6 +277,7 @@ const AddEvent = () => {
     const event = {
       title: title,
       description: description,
+      startDate: new Date(datesTimes[0].date),
       dateTimes: JSON.stringify(datesTimes),
       location: JSON.stringify(location),
       maxTickets: capacity,

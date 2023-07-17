@@ -6,12 +6,11 @@ import BookingPageThree from './bookingFormPages/bookingPageThree';
 import BookingPageTwo from './bookingFormPages/bookingPageTwo';
 
 interface BookingFormProps {
-  eventId: string;
+  event: EventsData;
 }
 
-const BookingForm = ({ eventId }: BookingFormProps) => {
+const BookingForm = ({ event }: BookingFormProps) => {
   const [activePage, setActivePage] = useState(1);
-  const [event, setEvent] = useState<EventsData | undefined>();
   const [userChoices, setUserChoices] = useState<UserChoices>({
     id: '1',
     tickets: [],
@@ -24,23 +23,6 @@ const BookingForm = ({ eventId }: BookingFormProps) => {
     amountToPay: 0,
     additionalInfo: '',
   });
-  console.log(userChoices);
-
-  // useEffect(() => {
-  //   const newEventsData = convertToArray(events);
-  //   const selectedEvent = newEventsData.filter(
-  //     (item: EventsData) => item.id == eventId.toString()
-  //   )[0];
-  //   setEvent(selectedEvent);
-  //   setUserChoices((prevChoices) => {
-  //     return {
-  //       ...prevChoices,
-  //       tickets: selectedEvent.prices.map((item) => {
-  //         return { name: item.key, value: item.value.minPrice, quantity: 0 };
-  //       }),
-  //     };
-  //   });
-  // }, [eventId]);
 
   const updateAmountToPay = (tickets: TicketChoices[]): number => {
     let newAmount = 0;

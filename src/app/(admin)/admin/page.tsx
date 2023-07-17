@@ -7,6 +7,7 @@ import AddEvent from '../components/events/AddEvent';
 import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
 import WaitingList from '../components/waitingList/WaitingList';
+import 'md-editor-rt/lib/style.css';
 
 const AdminHome = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
@@ -26,10 +27,10 @@ const AdminHome = () => {
           // eslint-disable-next-line react/no-children-prop
           children={<AddEvent />}
         />
-        <EventsList />
+        {/* <EventsList /> */}
       </aside>
 
-      <main>
+      {/* <main>
         <ViewTabs
           tabs={['Details', 'Bookings', 'Waiting List']}
           currentTab={view}
@@ -41,7 +42,7 @@ const AdminHome = () => {
             { name: 'Waiting List', element: <WaitingList /> },
           ]}
         />
-      </main>
+      </main> */}
     </>
   );
 };

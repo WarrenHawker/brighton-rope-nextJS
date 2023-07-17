@@ -1,9 +1,7 @@
 'use client';
 import { getFullDate } from '../../../../lib/functions';
-import { useEvents } from '@/context/EventsContext';
 
 const EventsList = () => {
-  const { events, selectedEvent, setSelectedEvent } = useEvents();
   return (
     <>
       <h2>Events List</h2>

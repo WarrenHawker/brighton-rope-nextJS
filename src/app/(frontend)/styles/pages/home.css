@@ -1,42 +1,45 @@
 .home-page-banner {
-  height: 700px;
   background-image: url('../../../../../public/images/banner.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
   text-align: center;
+  margin-top: 1em;
+  min-height: 700px;
 }
 
 .home-page-banner h1 {
   color: var(--color-accent-base);
   font-size: 36px;
-  margin-bottom: 0;
+  margin: 0 auto;
 }
 
 .home-page-banner h2 {
   color: white;
   font-size: 24px;
-  margin-top: 0;
+  margin: 0 auto;
 }
 .home-page-banner h3 {
   color: var(--color-accent-base);
   font-size: 24px;
+  margin: 1em auto;
 }
 
 .home-page-banner p {
   line-height: 1.5em;
   color: white;
-  margin-top: 0;
-  margin-bottom: 4em;
+  margin: 2em auto;
+  font-size: 20px;
 }
 
 .home-page-banner .btn {
-  margin: 0;
+  margin: 0 auto;
 }
 
 .home-page-banner-text {
   background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
+  min-height: 700px;
   width: 100%;
   display: flex;
   flex-direction: column;

@@ -1,0 +1,50 @@
+.teachers-header {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+.teachers-header h1 {
+  font-size: 36px;
+  color: var(--color-accent-base);
+  margin-bottom: 0;
+}
+
+.teachers-header h2 {
+  font-size: 24px;
+  color: var(--color-accent-base);
+  margin-top: 0;
+}
+
+.teachers-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 450px));
+  justify-content: center;
+  gap: 1em;
+  margin-bottom: 4em;
+}
+
+.teacher h3 {
+  text-align: center;
+  color: var(--color-accent-base);
+  margin-bottom: 0;
+}
+
+.teacher h4 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.teacher p {
+  max-width: 400px;
+  margin: auto;
+}
+
+.teacher-pic {
+  height: 300px;
+  width: auto;
+}
+
+.teacher-pic img {
+  max-height: 300px;
+  width: auto;
+}

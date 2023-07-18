@@ -20,19 +20,24 @@ export const GET = async (request: NextRequest) => {
   }
   if (oldOption == 'true') {
     if (eventAmount == -1) {
-      events = await prisma.event.findMany();
+      events = await prisma.event.findMany({ orderBy: { startDate: 'desc' } });
     } else {
-      events = await prisma.event.findMany({ take: eventAmount });
+      events = await prisma.event.findMany({
+        take: eventAmount,
+        orderBy: { startDate: 'desc' },
+      });
     }
   } else {
     if (eventAmount == -1) {
       events = await prisma.event.findMany({
         where: { startDate: { gte: new Date() } },
+        orderBy: { startDate: 'desc' },
       });
     } else {
       events = await prisma.event.findMany({
         where: { startDate: { gte: new Date() } },
         take: eventAmount,
+        orderBy: { startDate: 'desc' },
       });
     }
   }

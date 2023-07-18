@@ -1,3 +1,5 @@
+'use client';
+
 import { BookingPageProps } from '@/lib/interfaces';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
@@ -22,7 +24,7 @@ const BookingPageOne = ({
     if (inputs.current) {
       inputs.current.forEach((input: HTMLInputElement | HTMLSelectElement) => {
         if (input.type == 'select-one') {
-          input.value = '0';
+          // input.value = '0';
         }
         if (input.type == 'range') {
           input.setAttribute('defaultValue', input.value);

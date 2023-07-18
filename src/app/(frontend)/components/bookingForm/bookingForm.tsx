@@ -1,3 +1,5 @@
+'use client';
+
 import { isContact } from '@/lib/functions';
 import { EventsData, UserChoices, TicketChoices } from '@/lib/interfaces';
 import { useState } from 'react';
@@ -13,7 +15,11 @@ const BookingForm = ({ event }: BookingFormProps) => {
   const [activePage, setActivePage] = useState(1);
   const [userChoices, setUserChoices] = useState<UserChoices>({
     id: '1',
-    tickets: [],
+    tickets: event.prices.map((item) => ({
+      name: item.key,
+      value: item.value.maxPrice ? item.value.maxPrice : item.value.minPrice,
+      quantity: 0,
+    })),
     contact: {
       firstName: '',
       lastName: '',

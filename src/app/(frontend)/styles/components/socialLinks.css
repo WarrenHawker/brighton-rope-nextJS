@@ -1,0 +1,35 @@
+.social-links {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 300px;
+  margin: 2em auto;
+}
+
+.social-links a {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background-color: var(--color-primary-light);
+  display: flex;
+  transition: all 0.3s ease-in-out;
+}
+
+.social-links a img {
+  width: 70%;
+}
+
+.social-links .fa-brands {
+  font-size: 50px;
+  color: white;
+  text-align: center;
+  margin: auto;
+  display: block;
+}
+
+.social-links a:hover,
+.social-links a:focus {
+  text-decoration: none;
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
+}

@@ -1,0 +1,44 @@
+.contact-form,
+.confirmation {
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+  margin-top: 2em;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1em;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.confirmation {
+  text-align: center;
+}
+
+.contact-form label,
+.contact-form input,
+.contact-form textarea {
+  margin: auto;
+  text-align: center;
+  width: 80%;
+}
+
+.contact-form label {
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  gap: 0.5em;
+}
+
+.contact-form input {
+  margin-bottom: 1em;
+  height: 30px;
+}
+
+.contact-form textarea {
+  display: block;
+  resize: vertical;
+  height: 200px;
+  margin-bottom: 1em;
+}

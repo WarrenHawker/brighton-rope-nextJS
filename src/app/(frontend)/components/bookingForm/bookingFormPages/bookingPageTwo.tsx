@@ -15,7 +15,6 @@ const BookingPageTwo = ({
   const firstNameInput = useRef<HTMLInputElement>(null);
   const lastNameInput = useRef<HTMLInputElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
-  const phoneInput = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState('');
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
@@ -32,9 +31,6 @@ const BookingPageTwo = ({
     if (emailInput.current!.value == '') {
       newEmptyFields.push('email');
     }
-    if (phoneInput.current!.value == '') {
-      newEmptyFields.push('phone');
-    }
     if (newEmptyFields.length > 0) {
       setError('Please fill in all required fields');
       setEmptyFields(newEmptyFields);
@@ -42,10 +38,6 @@ const BookingPageTwo = ({
     }
     if (!validator.isEmail(emailInput.current!.value)) {
       setError('please enter valid email');
-      return;
-    }
-    if (!validator.isNumeric(phoneInput.current!.value)) {
-      setError('please enter valid phone number');
       return;
     }
     nextPage();
@@ -101,20 +93,6 @@ const BookingPageTwo = ({
           }}
           value={userChoices.contact.email}
           ref={emailInput}
-        ></input>
-        <label>
-          Phone <span className="required">*</span>
-        </label>
-        <input
-          className={emptyFields.includes('phone') ? 'invalid' : ''}
-          type="tel"
-          placeholder="+44 3112-555-678"
-          onChange={(e) => {
-            updateUserChoices('phone', e.target.value);
-            resetEmptyField('phone');
-          }}
-          value={userChoices.contact.phone}
-          ref={phoneInput}
         ></input>
         <label>Additional Info</label>
         <textarea

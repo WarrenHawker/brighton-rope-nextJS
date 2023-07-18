@@ -13,7 +13,6 @@ interface EventsDisplayProps {
 }
 
 const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
-  console.log(events);
   const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(
     null
   );

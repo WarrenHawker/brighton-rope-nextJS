@@ -6,6 +6,13 @@
 @import url(./components/overlay.css);
 @import url(./layout/header.css);
 @import url(./pages/home.css);
+@import url(./pages/about.css);
+@import url(./components/teachersDisplay.css);
+@import url(./pages/events.css);
+@import url(./pages/contact.css);
+@import url(./components/socialLinks.css);
+@import url(./components/contactForm.css);
+@import url(./layout/footer.css);
 
 main {
   max-width: 1500px;
@@ -28,7 +35,17 @@ h1 {
   width: 100%;
 }
 
-footer .btn:hover {
-  transform: scale(1);
-  text-decoration: underline;
+.page-title {
+  font-size: 36px;
+  color: var(--color-accent-base);
+  text-align: center;
+}
+
+.policy-container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.policy-container li {
+  margin-bottom: 0.5em;
 }

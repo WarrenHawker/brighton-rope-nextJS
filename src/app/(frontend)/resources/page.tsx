@@ -1,8 +1,8 @@
 const ResourcesPage = () => {
   return (
-    <>
-      <h1>Resources Page</h1>
-    </>
+    <main>
+      <h1 className="page-title">Resources Page</h1>
+    </main>
   );
 };
 

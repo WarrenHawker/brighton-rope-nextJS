@@ -1,0 +1,49 @@
+footer {
+  z-index: 50;
+  margin-top: 2em;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-around;
+  padding: 1em 2em;
+  margin: auto;
+  max-width: 1500px;
+  flex-wrap: wrap;
+  gap: 2em;
+}
+
+.footer-inner .social-links {
+  margin: 0.5em;
+  max-width: 200px;
+}
+
+.footer-inner .social-links a {
+  width: 40px;
+  height: 40px;
+}
+
+.footer-inner .social-links .fa-brands {
+  font-size: 20px;
+}
+
+footer .btn:hover,
+footer .btn:focus {
+  transform: scale(1);
+  text-decoration: underline;
+}
+
+.footer-links a {
+  padding: 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+.copywrite-notice {
+  text-align: center;
+  font-size: 16px;
+}
+
+.copywrite-notice span {
+  font-size: 18px;
+}

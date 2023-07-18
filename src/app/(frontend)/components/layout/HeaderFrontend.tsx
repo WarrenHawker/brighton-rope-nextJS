@@ -13,8 +13,9 @@ const HeaderFrontend = () => {
           className="fa-solid fa-bars"
           onClick={() => setShowTopNav((prev) => !prev)}
         ></i>
+
         <nav className={showTopNav ? 'top-nav show' : 'top-nav'}>
-          <h2>Brighton Rope</h2>
+          <img src="images/brighton-rope-icon.png" className="header-logo" />
           <ul>
             <li
               className={

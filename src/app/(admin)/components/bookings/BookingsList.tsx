@@ -1,16 +1,16 @@
 'use client';
 
-import { useEvents } from '@/context/EventsContext';
 import { useEffect, useState } from 'react';
-import { BookingsData } from '@/lib/interfaces';
+import { BookingsData, EventsData } from '@/lib/interfaces';
 import Overlay from '@/lib/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
 import { getFullDate } from '@/lib/functions';
 
-const BookingsList = () => {
-  const { events, selectedEvent } = useEvents();
+interface BookingsListProps {
+  selectedEvent: EventsData | null;
+}
 
-  const [eventInfo, setEventInfo] = useState({ title: '', date: '' });
+const BookingsList = ({ selectedEvent }: BookingsListProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedBooking, setSelectedBooking] = useState<BookingsData | null>(
     null
@@ -29,18 +29,6 @@ const BookingsList = () => {
     setDisplayedBookings(
       bookings.filter((booking) => booking.eventID == selectedEvent)
     );
-
-    setEventInfo(() => {
-      const newEventInfo = events
-        .filter((event) => event.id == selectedEvent)
-        .map((event) => {
-          return {
-            title: event.title,
-            date: getFullDate(event.dateTimes[0].date),
-          };
-        });
-      return newEventInfo[0];
-    });
   };
 
   const showBookingDetails = (booking: BookingsData) => {
@@ -65,9 +53,10 @@ const BookingsList = () => {
         <BookingsDetails booking={selectedBooking} />
       </Overlay>
 
-      {eventInfo ? (
+      {selectedEvent ? (
         <h2 className="booking-list-header">
-          Bookings for {eventInfo.title} - {eventInfo.date}
+          Bookings for {selectedEvent.title} -{' '}
+          {getFullDate(selectedEvent.dateTimes[0].date)}
         </h2>
       ) : null}
       <table className="main-table">

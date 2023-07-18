@@ -120,3 +120,22 @@ export const getFullDate = (date: Date | string | undefined): string => {
 
   return `${month} ${day}${nthNumber(day)} ${year}`;
 };
+
+export const fetchSingleEvent = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/api/events/3`);
+  const data = await res.json();
+  return data;
+  // const event = await res.json();
+  // return {
+  //   id: event.id.toString(),
+  //   title: event.title,
+  //   description: event.description,
+  //   location: JSON.parse(event.location),
+  //   maxTickets: event.maxTickets,
+  //   ticketsSold: event.ticketsSold,
+  //   ticketsRemaining: event.ticketsRemaining,
+  //   dateTimes: JSON.parse(event.dateTimes),
+  //   allowMultipleTickets: event.allowMultipleTickets,
+  //   prices: JSON.parse(event.prices),
+  // };
+};

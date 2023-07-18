@@ -22,6 +22,7 @@ export interface EventsData {
   id: string;
   title: string;
   description: string;
+  startDate: Date;
   dateTimes: EventDateTime[];
   location: Address;
   maxTickets: number;

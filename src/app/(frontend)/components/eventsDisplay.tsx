@@ -60,9 +60,12 @@ const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
                   >
                     Book Tickets
                   </button>
-                  <a href="#" className="btn btn-secondary">
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="btn btn-secondary"
+                  >
                     Learn more
-                  </a>
+                  </Link>
                 </div>
               </article>
             );

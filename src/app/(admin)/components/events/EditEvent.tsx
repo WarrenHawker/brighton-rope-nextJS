@@ -1,28 +1,33 @@
 'use client';
 
 import CountrySelector from '@/lib/globalComponents/CountrySelector';
-import { Address, EventDateTime, Prices } from '@/lib/interfaces';
-import prisma from '@/prisma/client';
+import { Address, EventDateTime, EventsData, Prices } from '@/lib/interfaces';
 import { MdEditor } from 'md-editor-rt';
-import { NextResponse } from 'next/server';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 
-const AddEvent = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+interface EditEventProps {
+  event: EventsData;
+  setEditing: (value: boolean) => void;
+}
+
+const EditEvent = ({ event, setEditing }: EditEventProps) => {
+  const [title, setTitle] = useState(event.title);
+  const [description, setDescription] = useState(event.description);
   const [location, setLocation] = useState<Address>({
-    lineOne: '',
-    lineTwo: '',
-    city: '',
-    country: '',
-    postcode: '',
+    lineOne: event.location.lineOne,
+    lineTwo: event.location.lineTwo,
+    city: event.location.city,
+    country: event.location.country,
+    postcode: event.location.postcode,
   });
-  const [capacity, setCapacity] = useState(0);
-  const [allowMultipleTickets, setAllowMultipleTickets] = useState(true);
-  const [datesTimes, setDatesTimes] = useState<EventDateTime[]>([
-    { date: '', startTime: '', endTime: '', error: null },
-  ]);
-  const [prices, setPrices] = useState<Prices[]>([]);
+  const [capacity, setCapacity] = useState(event.maxTickets);
+  const [allowMultipleTickets, setAllowMultipleTickets] = useState(
+    event.allowMultipleTickets
+  );
+  const [datesTimes, setDatesTimes] = useState<EventDateTime[]>(
+    event.dateTimes
+  );
+  const [prices, setPrices] = useState<Prices[]>(event.prices);
 
   const addDateTime = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -273,7 +278,8 @@ const AddEvent = () => {
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const event = {
+    const updatedevent = {
+      id: event.id,
       title: title,
       description: description,
       startDate: new Date(datesTimes[0].date),
@@ -285,12 +291,12 @@ const AddEvent = () => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch('http://localhost:3000/api/events', {
-      method: 'POST',
+    const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(event),
+      body: JSON.stringify(updatedevent),
     });
 
     const data = await res.json();
@@ -307,8 +313,25 @@ const AddEvent = () => {
     });
   };
 
+  const saveEdits = () => {
+    setEditing(false);
+  };
+
+  const cancelEdits = () => {
+    setEditing(false);
+  };
+
   return (
     <>
+      <div className="button-container">
+        <button onClick={saveEdits} className="btn">
+          Save
+        </button>
+        <button onClick={cancelEdits} className="btn">
+          Cancel
+        </button>
+        <button className="btn btn-delete">Delete</button>
+      </div>
       <form onSubmit={(e) => submitForm(e)} className="add-event-form">
         <input
           className="title-input"
@@ -422,4 +445,4 @@ const AddEvent = () => {
   );
 };
 
-export default AddEvent;
+export default EditEvent;

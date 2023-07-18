@@ -1,13 +1,24 @@
 'use client';
+import { EventsData } from '@/lib/interfaces';
 import { getFullDate } from '../../../../lib/functions';
 
-const EventsList = () => {
+interface EventsListProps {
+  events: EventsData[];
+  selectedEvent: EventsData | null;
+  changeSelectedEvent: (id: string) => void;
+}
+
+const EventsList = ({
+  events,
+  selectedEvent,
+  changeSelectedEvent,
+}: EventsListProps) => {
   return (
     <>
       <h2>Events List</h2>
       <select
         className="events-selector"
-        onChange={(e) => setSelectedEvent(e.target.value)}
+        onChange={(e) => changeSelectedEvent(e.target.value)}
       >
         {events.map((event) => (
           <option key={event.id} value={event.id}>
@@ -25,10 +36,10 @@ const EventsList = () => {
         <tbody>
           {events.map((event) => (
             <tr
-              onClick={() => setSelectedEvent(event.id)}
+              onClick={() => changeSelectedEvent(event.id)}
               key={event.id}
               className={
-                selectedEvent == event.id ? 'selected' : 'not-selected'
+                selectedEvent?.id == event.id ? 'selected' : 'not-selected'
               }
             >
               <td>{event.title}</td>

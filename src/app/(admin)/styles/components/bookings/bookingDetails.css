@@ -13,3 +13,16 @@
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
+
+.booking-details .sub-table {
+  height: fit-content;
+}
+
+.amount-total {
+  background-color: white !important;
+  border-top: 4px solid var(--color-primary-light);
+}
+
+.has-paid {
+  background-color: white !important;
+}

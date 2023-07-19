@@ -2,7 +2,7 @@
 
 import { isContact } from '@/lib/functions';
 import { EventsData, UserChoices, TicketChoices } from '@/lib/interfaces';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import BookingPageOne from './bookingFormPages/bookingPageOne';
 import BookingPageThree from './bookingFormPages/bookingPageThree';
 import BookingPageTwo from './bookingFormPages/bookingPageTwo';
@@ -14,7 +14,6 @@ interface BookingFormProps {
 const BookingForm = ({ event }: BookingFormProps) => {
   const [activePage, setActivePage] = useState(1);
   const [userChoices, setUserChoices] = useState<UserChoices>({
-    id: '1',
     tickets: event.prices.map((item) => ({
       name: item.key,
       value: item.value.maxPrice ? item.value.maxPrice : item.value.minPrice,
@@ -24,7 +23,6 @@ const BookingForm = ({ event }: BookingFormProps) => {
       firstName: '',
       lastName: '',
       email: '',
-      phone: '',
     },
     amountToPay: 0,
     additionalInfo: '',
@@ -88,6 +86,30 @@ const BookingForm = ({ event }: BookingFormProps) => {
     setActivePage((prev) => prev + 1);
   };
 
+  const submitForm = async () => {
+    const booking = {
+      eventId: event.id,
+      tickets: JSON.stringify(userChoices.tickets),
+      contact: JSON.stringify(userChoices.contact),
+      amountToPay: userChoices.amountToPay,
+      additionalInfo: userChoices.additionalInfo,
+      hasPaid: false,
+      bookingDate: new Date(),
+      adminNotes: '',
+    };
+
+    const res = await fetch('http://localhost:3000/api/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(booking),
+    });
+
+    const data = res.json();
+    console.log(data);
+  };
+
   return (
     <div className="booking-form">
       <form id="booking-form">
@@ -113,6 +135,7 @@ const BookingForm = ({ event }: BookingFormProps) => {
             prevPage={prevPage}
             userChoices={userChoices}
             event={event}
+            submitForm={submitForm}
           />
         ) : null}
       </form>

@@ -2,7 +2,8 @@ import EventsDisplay from '../components/eventsDisplay';
 
 const fetchEvents = async () => {
   const res = await fetch(
-    'http://localhost:3000/api/events?events=-1&old=false'
+    'http://localhost:3000/api/events?events=-1&old=false',
+    { next: { revalidate: 0 } }
   );
   const data = await res.json();
   if (Array.isArray(data.events)) {

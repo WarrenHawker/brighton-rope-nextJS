@@ -33,9 +33,10 @@ event           Event       @relation(fields: [eventId], references: [id])
 tickets         Json
 contact         Json
 amountToPay     Float
+hasPaid         Boolean
 additionalInfo  String
-bookingDate     String
-AdminNotes      String
+bookingDate     DateTime
+adminNotes      String
 }
 
 model WaitingList {

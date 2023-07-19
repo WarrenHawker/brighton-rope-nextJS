@@ -1,6 +1,11 @@
 'use client';
 
-import { getLongDate, getShortDate, trimString } from '@/lib/functions';
+import {
+  getLongDate,
+  getShortDate,
+  getTimeString,
+  trimString,
+} from '@/lib/functions';
 import Overlay from '@/lib/globalComponents/Overlay';
 import { EventsData } from '@/lib/interfaces';
 import BookingForm from './bookingForm/bookingForm';
@@ -43,7 +48,9 @@ const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
                         )}`}
                   </p>
                   <h3>
-                    {`${event.dateTimes[0].startTime} - ${event.dateTimes[0].endTime}`}{' '}
+                    {`${getTimeString(
+                      event.dateTimes[0].startTime
+                    )} - ${getTimeString(event.dateTimes[0].endTime)}`}{' '}
                   </h3>
                 </div>
                 <div className="event-summary">
@@ -82,9 +89,9 @@ const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
                 <div className="event-info">
                   <h3>{bookingFormEvent.title}</h3>
                   {bookingFormEvent.dateTimes.map((item, index) => (
-                    <h4 key={index}>{`${getLongDate(item.date)} ${
+                    <h4 key={index}>{`${getLongDate(item.date)} ${getTimeString(
                       item.startTime
-                    } - ${item.endTime}`}</h4>
+                    )} - ${getTimeString(item.endTime)}`}</h4>
                   ))}
                 </div>
               ) : null

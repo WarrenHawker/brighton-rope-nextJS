@@ -3,9 +3,15 @@ import { useState } from 'react';
 
 interface BookingDetailsProps {
   booking: BookingsData | null;
+  setSelectedBooking: (value: BookingsData | null) => void;
+  setIsModalOpen: (value: boolean) => void;
 }
 
-const BookingsDetails = ({ booking }: BookingDetailsProps) => {
+const BookingsDetails = ({
+  booking,
+  setSelectedBooking,
+  setIsModalOpen,
+}: BookingDetailsProps) => {
   const [editing, setEditing] = useState(false);
 
   const saveEdits = () => {
@@ -14,6 +20,23 @@ const BookingsDetails = ({ booking }: BookingDetailsProps) => {
 
   const cancelEdits = () => {
     setEditing(false);
+  };
+
+  const deleteBooking = async () => {
+    if (
+      confirm(
+        'Are you sure you want to delete this booking? This process is irreversible'
+      )
+    ) {
+      const res = await fetch(
+        `http://localhost:3000/api/bookings/${booking!.id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      setSelectedBooking(null);
+      setIsModalOpen(false);
+    } else return;
   };
 
   if (!booking) {
@@ -42,7 +65,9 @@ const BookingsDetails = ({ booking }: BookingDetailsProps) => {
           </button>
         )}
         <button className="btn">Move</button>
-        <button className="btn btn-delete">Delete</button>
+        <button className="btn btn-delete" onClick={deleteBooking}>
+          Delete
+        </button>
       </div>
 
       <div className="tables-container">
@@ -59,10 +84,17 @@ const BookingsDetails = ({ booking }: BookingDetailsProps) => {
             {booking.tickets.map((ticket: TicketChoices, index: number) => (
               <tr key={index}>
                 <td>{ticket.name}</td>
-                <td>{ticket.value}</td>
+                <td>£{ticket.value}</td>
                 <td>{ticket.quantity}</td>
               </tr>
             ))}
+            <tr className="amount-total">
+              <th colSpan={3}>Total To Pay: £{booking.amountToPay}</th>
+            </tr>
+            <tr className="has-paid">
+              <th colSpan={2}>Has Paid?</th>
+              <td>{booking.hasPaid ? 'yes' : 'no'}</td>
+            </tr>
           </tbody>
         </table>
         <table className="sub-table">
@@ -70,19 +102,33 @@ const BookingsDetails = ({ booking }: BookingDetailsProps) => {
           <tbody>
             <tr>
               <th>First Name</th>
-              <td>{booking.contact.firstName}</td>
+              <td>
+                <input
+                  disabled={!editing}
+                  type="text"
+                  defaultValue={booking.contact.firstName}
+                />
+              </td>
             </tr>
             <tr>
               <th>Last Name</th>
-              <td>{booking.contact.lastName}</td>
+              <td>
+                <input
+                  disabled={!editing}
+                  type="text"
+                  defaultValue={booking.contact.lastName}
+                />
+              </td>
             </tr>
             <tr>
               <th>Email</th>
-              <td>{booking.contact.email}</td>
-            </tr>
-            <tr>
-              <th>Phone</th>
-              <td>{booking.contact.phone}</td>
+              <td>
+                <input
+                  disabled={!editing}
+                  type="email"
+                  defaultValue={booking.contact.email}
+                />
+              </td>
             </tr>
           </tbody>
         </table>

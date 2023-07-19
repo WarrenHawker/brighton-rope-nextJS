@@ -43,22 +43,22 @@ export interface TicketChoices {
 }
 
 export interface UserChoices {
-  id: string;
   tickets: TicketChoices[];
   contact: {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
   };
   amountToPay: number;
   additionalInfo: string;
 }
 
 export interface BookingsData extends UserChoices {
+  id: number;
   eventID: string;
   bookingDate: string;
   adminNotes: string;
+  hasPaid: boolean;
 }
 
 export interface User {

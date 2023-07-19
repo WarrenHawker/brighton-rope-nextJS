@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/validator": "^13.7.17",
-    "prisma": "^4.16.2"
+    "prisma": "^5.0.0"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"

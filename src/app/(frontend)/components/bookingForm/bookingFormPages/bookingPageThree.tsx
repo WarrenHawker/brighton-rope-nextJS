@@ -1,6 +1,15 @@
 import { BookingPageProps } from '@/lib/interfaces';
+import { FormEvent } from 'react';
 
-const BookingPageThree = ({ prevPage, userChoices }: BookingPageProps) => {
+interface BookingPageThreeProps extends BookingPageProps {
+  submitForm: (e: FormEvent) => void;
+}
+
+const BookingPageThree = ({
+  prevPage,
+  userChoices,
+  submitForm,
+}: BookingPageThreeProps) => {
   return (
     <>
       <h3>Payment will be done here, then booking submitted</h3>
@@ -8,7 +17,9 @@ const BookingPageThree = ({ prevPage, userChoices }: BookingPageProps) => {
         <button onClick={prevPage} className="btn btn-secondary">
           Previous
         </button>
-        {/* <button className="btn btn-primary">Next</button> */}
+        <button className="btn btn-primary" onClick={submitForm}>
+          Submit Form
+        </button>
       </div>
     </>
   );

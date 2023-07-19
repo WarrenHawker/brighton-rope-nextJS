@@ -277,29 +277,6 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
 
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const updatedevent = {
-      id: event.id,
-      title: title,
-      description: description,
-      startDate: new Date(datesTimes[0].date),
-      dateTimes: JSON.stringify(datesTimes),
-      location: JSON.stringify(location),
-      maxTickets: capacity,
-      ticketsSold: 0,
-      ticketsRemaining: capacity,
-      prices: JSON.stringify(prices),
-      allowMultipleTickets: allowMultipleTickets,
-    };
-    const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedevent),
-    });
-
-    const data = await res.json();
   };
 
   const changeLocation = (e: any) => {
@@ -313,12 +290,54 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     });
   };
 
-  const saveEdits = () => {
+  const saveEdits = async () => {
     setEditing(false);
+
+    const updatedevent = {
+      title: title,
+      description: description,
+      startDate: new Date(datesTimes[0].date),
+      dateTimes: JSON.stringify(datesTimes),
+      location: JSON.stringify(location),
+      maxTickets: capacity,
+      ticketsSold: 0,
+      ticketsRemaining: capacity,
+      prices: JSON.stringify(prices),
+      allowMultipleTickets: allowMultipleTickets,
+    };
+    const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
+      next: { revalidate: 0 },
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedevent),
+    });
+
+    const data = await res.json();
   };
 
   const cancelEdits = () => {
     setEditing(false);
+    setTitle(event.title);
+    setAllowMultipleTickets(event.allowMultipleTickets);
+    setCapacity(event.maxTickets);
+    setDatesTimes(event.dateTimes);
+    setDescription(event.description);
+    setLocation(event.location);
+    setPrices(event.prices);
+  };
+
+  const deleteEvent = async () => {
+    if (
+      confirm(
+        'Are you sure you want to delete this event? This process is irreversible'
+      )
+    ) {
+      const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
+        method: 'DELETE',
+      });
+    } else return;
   };
 
   return (
@@ -330,9 +349,11 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         <button onClick={cancelEdits} className="btn">
           Cancel
         </button>
-        <button className="btn btn-delete">Delete</button>
+        <button className="btn btn-delete" onClick={deleteEvent}>
+          Delete
+        </button>
       </div>
-      <form onSubmit={(e) => submitForm(e)} className="add-event-form">
+      <form className="add-event-form">
         <input
           className="title-input"
           type="text"
@@ -433,12 +454,6 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
               Add new day to event
             </button>
           </fieldset>
-        </div>
-
-        <div className="btn-submit-container">
-          <button type="submit" className="btn btn-large">
-            Create Event
-          </button>
         </div>
       </form>
     </>

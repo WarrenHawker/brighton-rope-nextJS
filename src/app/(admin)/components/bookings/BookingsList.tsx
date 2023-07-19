@@ -15,9 +15,7 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
   const [selectedBooking, setSelectedBooking] = useState<BookingsData | null>(
     null
   );
-  const [displayedBookings, setDisplayedBookings] = useState<BookingsData[]>(
-    []
-  );
+  const [bookings, setBookings] = useState<BookingsData[]>([]);
 
   useEffect(() => {
     fetchBookings();
@@ -25,10 +23,22 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
   }, [selectedEvent]);
 
   const fetchBookings = async () => {
-    const bookings: any[] = [];
-    setDisplayedBookings(
-      bookings.filter((booking) => booking.eventID == selectedEvent)
-    );
+    const res = await fetch('http://localhost:3000/api/bookings');
+    const data = await res.json();
+    const fetchedBookings = data.bookings.map((booking: any) => {
+      return {
+        id: booking.id,
+        eventID: booking.eventID,
+        tickets: JSON.parse(booking.tickets),
+        contact: JSON.parse(booking.contact),
+        amountToPay: booking.amountToPay,
+        additionalInfo: booking.additionalInfo,
+        adminNotes: booking.adminNotes,
+        bookingDate: booking.bookingDate,
+        hasPaid: booking.hasPaid,
+      };
+    });
+    setBookings(fetchedBookings);
   };
 
   const showBookingDetails = (booking: BookingsData) => {
@@ -50,7 +60,11 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
       >
-        <BookingsDetails booking={selectedBooking} />
+        <BookingsDetails
+          booking={selectedBooking}
+          setSelectedBooking={setSelectedBooking}
+          setIsModalOpen={setIsModalOpen}
+        />
       </Overlay>
 
       {selectedEvent ? (
@@ -69,14 +83,14 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
           </tr>
         </thead>
         <tbody>
-          {displayedBookings.map((booking) => (
+          {bookings.map((booking) => (
             <tr onClick={() => showBookingDetails(booking)} key={booking.id}>
               <td>{booking.id}</td>
               <td>
                 {booking.contact.firstName} {booking.contact.lastName}
               </td>
               <td className="hide-mobile">{booking.contact.email}</td>
-              <td>{booking.bookingDate}</td>
+              <td>{getFullDate(booking.bookingDate)}</td>
             </tr>
           ))}
         </tbody>

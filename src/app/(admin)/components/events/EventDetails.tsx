@@ -15,6 +15,21 @@ interface EventDetailsProps {
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
   const [editing, setEditing] = useState(false);
 
+  const deleteEvent = async () => {
+    if (
+      confirm(
+        'Are you sure you want to delete this event? This process is irreversible'
+      )
+    ) {
+      const res = await fetch(
+        `http://localhost:3000/api/events/${selectedEvent!.id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+    } else return;
+  };
+
   if (!selectedEvent) {
     return (
       <div className="event-details">
@@ -39,7 +54,9 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
             <button onClick={() => setEditing(true)} className="btn">
               Edit
             </button>
-            <button className="btn btn-delete">Delete</button>
+            <button className="btn btn-delete" onClick={deleteEvent}>
+              Delete
+            </button>
           </div>
           <table className="sub-table event-dates-table">
             <caption>Dates</caption>

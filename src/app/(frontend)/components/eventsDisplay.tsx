@@ -54,12 +54,15 @@ const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
                 </div>
 
                 <div className="button-container">
-                  <button
-                    className="btn btn-primary"
-                    onClick={(e) => showBookingForm(event.id)}
-                  >
-                    Book Tickets
-                  </button>
+                  {event.prices.length ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={(e) => showBookingForm(event.id)}
+                    >
+                      Book Tickets
+                    </button>
+                  ) : null}
+
                   <Link
                     href={`/events/${event.id}`}
                     className="btn btn-secondary"

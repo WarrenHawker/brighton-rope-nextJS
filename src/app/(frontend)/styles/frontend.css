@@ -13,6 +13,7 @@
 @import url(./components/socialLinks.css);
 @import url(./components/contactForm.css);
 @import url(./layout/footer.css);
+@import url(./components/singleEventDetails.css);
 
 main {
   max-width: 1500px;

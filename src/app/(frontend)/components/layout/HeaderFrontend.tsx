@@ -15,7 +15,7 @@ const HeaderFrontend = () => {
         ></i>
 
         <nav className={showTopNav ? 'top-nav show' : 'top-nav'}>
-          <img src="images/brighton-rope-icon.png" className="header-logo" />
+          <img src="/images/brighton-rope-icon.png" className="header-logo" />
           <ul>
             <li
               className={

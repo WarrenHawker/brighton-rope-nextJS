@@ -1,11 +1,11 @@
 import { EventsData } from './interfaces';
 
-export const convertToArray = (obj: any): EventsData[] => {
-  const newArray = Object.entries(obj);
-  return newArray.map((item) => {
-    return item[1] as EventsData;
-  });
-};
+// export const convertToArray = (obj: any): EventsData[] => {
+//   const newArray = Object.entries(obj);
+//   return newArray.map((item) => {
+//     return item[1] as EventsData;
+//   });
+// };
 
 export const getShortDate = (date: Date | string): String => {
   if (typeof date == 'string') {
@@ -121,21 +121,65 @@ export const getFullDate = (date: Date | string | undefined): string => {
   return `${month} ${day}${nthNumber(day)} ${year}`;
 };
 
-export const fetchSingleEvent = async (id: string) => {
-  const res = await fetch(`http://localhost:3000/api/events/3`);
-  const data = await res.json();
-  return data;
-  // const event = await res.json();
-  // return {
-  //   id: event.id.toString(),
-  //   title: event.title,
-  //   description: event.description,
-  //   location: JSON.parse(event.location),
-  //   maxTickets: event.maxTickets,
-  //   ticketsSold: event.ticketsSold,
-  //   ticketsRemaining: event.ticketsRemaining,
-  //   dateTimes: JSON.parse(event.dateTimes),
-  //   allowMultipleTickets: event.allowMultipleTickets,
-  //   prices: JSON.parse(event.prices),
-  // };
+export const getTimeString = (time: string): string => {
+  let hour = parseInt(time.split(':')[0]);
+  let minutes = parseInt(time.split(':')[1]);
+  let hours;
+  let suffix;
+
+  if (hour < 12) {
+    suffix = 'am';
+    if (hour == 0) {
+      hours = '12';
+    } else {
+      hours = hour;
+    }
+  } else {
+    suffix = 'pm';
+    switch (hour) {
+      case 13:
+        hours = '1';
+        break;
+      case 14:
+        hours = '2';
+        break;
+      case 15:
+        hours = '3';
+        break;
+      case 16:
+        hours = '4';
+        break;
+      case 17:
+        hours = '5';
+        break;
+      case 18:
+        hours = '6';
+        break;
+      case 19:
+        hours = '7';
+        break;
+      case 20:
+        hours = '8';
+        break;
+      case 21:
+        hours = '9';
+        break;
+      case 22:
+        hours = '10';
+        break;
+      case 23:
+        hours = '11';
+        break;
+      default:
+        break;
+    }
+  }
+
+  if (minutes == 0) {
+    return `${hours}${suffix}`;
+  } else if (minutes < 10) {
+    return `${hours}:0${minutes}${suffix}`;
+  } else {
+    return `${hours}:${minutes}${suffix}`;
+  }
 };

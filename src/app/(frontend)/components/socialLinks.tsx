@@ -7,7 +7,7 @@ const SocialLinks = () => {
         <i className="fa-brands fa-instagram"></i>
       </Link>
       <Link href="https://fetlife.com/users/4003588" target="_blank">
-        <img src="images/FetlifeLogo.png" />
+        <img src="/images/FetlifeLogo.png" />
       </Link>
 
       <Link href="https://discord.gg/3RdshrDXr6" target="_blank">

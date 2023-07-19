@@ -16,33 +16,44 @@ interface Props {
 const SingleEventDetails = ({ event }: Props) => {
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
 
-  console.log(event);
   return (
     <section className="single-event">
-      <div className="single-event-location">
-        <h3>Location:</h3>
-        <p>{event.location.lineOne}</p>
-        <p>{event.location.lineTwo}</p>
-        <p>{event.location.city}</p>
-        <p>{event.location.country}</p>
-        <p>{event.location.postcode}</p>
+      {!event.prices.length ? (
+        <h2 className="single-event-free">
+          This event is FREE! Just turn up and have fun
+        </h2>
+      ) : null}
+      <div className="single-event-details">
+        <div className="single-event-location">
+          <h3>Location:</h3>
+          <p>{event.location.lineOne}</p>
+          <p>{event.location.lineTwo}</p>
+          <p>{event.location.city}</p>
+          <p>{event.location.country}</p>
+          <p>{event.location.postcode}</p>
+        </div>
+
+        <div className="single-event-date-times">
+          <h3>Dates and Times:</h3>
+          {event.dateTimes.map((item, index) => (
+            <p key={index}>{`${getFullDate(item.date)}  ${getTimeString(
+              item.startTime
+            )} - ${getTimeString(item.endTime)}`}</p>
+          ))}
+        </div>
       </div>
-      <div className="single-event-date-times">
-        <h3>Dates and Times:</h3>
-        {event.dateTimes.map((item, index) => (
-          <p key={index}>{`${getFullDate(item.date)}  ${getTimeString(
-            item.startTime
-          )} - ${getTimeString(item.endTime)}`}</p>
-        ))}
-      </div>
+
       <MdPreview modelValue={event.description} />
+
       <div className="button-container">
-        <button
-          onClick={() => setBookingFormOpen(true)}
-          className="btn btn-primary"
-        >
-          Book Tickets
-        </button>
+        {event.prices.length ? (
+          <button
+            onClick={() => setBookingFormOpen(true)}
+            className="btn btn-primary"
+          >
+            Book Tickets
+          </button>
+        ) : null}
         <Link href="/events" className="btn btn-secondary">
           All Events
         </Link>

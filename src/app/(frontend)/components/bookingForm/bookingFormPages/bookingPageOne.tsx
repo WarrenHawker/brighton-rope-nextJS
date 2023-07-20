@@ -1,6 +1,6 @@
 'use client';
 
-import { BookingPageProps } from '@/lib/interfaces';
+import { BookingPageProps } from '@/utils/interfaces';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 interface PageOneProps extends BookingPageProps {

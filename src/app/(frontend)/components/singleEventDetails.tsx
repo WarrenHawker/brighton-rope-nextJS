@@ -1,8 +1,8 @@
 'use client';
 
-import { getFullDate, getLongDate, getTimeString } from '@/lib/functions';
-import Overlay from '@/lib/globalComponents/Overlay';
-import { EventsData } from '@/lib/interfaces';
+import { getFullDate, getLongDate, getTimeString } from '@/utils/functions';
+import Overlay from '@/utils/globalComponents/Overlay';
+import { EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import BookingForm from './bookingForm/bookingForm';
 import Link from 'next/link';

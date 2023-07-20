@@ -1,4 +1,4 @@
-import { BookingPageProps } from '@/lib/interfaces';
+import { BookingPageProps } from '@/utils/interfaces';
 import { FormEvent } from 'react';
 
 interface BookingPageThreeProps extends BookingPageProps {

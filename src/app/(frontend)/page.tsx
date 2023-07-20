@@ -1,38 +1,9 @@
 import Link from 'next/link';
 import EventsDisplay from './components/eventsDisplay';
-import { headers } from 'next/headers';
-
-const fetchEvents = async () => {
-  const host = headers().get('host');
-  const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const res = await fetch(
-    `${protocal}://${host}/api/events?events=3&old=false`,
-    {
-      next: { revalidate: 0 },
-    }
-  );
-  const data = await res.json();
-  if (Array.isArray(data.events)) {
-    const events = data.events.map((event: any) => {
-      return {
-        id: event.id,
-        title: event.title,
-        description: event.description,
-        location: JSON.parse(event.location),
-        maxTickets: event.maxTickets,
-        ticketsSold: event.ticketsSold,
-        ticketsRemaining: event.ticketsRemaining,
-        dateTimes: JSON.parse(event.dateTimes),
-        allowMultipleTickets: event.allowMultipleTickets,
-        prices: JSON.parse(event.prices),
-      };
-    });
-    return events;
-  } else return [data];
-};
+import { fetchHomeEvents } from '@/lib/serverFunctions';
 
 const HomePage = async () => {
-  const events = await fetchEvents();
+  const events = await fetchHomeEvents();
   return (
     <>
       <main>

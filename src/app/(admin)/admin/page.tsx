@@ -21,9 +21,7 @@ const AdminHome = () => {
   }, []);
 
   const fetchEvents = async () => {
-    const res = await fetch(
-      'http://localhost:3000/api/events?events=-1&old=true'
-    );
+    const res = await fetch('/api/events?events=-1&old=true');
     const data = await res.json();
     if (Array.isArray(data.events)) {
       const events = data.events.map((event: any) => {
@@ -84,7 +82,9 @@ const AdminHome = () => {
             },
             {
               name: 'Bookings',
-              element: <BookingsList selectedEvent={selectedEvent} />,
+              element: (
+                <BookingsList selectedEvent={selectedEvent} events={events} />
+              ),
             },
             { name: 'Waiting List', element: <WaitingList /> },
           ]}

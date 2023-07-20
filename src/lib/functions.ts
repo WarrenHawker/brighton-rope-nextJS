@@ -1,12 +1,3 @@
-import { EventsData } from './interfaces';
-
-// export const convertToArray = (obj: any): EventsData[] => {
-//   const newArray = Object.entries(obj);
-//   return newArray.map((item) => {
-//     return item[1] as EventsData;
-//   });
-// };
-
 export const getShortDate = (date: Date | string): String => {
   if (typeof date == 'string') {
     date = new Date(date);
@@ -30,20 +21,6 @@ export const getLongDate = (date: Date | string): string => {
   return formattedDate;
 };
 
-export const getTime = (date: Date): String => {
-  const newTime = new Intl.DateTimeFormat('en-GB', {
-    hour: 'numeric',
-    minute: 'numeric',
-  }).format(date);
-  return newTime;
-};
-
-export const isTicket = (option: string) => {
-  if (option == 'child' || option == 'adult' || option == 'senior') {
-    return true;
-  } else return false;
-};
-
 export const isContact = (option: string) => {
   if (
     option == 'firstName' ||
@@ -53,30 +30,6 @@ export const isContact = (option: string) => {
   ) {
     return true;
   } else return false;
-};
-
-export const dateToString = (
-  date: Date | undefined,
-  reversed: boolean = false
-): string => {
-  if (!date) {
-    return '';
-  }
-  const year: string = date.getFullYear().toString();
-
-  let month: string;
-  if (date.getMonth() < 10) {
-    month = `0${date.getMonth() + 1}`;
-  } else month = (date.getMonth() + 1).toString();
-
-  let day: string;
-  if (date.getDate() < 10) {
-    day = `0${date.getDate()}`;
-  } else day = date.getDate().toString();
-
-  if (reversed) {
-    return `${year}-${month}-${day}`;
-  } else return `${day}-${month}-${year}`;
 };
 
 export const trimString = (str: string, length: number): string => {

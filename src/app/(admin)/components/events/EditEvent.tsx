@@ -275,10 +275,6 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     );
   });
 
-  const submitForm = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
   const changeLocation = (e: any) => {
     const key = e.target.name;
     const value = e.target.value;
@@ -305,7 +301,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
+    const res = await fetch(`/api/events/${event.id}`, {
       next: { revalidate: 0 },
       method: 'PATCH',
       headers: {
@@ -334,7 +330,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         'Are you sure you want to delete this event? This process is irreversible'
       )
     ) {
-      const res = await fetch(`http://localhost:3000/api/events/${event.id}`, {
+      const res = await fetch(`/api/events/${event.id}`, {
         method: 'DELETE',
       });
     } else return;

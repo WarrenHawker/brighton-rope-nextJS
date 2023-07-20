@@ -21,12 +21,9 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
         'Are you sure you want to delete this event? This process is irreversible'
       )
     ) {
-      const res = await fetch(
-        `http://localhost:3000/api/events/${selectedEvent!.id}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const res = await fetch(`/api/events/${selectedEvent!.id}`, {
+        method: 'DELETE',
+      });
     } else return;
   };
 

@@ -8,9 +8,10 @@ import { getFullDate } from '@/lib/functions';
 
 interface BookingsListProps {
   selectedEvent: EventsData | null;
+  events: EventsData[];
 }
 
-const BookingsList = ({ selectedEvent }: BookingsListProps) => {
+const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedBooking, setSelectedBooking] = useState<BookingsData | null>(
     null
@@ -23,7 +24,7 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
   }, [selectedEvent]);
 
   const fetchBookings = async () => {
-    const res = await fetch('http://localhost:3000/api/bookings');
+    const res = await fetch('/api/bookings');
     const data = await res.json();
     const fetchedBookings = data.bookings.map((booking: any) => {
       return {
@@ -64,6 +65,7 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
           booking={selectedBooking}
           setSelectedBooking={setSelectedBooking}
           setIsModalOpen={setIsModalOpen}
+          events={events}
         />
       </Overlay>
 

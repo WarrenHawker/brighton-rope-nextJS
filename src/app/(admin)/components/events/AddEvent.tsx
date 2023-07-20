@@ -2,9 +2,7 @@
 
 import CountrySelector from '@/lib/globalComponents/CountrySelector';
 import { Address, EventDateTime, Prices } from '@/lib/interfaces';
-import prisma from '@/prisma/client';
 import { MdEditor } from 'md-editor-rt';
-import { NextResponse } from 'next/server';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 
 const AddEvent = () => {
@@ -285,7 +283,7 @@ const AddEvent = () => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch('http://localhost:3000/api/events', {
+    const res = await fetch('/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

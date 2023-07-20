@@ -1,9 +1,14 @@
 import EventsDisplay from '../components/eventsDisplay';
+import { headers } from 'next/headers';
 
 const fetchEvents = async () => {
+  const host = headers().get('host');
+  const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
   const res = await fetch(
-    'http://localhost:3000/api/events?events=-1&old=false',
-    { next: { revalidate: 0 } }
+    `${protocal}://${host}/api/events?events=-1&old=false`,
+    {
+      next: { revalidate: 0 },
+    }
   );
   const data = await res.json();
   if (Array.isArray(data.events)) {

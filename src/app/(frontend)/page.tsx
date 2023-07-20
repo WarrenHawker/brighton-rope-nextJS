@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import EventsDisplay from './components/eventsDisplay';
+import { headers } from 'next/headers';
 
 const fetchEvents = async () => {
+  const host = headers().get('host');
+  const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
   const res = await fetch(
-    `brighton-rope-next-js.vercel.app/api/events?events=3&old=false`,
+    `${protocal}://${host}/api/events?events=3&old=false`,
     {
       next: { revalidate: 0 },
     }

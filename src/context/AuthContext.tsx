@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { ContextProviderProps, User } from '../lib/interfaces';
+import { ContextProviderProps, User } from '../utils/interfaces';
 
 interface UseAuthProps {
   user: User;

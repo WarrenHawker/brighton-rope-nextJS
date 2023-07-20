@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { ContextProviderProps, EventsData } from '../lib/interfaces';
+import { ContextProviderProps, EventsData } from '../utils/interfaces';
 
 interface UseEventsProps {
   events: EventsData[];

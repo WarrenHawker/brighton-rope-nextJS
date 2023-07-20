@@ -2,10 +2,10 @@
 
 import Overlay from '@/lib/globalComponents/Overlay';
 import { getFullDate } from '@/lib/functions';
-import BookingsDetails from '../bookings/BookingsDetails';
 import { useEvents } from '@/context/EventsContext';
 import { BookingsData } from '@/lib/interfaces';
 import { useState } from 'react';
+import WaitingDetails from './WaitingDetails';
 
 const WaitingList = () => {
   const { events, selectedEvent } = useEvents();
@@ -25,14 +25,14 @@ const WaitingList = () => {
           <div className="booking-details-header">
             <h2>Inquiry Details</h2>
             <p>Inquiry ID: {selectedInquiry?.id}</p>
-            <p>Event ID: {selectedInquiry?.eventID}</p>
+            <p>Event ID: {selectedInquiry?.eventId}</p>
             <p>Inquiry Date: {getFullDate(selectedInquiry?.bookingDate)}</p>
           </div>
         }
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
       >
-        <BookingsDetails booking={selectedInquiry} />
+        <WaitingDetails />
       </Overlay>
 
       {eventInfo ? (

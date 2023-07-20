@@ -28,7 +28,7 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
     const fetchedBookings = data.bookings.map((booking: any) => {
       return {
         id: booking.id,
-        eventID: booking.eventID,
+        eventId: booking.eventId,
         tickets: JSON.parse(booking.tickets),
         contact: JSON.parse(booking.contact),
         amountToPay: booking.amountToPay,
@@ -53,7 +53,7 @@ const BookingsList = ({ selectedEvent }: BookingsListProps) => {
           <div className="booking-details-header">
             <h2>Booking Details</h2>
             <p>Booking ID: {selectedBooking?.id}</p>
-            <p>Event ID: {selectedBooking?.eventID}</p>
+            <p>Event ID: {selectedBooking?.eventId}</p>
             <p>Booking Date: {getFullDate(selectedBooking?.bookingDate)}</p>
           </div>
         }

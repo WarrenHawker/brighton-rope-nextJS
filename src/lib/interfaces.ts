@@ -55,7 +55,7 @@ export interface UserChoices {
 
 export interface BookingsData extends UserChoices {
   id: number;
-  eventID: string;
+  eventId: string;
   bookingDate: string;
   adminNotes: string;
   hasPaid: boolean;

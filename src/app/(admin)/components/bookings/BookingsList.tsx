@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { BookingsData, EventsData } from '@/lib/interfaces';
-import Overlay from '@/lib/globalComponents/Overlay';
+import { BookingsData, EventsData } from '@/utils/interfaces';
+import Overlay from '@/utils/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
-import { getFullDate } from '@/lib/functions';
+import { getFullDate } from '@/utils/functions';
 
 interface BookingsListProps {
   selectedEvent: EventsData | null;
@@ -24,7 +24,7 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   }, [selectedEvent]);
 
   const fetchBookings = async () => {
-    const res = await fetch('/api/bookings');
+    const res = await fetch('/api/bookings', { next: { tags: ['bookings'] } });
     const data = await res.json();
     const fetchedBookings = data.bookings.map((booking: any) => {
       return {

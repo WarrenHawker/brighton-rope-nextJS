@@ -6,7 +6,7 @@ export const fetchHomeEvents = async () => {
   const res = await fetch(
     `${protocal}://${host}/api/events?events=3&old=false`,
     {
-      next: { revalidate: 0 },
+      next: { tags: ['events'] },
     }
   );
   const data = await res.json();
@@ -35,7 +35,7 @@ export const fetchAllUpcomingEvents = async () => {
   const res = await fetch(
     `${protocal}://${host}/api/events?events=-1&old=false`,
     {
-      next: { revalidate: 0 },
+      next: { tags: ['events'] },
     }
   );
   const data = await res.json();
@@ -61,7 +61,9 @@ export const fetchAllUpcomingEvents = async () => {
 export const fetchEventById = async (id: string) => {
   const host = headers().get('host');
   const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const res = await fetch(`${protocal}://${host}/api/events/${id}`);
+  const res = await fetch(`${protocal}://${host}/api/events/${id}`, {
+    next: { tags: ['events'] },
+  });
   const data = await res.json();
 
   const event = {

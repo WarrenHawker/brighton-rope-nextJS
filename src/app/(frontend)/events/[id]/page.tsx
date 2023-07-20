@@ -1,4 +1,4 @@
-import { fetchEventById } from '@/lib/serverFunctions';
+import { fetchEventById } from '@/utils/serverFunctions';
 import SingleEventDetails from '../../components/singleEventDetails';
 
 interface SingleEventProps {

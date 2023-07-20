@@ -1,4 +1,4 @@
-@import url(../../../lib/globalStyles/globals.css);
+@import url(../../../utils/globalStyles/globals.css);
 @import url(./components/bookingForm.css);
 @import url(./components/buttons.css);
 @import url(./components/eventsDisplay.css);

@@ -1,7 +1,7 @@
 'use client';
 
-import CountrySelector from '@/lib/globalComponents/CountrySelector';
-import { Address, EventDateTime, EventsData, Prices } from '@/lib/interfaces';
+import CountrySelector from '@/utils/globalComponents/CountrySelector';
+import { Address, EventDateTime, EventsData, Prices } from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 
@@ -302,7 +302,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
       allowMultipleTickets: allowMultipleTickets,
     };
     const res = await fetch(`/api/events/${event.id}`, {
-      next: { revalidate: 0 },
+      next: { tags: ['events'] },
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -332,6 +332,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     ) {
       const res = await fetch(`/api/events/${event.id}`, {
         method: 'DELETE',
+        next: { tags: ['events'] },
       });
     } else return;
   };

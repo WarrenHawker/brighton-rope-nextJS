@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import EventsDisplay from './components/eventsDisplay';
-import { fetchHomeEvents } from '@/lib/serverFunctions';
+import { fetchHomeEvents } from '@/utils/serverFunctions';
 
 const HomePage = async () => {
   const events = await fetchHomeEvents();
+
   return (
     <>
       <main>

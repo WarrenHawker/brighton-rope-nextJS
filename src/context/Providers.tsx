@@ -1,13 +1,16 @@
 'use client';
 
 import { ContextProviderProps } from '@/lib/interfaces';
-import { AuthContextProvider } from './AuthContext';
-import { EventsContextProvider } from './EventsContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useState } from 'react';
 
 export const Providers = ({ children }: ContextProviderProps) => {
+  const [client] = useState(new QueryClient());
   return (
-    <AuthContextProvider>
-      <EventsContextProvider>{children}</EventsContextProvider>
-    </AuthContextProvider>
+    <QueryClientProvider client={client}>
+      {children}
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   );
 };

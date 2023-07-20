@@ -1,7 +1,7 @@
 'use client';
 
-import { isContact } from '@/lib/functions';
-import { EventsData, UserChoices, TicketChoices } from '@/lib/interfaces';
+import { isContact } from '@/utils/functions';
+import { EventsData, UserChoices, TicketChoices } from '@/utils/interfaces';
 import { FormEvent, useState } from 'react';
 import BookingPageOne from './bookingFormPages/bookingPageOne';
 import BookingPageThree from './bookingFormPages/bookingPageThree';
@@ -103,6 +103,7 @@ const BookingForm = ({ event }: BookingFormProps) => {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { tags: ['bookings'] },
       body: JSON.stringify(booking),
     });
 

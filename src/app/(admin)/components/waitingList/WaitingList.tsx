@@ -1,9 +1,9 @@
 'use client';
 
-import Overlay from '@/lib/globalComponents/Overlay';
-import { getFullDate } from '@/lib/functions';
+import Overlay from '@/utils/globalComponents/Overlay';
+import { getFullDate } from '@/utils/functions';
 import { useEvents } from '@/context/EventsContext';
-import { BookingsData } from '@/lib/interfaces';
+import { BookingsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import WaitingDetails from './WaitingDetails';
 

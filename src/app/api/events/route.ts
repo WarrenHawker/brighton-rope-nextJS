@@ -1,7 +1,12 @@
 import prisma from '@/prisma/client';
 import { NextResponse, NextRequest } from 'next/server';
+import { revalidateTag } from 'next/cache';
 
 export const POST = async (request: NextRequest) => {
+  const tag = request.nextUrl.searchParams.get('tag');
+  if (tag) {
+    revalidateTag(tag);
+  }
   const res = await request.json();
   const event = await prisma.event.create({
     data: res,
@@ -12,6 +17,10 @@ export const POST = async (request: NextRequest) => {
 
 export const GET = async (request: NextRequest) => {
   const eventOption = request.nextUrl.searchParams.get('events');
+  const tag = request.nextUrl.searchParams.get('tag');
+  if (tag) {
+    revalidateTag(tag);
+  }
   let oldOption = request.nextUrl.searchParams.get('old');
   let eventAmount: number = -1;
   let events;

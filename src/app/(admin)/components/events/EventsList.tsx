@@ -1,6 +1,6 @@
 'use client';
-import { EventsData } from '@/lib/interfaces';
-import { getFullDate } from '../../../../lib/functions';
+import { EventsData } from '@/utils/interfaces';
+import { getFullDate } from '../../../../utils/functions';
 
 interface EventsListProps {
   events: EventsData[];

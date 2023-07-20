@@ -5,9 +5,9 @@ import {
   getShortDate,
   getTimeString,
   trimString,
-} from '@/lib/functions';
-import Overlay from '@/lib/globalComponents/Overlay';
-import { EventsData } from '@/lib/interfaces';
+} from '@/utils/functions';
+import Overlay from '@/utils/globalComponents/Overlay';
+import { EventsData } from '@/utils/interfaces';
 import BookingForm from './bookingForm/bookingForm';
 import { useState } from 'react';
 import Link from 'next/link';

@@ -1,6 +1,6 @@
 'use client';
-import Overlay from '@/lib/globalComponents/Overlay';
-import ViewTabs from '@/lib/globalComponents/ViewTabs';
+import Overlay from '@/utils/globalComponents/Overlay';
+import ViewTabs from '@/utils/globalComponents/ViewTabs';
 import { useEffect, useState } from 'react';
 import BookingsList from '../components/bookings/BookingsList';
 import AddEvent from '../components/events/AddEvent';
@@ -8,7 +8,7 @@ import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
 import WaitingList from '../components/waitingList/WaitingList';
 import 'md-editor-rt/lib/style.css';
-import { EventsData } from '@/lib/interfaces';
+import { EventsData } from '@/utils/interfaces';
 
 const AdminHome = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
@@ -21,7 +21,9 @@ const AdminHome = () => {
   }, []);
 
   const fetchEvents = async () => {
-    const res = await fetch('/api/events?events=-1&old=true');
+    const res = await fetch('/api/events?events=-1&old=true', {
+      next: { tags: ['events'] },
+    });
     const data = await res.json();
     if (Array.isArray(data.events)) {
       const events = data.events.map((event: any) => {

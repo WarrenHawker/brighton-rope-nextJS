@@ -1,4 +1,4 @@
-import { fetchAllUpcomingEvents } from '@/lib/serverFunctions';
+import { fetchAllUpcomingEvents } from '@/utils/serverFunctions';
 import EventsDisplay from '../components/eventsDisplay';
 
 const EventsPage = async () => {

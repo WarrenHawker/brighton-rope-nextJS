@@ -1,7 +1,7 @@
 'use client';
 
-import CountrySelector from '@/lib/globalComponents/CountrySelector';
-import { Address, EventDateTime, Prices } from '@/lib/interfaces';
+import CountrySelector from '@/utils/globalComponents/CountrySelector';
+import { Address, EventDateTime, Prices } from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 
@@ -289,6 +289,7 @@ const AddEvent = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(event),
+      next: { tags: ['events'] },
     });
 
     const data = await res.json();

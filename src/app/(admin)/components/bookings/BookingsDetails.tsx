@@ -1,6 +1,6 @@
 'use client';
 
-import { BookingsData, EventsData, TicketChoices } from '@/lib/interfaces';
+import { BookingsData, EventsData, TicketChoices } from '@/utils/interfaces';
 import { useEffect, useRef, useState } from 'react';
 
 interface BookingDetailsProps {
@@ -72,6 +72,7 @@ const BookingsDetails = ({
     ) {
       const res = await fetch(`/api/bookings/${booking!.id}`, {
         method: 'DELETE',
+        next: { tags: ['bookings'] },
       });
       setSelectedBooking(null);
       setIsModalOpen(false);
@@ -84,6 +85,7 @@ const BookingsDetails = ({
       const res = await fetch(`/api/bookings/${booking!.id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
+        next: { tags: ['bookings'] },
       });
     }
     setIsModalOpen(false);

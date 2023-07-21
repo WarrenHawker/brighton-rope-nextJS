@@ -1,5 +1,5 @@
 import './styles/admin.css';
-import { Providers } from '@/context/Providers';
+import { Providers } from '@/lib/react-query/QueryProvider';
 import Script from 'next/script';
 import FooterAdmin from './components/layout/FooterAdmin';
 import HeaderAdmin from './components/layout/HeaderAdmin';

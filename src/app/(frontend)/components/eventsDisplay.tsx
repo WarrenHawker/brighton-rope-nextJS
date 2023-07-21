@@ -11,30 +11,38 @@ import { EventsData } from '@/utils/interfaces';
 import BookingForm from './bookingForm/bookingForm';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEventsClient } from '@/utils/clientFetch';
 
 interface EventsDisplayProps {
-  events: EventsData[];
   page: string;
 }
 
-const EventsDisplay = ({ events, page }: EventsDisplayProps) => {
+const EventsDisplay = ({ page }: EventsDisplayProps) => {
+  const eventsAmount = page == 'home' ? 3 : -1;
+  const { data } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => fetchEventsClient({ amount: eventsAmount, old: 'false' }),
+  });
   const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(
     null
   );
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
 
   const showBookingForm = (id: any) => {
-    setBookingFormEvent(events.filter((event) => event.id == id)[0]);
+    setBookingFormEvent(
+      data.events.filter((event: EventsData) => event.id == id)[0]
+    );
     setBookingFormOpen(true);
   };
   return (
     <section className="events-container">
       <h1>Our Upcoming Events</h1>
-      {events.length == 0 ? (
+      {!data ? (
         <h2>I&apos;m sorry, there are no upcoming events</h2>
       ) : (
         <>
-          {events.map((event: EventsData) => {
+          {data.map((event: EventsData) => {
             return (
               <article className="event" key={event.id}>
                 <div className="event-date-time">

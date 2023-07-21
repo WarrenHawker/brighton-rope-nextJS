@@ -2,81 +2,98 @@
 
 import { getFullDate, getLongDate, getTimeString } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { EventsData } from '@/utils/interfaces';
+import { EventDateTime, EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import BookingForm from './bookingForm/bookingForm';
 import Link from 'next/link';
 import { MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
+import { fetchEventByIdClient } from '@/utils/clientFetch';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
-  event: EventsData;
+  eventId: string;
 }
 
-const SingleEventDetails = ({ event }: Props) => {
+const SingleEventDetails = ({ eventId }: Props) => {
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
+  const { data } = useQuery({
+    queryKey: ['events', eventId],
+    queryFn: () => fetchEventByIdClient(eventId),
+  });
+
+  if (!data) {
+    return (
+      <main>
+        <h1>No event found</h1>
+      </main>
+    );
+  }
 
   return (
-    <section className="single-event">
-      {!event.prices.length ? (
-        <h2 className="single-event-free">
-          This event is FREE! Just turn up and have fun
-        </h2>
-      ) : null}
-      <div className="single-event-details">
-        <div className="single-event-location">
-          <h3>Location:</h3>
-          <p>{event.location.lineOne}</p>
-          <p>{event.location.lineTwo}</p>
-          <p>{event.location.city}</p>
-          <p>{event.location.country}</p>
-          <p>{event.location.postcode}</p>
-        </div>
-
-        <div className="single-event-date-times">
-          <h3>Dates and Times:</h3>
-          {event.dateTimes.map((item, index) => (
-            <p key={index}>{`${getFullDate(item.date)}  ${getTimeString(
-              item.startTime
-            )} - ${getTimeString(item.endTime)}`}</p>
-          ))}
-        </div>
-      </div>
-
-      <MdPreview modelValue={event.description} />
-
-      <div className="button-container">
-        {event.prices.length ? (
-          <button
-            onClick={() => setBookingFormOpen(true)}
-            className="btn btn-primary"
-          >
-            Book Tickets
-          </button>
+    <main>
+      <h1 className="page-title">{data.title}</h1>
+      <section className="single-event">
+        {!data.prices.length ? (
+          <h2 className="single-event-free">
+            This event is FREE! Just turn up and have fun
+          </h2>
         ) : null}
-        <Link href="/events" className="btn btn-secondary">
-          All Events
-        </Link>
-      </div>
-      <Overlay
-        isOpen={bookingFormOpen}
-        setIsOpen={setBookingFormOpen}
-        header={
-          event ? (
-            <div className="event-info">
-              <h3>{event.title}</h3>
-              {event.dateTimes.map((item, index) => (
-                <h4 key={index}>{`${getLongDate(item.date)} ${
-                  item.startTime
-                } - ${item.endTime}`}</h4>
-              ))}
-            </div>
-          ) : null
-        }
-      >
-        {event ? <BookingForm event={event} /> : null}
-      </Overlay>
-    </section>
+        <div className="single-event-details">
+          <div className="single-event-location">
+            <h3>Location:</h3>
+            <p>{data.location.lineOne}</p>
+            <p>{data.location.lineTwo}</p>
+            <p>{data.location.city}</p>
+            <p>{data.location.country}</p>
+            <p>{data.location.postcode}</p>
+          </div>
+
+          <div className="single-event-date-times">
+            <h3>Dates and Times:</h3>
+            {data.dateTimes.map((item: EventDateTime, index: number) => (
+              <p key={index}>{`${getFullDate(item.date)}  ${getTimeString(
+                item.startTime
+              )} - ${getTimeString(item.endTime)}`}</p>
+            ))}
+          </div>
+        </div>
+
+        <MdPreview modelValue={data.description} />
+
+        <div className="button-container">
+          {data.prices.length ? (
+            <button
+              onClick={() => setBookingFormOpen(true)}
+              className="btn btn-primary"
+            >
+              Book Tickets
+            </button>
+          ) : null}
+          <Link href="/events" className="btn btn-secondary">
+            All Events
+          </Link>
+        </div>
+        <Overlay
+          isOpen={bookingFormOpen}
+          setIsOpen={setBookingFormOpen}
+          header={
+            data ? (
+              <div className="event-info">
+                <h3>{data.title}</h3>
+                {data.dateTimes.map((item: EventDateTime, index: number) => (
+                  <h4 key={index}>{`${getLongDate(item.date)} ${
+                    item.startTime
+                  } - ${item.endTime}`}</h4>
+                ))}
+              </div>
+            ) : null
+          }
+        >
+          {data ? <BookingForm event={data} /> : null}
+        </Overlay>
+      </section>
+    </main>
   );
 };
 

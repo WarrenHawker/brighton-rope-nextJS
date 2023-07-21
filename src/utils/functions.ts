@@ -136,3 +136,10 @@ export const getTimeString = (time: string): string => {
     return `${hours}:${minutes}${suffix}`;
   }
 };
+
+export const testFetch = async () => {
+  const res = await fetch('/api/events?events=3&old=false').then((res) =>
+    res.json()
+  );
+  return res;
+};

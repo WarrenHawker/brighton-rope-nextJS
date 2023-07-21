@@ -1,4 +1,4 @@
-import prisma from '@/prisma/client';
+import prisma from '@/lib/prisma/client';
 import { revalidateTag } from 'next/cache';
 import { NextResponse, NextRequest } from 'next/server';
 

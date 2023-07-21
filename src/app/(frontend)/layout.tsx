@@ -1,4 +1,4 @@
-import { Providers } from '@/context/Providers';
+import { QueryProvider } from '@/lib/react-query/QueryProvider';
 import Script from 'next/script';
 import FooterFrontend from './components/layout/FooterFrontend';
 import HeaderFrontend from './components/layout/HeaderFrontend';
@@ -20,7 +20,7 @@ const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
       <body suppressHydrationWarning={true}>
         <HeaderFrontend />
         <div className="content-wrapper">
-          <Providers>{children}</Providers>
+          <QueryProvider>{children}</QueryProvider>
         </div>
         <FooterFrontend />
       </body>

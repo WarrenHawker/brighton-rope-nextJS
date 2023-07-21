@@ -1,9 +1,16 @@
 import Link from 'next/link';
 import EventsDisplay from './components/eventsDisplay';
-import { fetchHomeEvents } from '@/utils/serverFunctions';
+import { fetchEventsServer } from '@/utils/serverFetch';
+import getQueryClient from '@/lib/react-query/getQueryClient';
+import { dehydrate } from '@tanstack/react-query';
+import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
 
 const HomePage = async () => {
-  const events = await fetchHomeEvents();
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(['events'], () =>
+    fetchEventsServer({ amount: 3, old: 'false' })
+  );
+  const dehydratedState = dehydrate(queryClient);
 
   return (
     <>
@@ -24,7 +31,9 @@ const HomePage = async () => {
             </Link>
           </div>
         </section>
-        <EventsDisplay events={events} page="home" />
+        <ReactQueryHydrate state={dehydratedState}>
+          <EventsDisplay page="home" />
+        </ReactQueryHydrate>
       </main>
     </>
   );

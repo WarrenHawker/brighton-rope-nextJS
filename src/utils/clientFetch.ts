@@ -48,3 +48,29 @@ export const fetchEventByIdClient = async (id: string) => {
 
   return event;
 };
+
+//fetches bookings by event Id
+export const fetchBookingsByEventClient = async (
+  eventId: string | undefined
+) => {
+  if (!eventId) {
+    return '';
+  }
+
+  const res = await fetch(`/api/bookings?event=${eventId}`);
+  const data = await res.json();
+  const bookings = data.bookings.map((booking: any) => {
+    return {
+      id: booking.id,
+      eventId: booking.eventId,
+      tickets: JSON.parse(booking.tickets),
+      contact: JSON.parse(booking.contact),
+      amountToPay: booking.amountToPay,
+      additionalInfo: booking.additionalInfo,
+      adminNotes: booking.adminNotes,
+      bookingDate: booking.bookingDate,
+      hasPaid: booking.hasPaid,
+    };
+  });
+  return bookings;
+};

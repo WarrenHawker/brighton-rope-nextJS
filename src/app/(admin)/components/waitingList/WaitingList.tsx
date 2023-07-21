@@ -2,14 +2,11 @@
 
 import Overlay from '@/utils/globalComponents/Overlay';
 import { getFullDate } from '@/utils/functions';
-import { useEvents } from '@/context/EventsContext';
 import { BookingsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import WaitingDetails from './WaitingDetails';
 
 const WaitingList = () => {
-  const { events, selectedEvent } = useEvents();
-
   const [eventInfo, setEventInfo] = useState({ title: '', date: '' });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedInquiry, setSelectedInquiry] = useState<BookingsData | null>(

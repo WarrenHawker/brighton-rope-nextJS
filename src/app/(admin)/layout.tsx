@@ -1,8 +1,8 @@
 import './styles/admin.css';
-import { Providers } from '@/lib/react-query/QueryProvider';
 import Script from 'next/script';
 import FooterAdmin from './components/layout/FooterAdmin';
 import HeaderAdmin from './components/layout/HeaderAdmin';
+import { QueryProvider } from '@/lib/react-query/QueryProvider';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -18,7 +18,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       <body suppressHydrationWarning={true}>
         <HeaderAdmin />
         <div className="content-wrapper">
-          <Providers>{children}</Providers>
+          <QueryProvider>{children}</QueryProvider>
         </div>
         <FooterAdmin />
       </body>

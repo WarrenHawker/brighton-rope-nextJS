@@ -7,7 +7,7 @@ import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
 
 const HomePage = async () => {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(['events'], () =>
+  await queryClient.prefetchQuery(['events', 'upcoming home'], () =>
     fetchEventsServer({ amount: 3, old: 'false' })
   );
   const dehydratedState = dehydrate(queryClient);

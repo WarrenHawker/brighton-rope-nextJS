@@ -16,10 +16,6 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const GET = async (request: NextRequest) => {
-  const tag = request.nextUrl.searchParams.get('tag');
-  if (tag) {
-    revalidateTag(tag);
-  }
   const eventOption = request.nextUrl.searchParams.get('event');
   let event;
   if (eventOption) {

@@ -9,6 +9,8 @@ import EventsList from '../components/events/EventsList';
 import WaitingList from '../components/waitingList/WaitingList';
 import 'md-editor-rt/lib/style.css';
 import { EventsData } from '@/utils/interfaces';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEventsClient } from '@/utils/clientFetch';
 
 const AdminHome = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
@@ -16,34 +18,17 @@ const AdminHome = () => {
   const [events, setEvents] = useState<EventsData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventsData | null>(null);
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  const { data } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => fetchEventsClient(),
+  });
 
-  const fetchEvents = async () => {
-    const res = await fetch('/api/events?events=-1&old=true', {
-      next: { tags: ['events'] },
-    });
-    const data = await res.json();
-    if (Array.isArray(data.events)) {
-      const events = data.events.map((event: any) => {
-        return {
-          id: event.id,
-          title: event.title,
-          description: event.description,
-          location: JSON.parse(event.location),
-          maxTickets: event.maxTickets,
-          ticketsSold: event.ticketsSold,
-          ticketsRemaining: event.ticketsRemaining,
-          dateTimes: JSON.parse(event.dateTimes),
-          allowMultipleTickets: event.allowMultipleTickets,
-          prices: JSON.parse(event.prices),
-        };
-      });
-      setEvents(events);
-      setSelectedEvent(events[0]);
-    } else setEvents([data]);
-  };
+  useEffect(() => {
+    if (data) {
+      setEvents(data);
+      setSelectedEvent(data[0]);
+    }
+  }, [data]);
 
   const changeSelectedEvent = (id: string) => {
     setSelectedEvent(events.filter((event) => event.id == id)[0]);

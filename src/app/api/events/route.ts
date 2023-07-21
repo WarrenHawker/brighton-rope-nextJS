@@ -17,10 +17,6 @@ export const POST = async (request: NextRequest) => {
 
 export const GET = async (request: NextRequest) => {
   const eventOption = request.nextUrl.searchParams.get('events');
-  const tag = request.nextUrl.searchParams.get('tag');
-  if (tag) {
-    revalidateTag(tag);
-  }
   let oldOption = request.nextUrl.searchParams.get('old');
   let eventAmount: number = -1;
   let events;

@@ -5,6 +5,8 @@ import { BookingsData, EventsData } from '@/utils/interfaces';
 import Overlay from '@/utils/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
 import { getFullDate } from '@/utils/functions';
+import { useQuery } from '@tanstack/react-query';
+import { fetchBookingsByEventClient } from '@/utils/clientFetch';
 
 interface BookingsListProps {
   selectedEvent: EventsData | null;
@@ -18,29 +20,16 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   );
   const [bookings, setBookings] = useState<BookingsData[]>([]);
 
-  useEffect(() => {
-    fetchBookings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEvent]);
+  const { data } = useQuery({
+    queryKey: ['bookings', selectedEvent?.id],
+    queryFn: () => fetchBookingsByEventClient(selectedEvent?.id),
+  });
 
-  const fetchBookings = async () => {
-    const res = await fetch('/api/bookings', { next: { tags: ['bookings'] } });
-    const data = await res.json();
-    const fetchedBookings = data.bookings.map((booking: any) => {
-      return {
-        id: booking.id,
-        eventId: booking.eventId,
-        tickets: JSON.parse(booking.tickets),
-        contact: JSON.parse(booking.contact),
-        amountToPay: booking.amountToPay,
-        additionalInfo: booking.additionalInfo,
-        adminNotes: booking.adminNotes,
-        bookingDate: booking.bookingDate,
-        hasPaid: booking.hasPaid,
-      };
-    });
-    setBookings(fetchedBookings);
-  };
+  useEffect(() => {
+    if (data) {
+      setBookings(data);
+    }
+  }, [data]);
 
   const showBookingDetails = (booking: BookingsData) => {
     setSelectedBooking(booking);

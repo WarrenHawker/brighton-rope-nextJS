@@ -130,27 +130,29 @@ const BookingsDetails = ({
         </button>
       </div>
 
-      <div className={move ? 'move-to-class open' : 'move-to-class'}>
-        <div>
-          <label>Move booking to which class?</label>
-          <select ref={moveSelect}>
-            <option value="" disabled hidden></option>
-            {events
-              .filter((event) => event.ticketsRemaining > 1)
-              .map((event) => (
-                <option key={event.id} value={event.id}>
-                  {event.title}
-                </option>
-              ))}
-          </select>
+      {move ? (
+        <div className="move-to-class">
+          <div>
+            <label>Move booking to which class?</label>
+            <select ref={moveSelect}>
+              <option value="" disabled hidden></option>
+              {events
+                .filter((event) => event.ticketsRemaining > 1)
+                .map((event) => (
+                  <option key={event.id} value={event.id}>
+                    {event.title}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <button className="btn" onClick={moveBooking}>
+            Save
+          </button>
+          <button className="btn" onClick={() => setMove(false)}>
+            Cancel
+          </button>
         </div>
-        <button className="btn" onClick={moveBooking}>
-          Save
-        </button>
-        <button className="btn" onClick={() => setMove(false)}>
-          Cancel
-        </button>
-      </div>
+      ) : null}
 
       <div className="tables-container">
         <table className="sub-table">

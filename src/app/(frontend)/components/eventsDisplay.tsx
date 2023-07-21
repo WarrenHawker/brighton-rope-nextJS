@@ -20,8 +20,9 @@ interface EventsDisplayProps {
 
 const EventsDisplay = ({ page }: EventsDisplayProps) => {
   const eventsAmount = page == 'home' ? 3 : -1;
+  const query = page == 'home' ? 'upcoming home' : 'upcoming all';
   const { data } = useQuery({
-    queryKey: ['events'],
+    queryKey: ['events', query],
     queryFn: () => fetchEventsClient({ amount: eventsAmount, old: 'false' }),
   });
   const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(

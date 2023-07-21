@@ -26,3 +26,28 @@
 .has-paid {
   background-color: white !important;
 }
+
+.move-to-class {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+}
+
+.move-to-class label,
+.move-to-class select {
+  margin: auto;
+}
+
+.move-to-class label {
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+.move-to-class select {
+  margin-bottom: 2em;
+}
+
+.booking-details input {
+  margin-bottom: 0;
+}

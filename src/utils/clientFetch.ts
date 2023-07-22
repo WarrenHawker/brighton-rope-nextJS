@@ -1,5 +1,12 @@
 'use client';
 
+import getQueryClient from '@/lib/react-query/getQueryClient';
+import { useMutation } from 'react-query';
+import { EventsData } from './interfaces';
+
+//import queryClient
+const queryClient = getQueryClient();
+
 //fetches events. By default, fetches all events both old and upcoming
 export const fetchEventsClient = async (options?: {
   amount?: number;

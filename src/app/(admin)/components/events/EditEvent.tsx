@@ -4,6 +4,7 @@ import CountrySelector from '@/utils/globalComponents/CountrySelector';
 import { Address, EventDateTime, EventsData, Prices } from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface EditEventProps {
   event: EventsData;
@@ -11,6 +12,20 @@ interface EditEventProps {
 }
 
 const EditEvent = ({ event, setEditing }: EditEventProps) => {
+  const queryClient = useQueryClient();
+
+  const deleteEvent = useMutation(
+    () =>
+      fetch(`/api/events/${event.id}`, {
+        method: 'DELETE',
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ['events'] });
+      },
+    }
+  );
+
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
   const [location, setLocation] = useState<Address>({
@@ -324,16 +339,13 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     setPrices(event.prices);
   };
 
-  const deleteEvent = async () => {
+  const deleteEventClick = async () => {
     if (
       confirm(
         'Are you sure you want to delete this event? This process is irreversible'
       )
     ) {
-      const res = await fetch(`/api/events/${event.id}`, {
-        method: 'DELETE',
-        next: { tags: ['events'] },
-      });
+      deleteEvent.mutate();
     } else return;
   };
 
@@ -346,7 +358,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         <button onClick={cancelEdits} className="btn">
           Cancel
         </button>
-        <button className="btn btn-delete" onClick={deleteEvent}>
+        <button className="btn btn-delete" onClick={deleteEventClick}>
           Delete
         </button>
       </div>

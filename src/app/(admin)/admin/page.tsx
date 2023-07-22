@@ -47,7 +47,7 @@ const AdminHome = () => {
           setIsOpen={setAddEvent}
           header={<h2>Add New Event</h2>}
           // eslint-disable-next-line react/no-children-prop
-          children={<AddEvent />}
+          children={<AddEvent setAddEvent={setAddEvent} />}
         />
         <EventsList
           events={events}

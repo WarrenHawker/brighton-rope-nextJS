@@ -32,6 +32,19 @@ export interface EventsData {
   allowMultipleTickets: boolean;
 }
 
+export interface NewEventsData {
+  title: string;
+  description: string;
+  startDate: Date;
+  dateTimes: string;
+  location: string;
+  maxTickets: number;
+  ticketsSold: number;
+  ticketsRemaining: number;
+  prices: string;
+  allowMultipleTickets: boolean;
+}
+
 export interface ContextProviderProps {
   children?: ReactNode;
 }

@@ -16,6 +16,7 @@ interface AddEventProps {
 
 const AddEvent = ({ setAddEvent }: AddEventProps) => {
   const queryClient = useQueryClient();
+
   const addEvent = useMutation(
     (event: NewEventsData) =>
       fetch('/api/events', {

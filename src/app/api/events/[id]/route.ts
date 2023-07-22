@@ -25,7 +25,7 @@ export const DELETE = async (request: NextRequest, { params }: any) => {
   }
   const eventId = parseInt(params.id);
   const event = await prisma.event.delete({ where: { id: eventId } });
-  return NextResponse.json({ message: 'event deleted successfully', event });
+  return NextResponse.json({ message: 'event deleted' }, { status: 200 });
 };
 
 export const GET = async (request: NextRequest, { params }: any) => {

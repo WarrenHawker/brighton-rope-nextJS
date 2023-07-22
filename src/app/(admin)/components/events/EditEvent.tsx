@@ -1,9 +1,15 @@
 'use client';
 
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import { Address, EventDateTime, EventsData, Prices } from '@/utils/interfaces';
+import {
+  Address,
+  EventDateTime,
+  EventsData,
+  NewEventsData,
+  Prices,
+} from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
-import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
+import { useState, ChangeEvent, MouseEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface EditEventProps {
@@ -20,8 +26,27 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         method: 'DELETE',
       }),
     {
-      onSuccess: async () => {
+      onMutate: async () => {
         queryClient.invalidateQueries({ queryKey: ['events'] });
+      },
+    }
+  );
+
+  const editEvent = useMutation(
+    (updatedEvent: NewEventsData) =>
+      fetch(`/api/events/${event.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedEvent),
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({
+          queryKey: ['events'],
+        });
+        setEditing(false);
       },
     }
   );
@@ -302,9 +327,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
   };
 
   const saveEdits = async () => {
-    setEditing(false);
-
-    const updatedevent = {
+    const updatedEvent: NewEventsData = {
       title: title,
       description: description,
       startDate: new Date(datesTimes[0].date),
@@ -316,16 +339,8 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch(`/api/events/${event.id}`, {
-      next: { tags: ['events'] },
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedevent),
-    });
 
-    const data = await res.json();
+    editEvent.mutate(updatedEvent);
   };
 
   const cancelEdits = () => {

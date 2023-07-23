@@ -57,6 +57,7 @@ export interface TicketChoices {
 
 export interface UserChoices {
   tickets: TicketChoices[];
+  totalTickets: number;
   contact: {
     firstName: string;
     lastName: string;
@@ -108,4 +109,15 @@ export interface EditBookingsData {
   additionalInfo?: string | undefined;
   adminNotes?: string | undefined;
   eventId?: number;
+}
+
+export interface NewBookingsData {
+  eventId: string;
+  tickets: string;
+  contact: string;
+  amountToPay: number;
+  additionalInfo: string | undefined;
+  hasPaid: boolean;
+  bookingDate: Date;
+  adminNotes: string | undefined;
 }

@@ -31,9 +31,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
 
   const showBookingForm = (id: any) => {
-    setBookingFormEvent(
-      data.events.filter((event: EventsData) => event.id == id)[0]
-    );
+    setBookingFormEvent(data.filter((event: EventsData) => event.id == id)[0]);
     setBookingFormOpen(true);
   };
   return (

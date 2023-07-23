@@ -1,7 +1,13 @@
 'use client';
 
-import { BookingsData, EventsData, TicketChoices } from '@/utils/interfaces';
+import {
+  BookingsData,
+  EditBookingsData,
+  EventsData,
+  TicketChoices,
+} from '@/utils/interfaces';
 import { useEffect, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface BookingDetailsProps {
   booking: BookingsData | null;
@@ -25,6 +31,43 @@ const BookingsDetails = ({
   const [additionalInfo, setAdditionalInfo] = useState(booking?.additionalInfo);
   const [adminNotes, setAdminNotes] = useState(booking?.adminNotes);
 
+  const queryClient = useQueryClient();
+
+  const deleteBooking = useMutation(
+    () =>
+      fetch(`/api/bookings/${booking!.id}`, {
+        method: 'DELETE',
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({
+          queryKey: ['bookings', booking!.eventId],
+        });
+        setSelectedBooking(null);
+        setIsModalOpen(false);
+      },
+    }
+  );
+
+  const editBooking = useMutation(
+    (updatedBooking: EditBookingsData) =>
+      fetch(`/api/bookings/${booking!.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedBooking),
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({
+          queryKey: ['bookings', booking!.eventId],
+        });
+        setEditing(false);
+      },
+    }
+  );
+
   useEffect(() => {
     if (booking) {
       setFirstName(booking.contact.firstName);
@@ -36,7 +79,7 @@ const BookingsDetails = ({
   }, [booking]);
 
   const saveEdits = async () => {
-    const data = {
+    const data: EditBookingsData = {
       contact: JSON.stringify({
         firstName: firstName,
         lastName: lastName,
@@ -45,14 +88,7 @@ const BookingsDetails = ({
       additionalInfo: additionalInfo,
       adminNotes: adminNotes,
     };
-    const res = await fetch(`/api/bookings/${booking!.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    setEditing(false);
+    editBooking.mutate(data);
   };
 
   const cancelEdits = () => {
@@ -64,33 +100,39 @@ const BookingsDetails = ({
     setAdminNotes(booking?.adminNotes);
   };
 
-  const deleteBooking = async () => {
+  const deleteBookingClick = async () => {
     if (
       confirm(
         'Are you sure you want to delete this booking? This process is irreversible'
       )
     ) {
-      const res = await fetch(`/api/bookings/${booking!.id}`, {
-        method: 'DELETE',
-        next: { tags: ['bookings'] },
-      });
-      setSelectedBooking(null);
-      setIsModalOpen(false);
+      deleteBooking.mutate();
     } else return;
   };
+
+  const moveMutation = useMutation(
+    (data: EditBookingsData) =>
+      fetch(`/api/bookings/${booking!.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['bookings', booking!.eventId],
+        });
+        setIsModalOpen(false);
+        setSelectedBooking(null);
+        setMove(false);
+      },
+    }
+  );
 
   const moveBooking = async () => {
     if (moveSelect.current && moveSelect.current.value != '') {
       const data = { eventId: parseInt(moveSelect.current.value) };
-      const res = await fetch(`/api/bookings/${booking!.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-        next: { tags: ['bookings'] },
-      });
+      moveMutation.mutate(data);
     }
-    setIsModalOpen(false);
-    setSelectedBooking(null);
-    setMove(false);
   };
 
   if (!booking) {
@@ -125,7 +167,7 @@ const BookingsDetails = ({
           </button>
         ) : null}
 
-        <button className="btn btn-delete" onClick={deleteBooking}>
+        <button className="btn btn-delete" onClick={deleteBookingClick}>
           Delete
         </button>
       </div>

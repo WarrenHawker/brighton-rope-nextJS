@@ -102,3 +102,10 @@ export interface IRequest {
     url: string;
   };
 }
+
+export interface EditBookingsData {
+  contact?: string;
+  additionalInfo?: string | undefined;
+  adminNotes?: string | undefined;
+  eventId?: number;
+}

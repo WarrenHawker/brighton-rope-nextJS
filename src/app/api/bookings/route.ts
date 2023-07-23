@@ -3,10 +3,6 @@ import { revalidateTag } from 'next/cache';
 import { NextResponse, NextRequest } from 'next/server';
 
 export const POST = async (request: NextRequest) => {
-  const tag = request.nextUrl.searchParams.get('tag');
-  if (tag) {
-    revalidateTag(tag);
-  }
   const res = await request.json();
   const booking = await prisma.booking.create({
     data: res,
@@ -27,13 +23,6 @@ export const GET = async (request: NextRequest) => {
     orderBy: { id: 'asc' },
   });
   return NextResponse.json({ bookings });
-};
-
-export const PATCH = async (request: NextRequest) => {
-  const tag = request.nextUrl.searchParams.get('tag');
-  if (tag) {
-    revalidateTag(tag);
-  }
 };
 
 export const DELETE = async (request: NextRequest) => {

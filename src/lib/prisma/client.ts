@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { cache } from 'react';
 
-const prisma = new PrismaClient();
+const getPrismaClient = cache(() => new PrismaClient());
 
-export default prisma;
+export default getPrismaClient;

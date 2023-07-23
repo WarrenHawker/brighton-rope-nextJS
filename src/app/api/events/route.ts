@@ -1,9 +1,11 @@
-import prisma from '@/lib/prisma/client';
+import getPrismaClient from '@/lib/prisma/client';
 import { NextResponse, NextRequest } from 'next/server';
+
+const prismaClient = getPrismaClient();
 
 export const POST = async (request: NextRequest) => {
   const res = await request.json();
-  const event = await prisma.event.create({
+  const event = await prismaClient.event.create({
     data: res,
   });
 
@@ -11,6 +13,9 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const GET = async (request: NextRequest) => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
   const eventOption = request.nextUrl.searchParams.get('events');
   let oldOption = request.nextUrl.searchParams.get('old');
   let eventAmount: number = -1;
@@ -20,22 +25,24 @@ export const GET = async (request: NextRequest) => {
   }
   if (oldOption == 'true') {
     if (eventAmount == -1) {
-      events = await prisma.event.findMany({ orderBy: { startDate: 'desc' } });
+      events = await prismaClient.event.findMany({
+        orderBy: { startDate: 'desc' },
+      });
     } else {
-      events = await prisma.event.findMany({
+      events = await prismaClient.event.findMany({
         take: eventAmount,
         orderBy: { startDate: 'desc' },
       });
     }
   } else {
     if (eventAmount == -1) {
-      events = await prisma.event.findMany({
-        where: { startDate: { gte: new Date() } },
+      events = await prismaClient.event.findMany({
+        where: { startDate: { gte: yesterday } },
         orderBy: { startDate: 'desc' },
       });
     } else {
-      events = await prisma.event.findMany({
-        where: { startDate: { gte: new Date() } },
+      events = await prismaClient.event.findMany({
+        where: { startDate: { gte: yesterday } },
         take: eventAmount,
         orderBy: { startDate: 'desc' },
       });

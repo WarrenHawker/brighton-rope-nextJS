@@ -1,10 +1,12 @@
-import prisma from '@/lib/prisma/client';
+import getPrismaClient from '@/lib/prisma/client';
 import { NextResponse, NextRequest } from 'next/server';
+
+const prismaClient = getPrismaClient();
 
 export const PATCH = async (request: NextRequest, { params }: any) => {
   const eventId = parseInt(params.id);
   const res = await request.json();
-  const updatedEvent = await prisma.event.update({
+  const updatedEvent = await prismaClient.event.update({
     where: {
       id: eventId,
     },
@@ -15,12 +17,12 @@ export const PATCH = async (request: NextRequest, { params }: any) => {
 
 export const DELETE = async (request: NextRequest, { params }: any) => {
   const eventId = parseInt(params.id);
-  const event = await prisma.event.delete({ where: { id: eventId } });
+  const event = await prismaClient.event.delete({ where: { id: eventId } });
   return NextResponse.json({ message: 'event deleted' }, { status: 200 });
 };
 
 export const GET = async (request: NextRequest, { params }: any) => {
   const eventId = parseInt(params.id);
-  const event = await prisma.event.findUnique({ where: { id: eventId } });
+  const event = await prismaClient.event.findUnique({ where: { id: eventId } });
   return NextResponse.json({ event });
 };

@@ -1,14 +1,16 @@
-import prisma from '@/lib/prisma/client';
+import getPrismaClient from '@/lib/prisma/client';
 import { NextResponse, NextRequest } from 'next/server';
+
+const prismaClient = getPrismaClient();
 
 export const POST = async (request: NextRequest) => {
   const res = await request.json();
   const eventId = res.eventId;
-  const booking = await prisma.booking.create({
+  const booking = await prismaClient.booking.create({
     data: res,
   });
-  const event = await prisma.event.findUnique({ where: { id: eventId } });
-  const updatedEvent = await prisma.event.update({
+  const event = await prismaClient.event.findUnique({ where: { id: eventId } });
+  const updatedEvent = await prismaClient.event.update({
     where: {
       id: eventId,
     },
@@ -28,7 +30,7 @@ export const GET = async (request: NextRequest) => {
     event = parseInt(eventOption);
   }
 
-  const bookings = await prisma.booking.findMany({
+  const bookings = await prismaClient.booking.findMany({
     where: { eventId: event },
     orderBy: { id: 'asc' },
   });

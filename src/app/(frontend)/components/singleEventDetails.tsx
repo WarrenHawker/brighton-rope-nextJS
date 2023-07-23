@@ -10,6 +10,7 @@ import { MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { fetchEventByIdClient } from '@/utils/clientFetch';
 import { useQuery } from '@tanstack/react-query';
+import WaitingListForm from './waitingListForm';
 
 interface Props {
   eventId: string;
@@ -34,11 +35,17 @@ const SingleEventDetails = ({ eventId }: Props) => {
     <main>
       <h1 className="page-title">{data.title}</h1>
       <section className="single-event">
-        {!data.prices.length ? (
+        {!data.prices.length && (
           <h2 className="single-event-free">
             This event is FREE! Just turn up and have fun
           </h2>
-        ) : null}
+        )}
+        {data.ticketsRemaining == 0 && (
+          <h2 className="single-event-free">
+            We&apos;re sorry, this class is full. Click the button below to join
+            the waiting list
+          </h2>
+        )}
         <div className="single-event-details">
           <div className="single-event-location">
             <h3>Location:</h3>
@@ -67,7 +74,7 @@ const SingleEventDetails = ({ eventId }: Props) => {
               onClick={() => setBookingFormOpen(true)}
               className="btn btn-primary"
             >
-              Book Tickets
+              {data.ticketsRemaining > 0 ? 'Book Tickets' : 'Join Waiting List'}
             </button>
           ) : null}
           <Link href="/events" className="btn btn-secondary">
@@ -90,7 +97,13 @@ const SingleEventDetails = ({ eventId }: Props) => {
             ) : null
           }
         >
-          {data ? <BookingForm event={data} /> : null}
+          {data ? (
+            data.ticketsRemaining > 0 ? (
+              <BookingForm event={data} />
+            ) : (
+              <WaitingListForm event={data} />
+            )
+          ) : null}
         </Overlay>
       </section>
     </main>

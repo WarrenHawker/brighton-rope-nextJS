@@ -1,8 +1,5 @@
-import getPrismaClient from '@/lib/prisma/client';
+import { prismaClient } from '@/lib/prisma/client';
 import { NextResponse, NextRequest } from 'next/server';
-
-//create Prisma client instance (use use cache if it exists)
-const prismaClient = getPrismaClient();
 
 //create new event
 export const POST = async (request: NextRequest) => {

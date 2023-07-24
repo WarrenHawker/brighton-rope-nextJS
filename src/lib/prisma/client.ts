@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { cache } from 'react';
 
-const getPrismaClient = cache(() => new PrismaClient());
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-export default getPrismaClient;
+export const prismaClient = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production')
+  globalForPrisma.prisma = prismaClient;

@@ -3,9 +3,9 @@ import { NextResponse, NextRequest } from 'next/server';
 
 const prismaClient = getPrismaClient();
 
-export const POST = async (request: NextRequest) => {
+export const POST = async (request: NextRequest, { params }: any) => {
+  const eventId = parseInt(params.eventId);
   const res = await request.json();
-  const eventId = res.eventId;
   const booking = await prismaClient.booking.create({
     data: res,
   });
@@ -23,15 +23,11 @@ export const POST = async (request: NextRequest) => {
   return NextResponse.json({ booking, updatedEvent });
 };
 
-export const GET = async (request: NextRequest) => {
-  const eventOption = request.nextUrl.searchParams.get('event');
-  let event;
-  if (eventOption) {
-    event = parseInt(eventOption);
-  }
+export const GET = async (request: NextRequest, { params }: any) => {
+  const eventId = parseInt(params.eventId);
 
   const bookings = await prismaClient.booking.findMany({
-    where: { eventId: event },
+    where: { eventId: eventId },
     orderBy: { id: 'asc' },
   });
   return NextResponse.json({ bookings });

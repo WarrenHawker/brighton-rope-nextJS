@@ -106,12 +106,11 @@ const BookingForm = ({ event }: BookingFormProps) => {
       totalTickets: userChoices.totalTickets,
     };
 
-    const res = await fetch('/api/bookings', {
+    const res = await fetch(`/api/events/${event.id}/bookings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { tags: ['bookings'] },
       body: JSON.stringify(booking),
     });
   };

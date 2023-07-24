@@ -57,7 +57,7 @@ export const fetchBookingsByEventClient = async (
     return '';
   }
 
-  const res = await fetch(`/api/bookings?event=${eventId}`);
+  const res = await fetch(`/api/events/${eventId}/bookings`);
   const data = await res.json();
   const bookings = data.bookings.map((booking: any) => {
     return {

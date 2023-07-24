@@ -35,7 +35,7 @@ const BookingsDetails = ({
 
   const deleteBooking = useMutation(
     () =>
-      fetch(`/api/bookings/${booking!.id}`, {
+      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
         method: 'DELETE',
       }),
     {
@@ -51,7 +51,7 @@ const BookingsDetails = ({
 
   const editBooking = useMutation(
     (updatedBooking: EditBookingsData) =>
-      fetch(`/api/bookings/${booking!.id}`, {
+      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const BookingsDetails = ({
 
   const moveMutation = useMutation(
     (data: EditBookingsData) =>
-      fetch(`/api/bookings/${booking!.id}`, {
+      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),

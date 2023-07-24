@@ -12,7 +12,7 @@ export const fetchEventsServer = async (options?: {
   const old = options?.old ? options.old : 'true';
 
   const res = await fetch(
-    `${protocal}://${host}/api/events?events=${amount}&old=${old}`
+    `${protocal}://${host}/api/events?limit=${amount}&old=${old}`
   );
   const data = await res.json();
   const events = data.events.map((event: any) => {

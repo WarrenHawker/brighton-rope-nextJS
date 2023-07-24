@@ -16,14 +16,14 @@ export const POST = async (request: NextRequest) => {
 
 /*get collection of events
 uses search params to filter events, as follows:
-  events: sets the number of events returned by request. If no number is given, will return all events
+  limit: sets the number of events returned by request. If no number is given, will return all events
   old: either returns old and upcoming events (true) or just upcoming events (false). If no value given, will return old and upcoming events
 */
 export const GET = async (request: NextRequest) => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  const eventOption = request.nextUrl.searchParams.get('events');
+  const eventOption = request.nextUrl.searchParams.get('limit');
   let oldOption = request.nextUrl.searchParams.get('old');
   let eventAmount: number = -1;
   let events;

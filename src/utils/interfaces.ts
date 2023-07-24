@@ -121,3 +121,11 @@ export interface NewBookingsData {
   bookingDate: Date;
   adminNotes: string | undefined;
 }
+
+export interface ApiParams {
+  params: {
+    eventId: string | undefined;
+    bookingId: string | undefined;
+    userId: string | undefined;
+  };
+}

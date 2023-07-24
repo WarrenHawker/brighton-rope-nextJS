@@ -10,7 +10,7 @@ import { MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { fetchEventByIdClient } from '@/utils/clientFetch';
 import { useQuery } from '@tanstack/react-query';
-import WaitingListForm from './waitingListForm';
+import WaitingListForm from './waitlistForm';
 
 interface Props {
   eventId: string;

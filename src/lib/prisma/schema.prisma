@@ -10,26 +10,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Event {
+model Events {
 id                    Int             @id @default(autoincrement())
 title                 String   
 description           String
 startDate             DateTime
 dateTimes             Json 
 location              Json
-maxTickets            Int
-ticketsSold           Int
-ticketsRemaining      Int
-prices                Json
-allowMultipleTickets  Boolean
-bookings              Booking[]
-waitingList           WaitingList[]
+isFree                Boolean
+maxTickets            Int?
+ticketsSold           Int?
+ticketsRemaining      Int?
+prices                Json?
+allowMultipleTickets  Boolean?
+bookings              Bookings[]
+waitingList           Waitlists[]
 }
 
-model Booking {
+model Bookings {
 id              Int         @id @default(autoincrement())
 eventId         Int
-event           Event       @relation(fields: [eventId], references: [id])
+event           Events       @relation(fields: [eventId], references: [id])
 tickets         Json
 totalTickets    Int
 contact         Json
@@ -40,17 +41,17 @@ bookingDate     DateTime
 adminNotes      String
 }
 
-model WaitingList {
+model Waitlists {
 id            Int         @id @default(autoincrement())
 eventId       Int
-event         Event       @relation(fields: [eventId], references: [id])
+event         Events       @relation(fields: [eventId], references: [id])
 name          String
 email         String
 inquiryDate   String
 }
 
 
-model User {
+model Users {
   id          Int      @id @default(autoincrement())
   email       String   @unique
   name        String?

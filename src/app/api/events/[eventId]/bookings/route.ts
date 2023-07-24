@@ -12,11 +12,13 @@ export const POST = async (request: NextRequest, { params }: ApiParams) => {
   }
   const eventId = parseInt(params.eventId);
   const res = await request.json();
-  const booking = await prismaClient.booking.create({
+  const booking = await prismaClient.bookings.create({
     data: res,
   });
-  const event = await prismaClient.event.findUnique({ where: { id: eventId } });
-  const updatedEvent = await prismaClient.event.update({
+  const event = await prismaClient.events.findUnique({
+    where: { id: eventId },
+  });
+  const updatedEvent = await prismaClient.events.update({
     where: {
       id: eventId,
     },
@@ -36,7 +38,7 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
   }
   const eventId = parseInt(params.eventId);
 
-  const bookings = await prismaClient.booking.findMany({
+  const bookings = await prismaClient.bookings.findMany({
     where: { eventId: eventId },
     orderBy: { id: 'asc' },
   });

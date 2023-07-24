@@ -4,9 +4,9 @@ import Overlay from '@/utils/globalComponents/Overlay';
 import { getFullDate } from '@/utils/functions';
 import { BookingsData } from '@/utils/interfaces';
 import { useState } from 'react';
-import WaitingDetails from './WaitingDetails';
+import WaitlistDetails from './waitlistDetails';
 
-const WaitingList = () => {
+const Waitlist = () => {
   const [eventInfo, setEventInfo] = useState({ title: '', date: '' });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedInquiry, setSelectedInquiry] = useState<BookingsData | null>(
@@ -29,7 +29,7 @@ const WaitingList = () => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
       >
-        <WaitingDetails />
+        <WaitlistDetails />
       </Overlay>
 
       {eventInfo ? (
@@ -63,4 +63,4 @@ const WaitingList = () => {
   );
 };
 
-export default WaitingList;
+export default Waitlist;

@@ -1,10 +1,10 @@
 import { EventsData } from '@/utils/interfaces';
 
-interface WaitingListFormProps {
+interface WaitlistFormProps {
   event: EventsData;
 }
 
-const WaitingListForm = ({ event }: WaitingListFormProps) => {
+const WaitlistForm = ({ event }: WaitlistFormProps) => {
   return (
     <>
       <form>
@@ -14,4 +14,4 @@ const WaitingListForm = ({ event }: WaitingListFormProps) => {
   );
 };
 
-export default WaitingListForm;
+export default WaitlistForm;

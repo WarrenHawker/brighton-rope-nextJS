@@ -13,7 +13,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEventsClient } from '@/utils/clientFetch';
-import WaitingListForm from './waitingListForm';
+import WaitingListForm from './waitlistForm';
 
 interface EventsDisplayProps {
   page: string;

@@ -12,7 +12,7 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
   }
   const eventId = parseInt(params.eventId);
   const res = await request.json();
-  const updatedEvent = await prismaClient.event.update({
+  const updatedEvent = await prismaClient.events.update({
     where: {
       id: eventId,
     },
@@ -27,7 +27,7 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
     return;
   }
   const eventId = parseInt(params.eventId);
-  const event = await prismaClient.event.delete({ where: { id: eventId } });
+  const event = await prismaClient.events.delete({ where: { id: eventId } });
   return NextResponse.json({ message: 'event deleted' }, { status: 200 });
 };
 
@@ -37,6 +37,8 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
     return;
   }
   const eventId = parseInt(params.eventId);
-  const event = await prismaClient.event.findUnique({ where: { id: eventId } });
+  const event = await prismaClient.events.findUnique({
+    where: { id: eventId },
+  });
   return NextResponse.json({ event });
 };

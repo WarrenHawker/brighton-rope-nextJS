@@ -16,7 +16,7 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
   const bookingId = parseInt(params.bookingId);
   const eventId = parseInt(params.eventId);
   const res = await request.json();
-  const updatedBooking = await prismaClient.booking.update({
+  const updatedBooking = await prismaClient.bookings.update({
     where: {
       id: bookingId,
     },
@@ -35,7 +35,7 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
   }
   const eventId = parseInt(params.eventId);
   const bookingId = parseInt(params.bookingId);
-  const booking = await prismaClient.booking.delete({
+  const booking = await prismaClient.bookings.delete({
     where: { id: bookingId },
   });
   return NextResponse.json({ message: 'event deleted successfully', booking });

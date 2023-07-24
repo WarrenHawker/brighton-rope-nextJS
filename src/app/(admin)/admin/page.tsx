@@ -6,7 +6,7 @@ import BookingsList from '../components/bookings/BookingsList';
 import AddEvent from '../components/events/AddEvent';
 import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
-import WaitingList from '../components/waitingList/WaitingList';
+import Waitlist from '../components/waitlists/waitlists';
 import 'md-editor-rt/lib/style.css';
 import { EventsData } from '@/utils/interfaces';
 import { useQuery } from '@tanstack/react-query';
@@ -73,7 +73,7 @@ const AdminHome = () => {
                 <BookingsList selectedEvent={selectedEvent} events={events} />
               ),
             },
-            { name: 'Waiting List', element: <WaitingList /> },
+            { name: 'Waiting List', element: <Waitlist /> },
           ]}
         />
       </main>

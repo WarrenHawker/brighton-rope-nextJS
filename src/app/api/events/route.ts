@@ -7,7 +7,7 @@ const prismaClient = getPrismaClient();
 //create new event
 export const POST = async (request: NextRequest) => {
   const res = await request.json();
-  const event = await prismaClient.event.create({
+  const event = await prismaClient.events.create({
     data: res,
   });
 
@@ -20,8 +20,7 @@ uses search params to filter events, as follows:
   old: either returns old and upcoming events (true) or just upcoming events (false). If no value given, will return old and upcoming events
 */
 export const GET = async (request: NextRequest) => {
-  const today = new Date();
-  const yesterday = new Date(today);
+  const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const eventOption = request.nextUrl.searchParams.get('limit');
   let oldOption = request.nextUrl.searchParams.get('old');
@@ -32,23 +31,23 @@ export const GET = async (request: NextRequest) => {
   }
   if (oldOption == 'true') {
     if (eventAmount == -1) {
-      events = await prismaClient.event.findMany({
+      events = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
       });
     } else {
-      events = await prismaClient.event.findMany({
+      events = await prismaClient.events.findMany({
         take: eventAmount,
         orderBy: { startDate: 'desc' },
       });
     }
   } else {
     if (eventAmount == -1) {
-      events = await prismaClient.event.findMany({
+      events = await prismaClient.events.findMany({
         where: { startDate: { gte: yesterday } },
         orderBy: { startDate: 'desc' },
       });
     } else {
-      events = await prismaClient.event.findMany({
+      events = await prismaClient.events.findMany({
         where: { startDate: { gte: yesterday } },
         take: eventAmount,
         orderBy: { startDate: 'desc' },

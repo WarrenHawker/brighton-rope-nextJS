@@ -5,7 +5,7 @@ import { NextResponse, NextRequest } from 'next/server';
 //create Prisma client instance (use use cache if it exists)
 const prismaClient = getPrismaClient();
 
-//event booking by bookingId
+//edit booking by bookingId
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
   if (!params.eventId) {
     return;

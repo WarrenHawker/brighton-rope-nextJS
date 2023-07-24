@@ -126,6 +126,7 @@ export interface ApiParams {
   params: {
     eventId: string | undefined;
     bookingId: string | undefined;
+    waitlistId: string | undefined;
     userId: string | undefined;
   };
 }

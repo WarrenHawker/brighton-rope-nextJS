@@ -29,8 +29,6 @@ const BookingForm = ({ event }: BookingFormProps) => {
     additionalInfo: '',
   });
 
-  console.log(userChoices.totalTickets);
-
   const updateAmountToPay = (tickets: TicketChoices[]): number => {
     let newAmount = 0;
     tickets.forEach((ticket) => {

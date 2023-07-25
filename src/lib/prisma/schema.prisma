@@ -54,16 +54,17 @@ inquiryDate   String
 model Users {
   id                  Int         @id @default(autoincrement())
   email               String      @unique
-  name                String
+  name                String?
   role                Role        @default(ADMIN)
   hashedPassword      String
   bio                 UserBios?    
   claimed             Boolean     @default(false)
-  preferences         Json
+  preferences         Json?
 }
 
 model UserBios {
   id            Int           @id @default(autoincrement())
+  name          String
   email         String        @unique  
   user          Users         @relation(fields: [email], references: [email])
   pronouns      String

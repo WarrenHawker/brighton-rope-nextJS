@@ -1,19 +1,18 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { useState, FormEvent } from 'react';
 
-const AdminLogin = () => {
+const SigninForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const submitForm = (e: FormEvent) => {
     e.preventDefault();
   };
-
   return (
     <>
       <form onSubmit={submitForm} className="login-form">
-        <h1 className="page-title">Login to access admin area</h1>
+        <h1 className="page-title">Sign in to access admin area</h1>
         <label htmlFor="email">Email</label>
         <input
           name="email"
@@ -31,11 +30,11 @@ const AdminLogin = () => {
         />
 
         <button type="submit" className="btn btn-large">
-          Login
+          Sign In
         </button>
       </form>
     </>
   );
 };
 
-export default AdminLogin;
+export default SigninForm;

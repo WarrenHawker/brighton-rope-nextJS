@@ -28,6 +28,15 @@ const HeaderAdmin = () => {
             >
               <Link href="/admin">Events</Link>
             </li>
+            <li
+              className={
+                pathname == '/admin/users'
+                  ? 'top-nav-links active'
+                  : 'top-nav-links'
+              }
+            >
+              <Link href="/admin/users">Users</Link>
+            </li>
             <li className="top-nav-links">
               <Link href="/">To Site</Link>
             </li>
@@ -51,7 +60,7 @@ const HeaderAdmin = () => {
                 <Link href="/admin/profile">Profile</Link>
               </li>
               <li className="top-nav-links">
-                <Link href="/admin/login">Logout</Link>
+                <Link href="/admin/signin">Sign Out</Link>
               </li>
             </ul>
           </nav>

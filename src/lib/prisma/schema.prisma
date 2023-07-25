@@ -52,14 +52,34 @@ inquiryDate   String
 
 
 model Users {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  name        String?
-  role        Role     @default(ADMIN)
-  password    String
+  id                  Int         @id @default(autoincrement())
+  email               String      @unique
+  name                String
+  role                Role        @default(ADMIN)
+  hashedPassword      String
+  bio                 UserBios?    
+  claimed             Boolean     @default(false)
+  preferences         Json
+}
+
+model UserBios {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique  
+  user          Users         @relation(fields: [email], references: [email])
+  pronouns      String
+  bio           String
+  position      Position      @default(NULL)
+  public        Boolean
 }
 
 enum Role {
   ADMIN
   SUPERADMIN
+}
+
+enum Position {
+  RIGGER
+  SWITCH
+  BOTTOM
+  NULL
 }

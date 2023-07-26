@@ -47,15 +47,29 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          claimed: user.claimed,
         };
       },
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      if (url == `/signin`) {
-        return `${baseUrl}/signin`;
-      } else return `${baseUrl}/admin`;
+    signIn({ user }) {
+      if (!user) {
+        return false;
+      }
+      const u = user as unknown as any;
+      if (u.claimed) {
+        return true;
+      } else {
+        return '/new-user';
+      }
+    },
+    redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
     session: ({ session, token }) => {
       return {

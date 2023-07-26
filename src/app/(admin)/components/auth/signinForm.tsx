@@ -22,6 +22,8 @@ const SigninForm = () => {
       password: password,
     });
 
+    console.log(res);
+
     //if response contains a url link, redirect to that link
     if (res?.url) {
       router.push(res?.url);

@@ -1,5 +1,6 @@
 import { prismaClient } from '@/lib/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 
 //get all teacher bios, excludes email field
 export const GET = async (request: NextRequest) => {

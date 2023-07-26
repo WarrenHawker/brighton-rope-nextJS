@@ -1,8 +1,15 @@
 import { prismaClient } from '@/lib/prisma/client';
+import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 //create new event
 export const POST = async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
+  }
   const res = await request.json();
   const event = await prismaClient.events.create({
     data: res,
@@ -17,6 +24,7 @@ uses search params to filter events, as follows:
   old: either returns old and upcoming events (true) or just upcoming events (false). If no value given, will return old and upcoming events
 */
 export const GET = async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const eventOption = request.nextUrl.searchParams.get('limit');
@@ -27,6 +35,12 @@ export const GET = async (request: NextRequest) => {
     eventAmount = parseInt(eventOption);
   }
   if (oldOption == 'true') {
+    if (!session) {
+      return NextResponse.json(
+        { error: 'unauthorized access' },
+        { status: 401 }
+      );
+    }
     if (eventAmount == -1) {
       events = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },

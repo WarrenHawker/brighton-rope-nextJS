@@ -131,3 +131,13 @@ export interface ApiParams {
     teacherId: string | undefined;
   };
 }
+
+export interface Session {
+  user: {
+    id: string;
+    name?: string;
+    role: string;
+    email: string;
+  };
+  expires: string;
+}

@@ -1,14 +1,23 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prismaClient } from '@/lib/prisma/client';
 import { ApiParams } from '@/utils/interfaces';
+import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
 
 //edit booking by bookingId
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
-  if (!params.eventId) {
-    return;
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
+
+  if (!params.eventId) {
+    return NextResponse.json({ error: 'no event ID given' }, { status: 400 });
+  }
+
   if (!params.bookingId) {
-    return;
+    return NextResponse.json({ error: 'no booking ID given' }, { status: 400 });
   }
   const bookingId = parseInt(params.bookingId);
   const eventId = parseInt(params.eventId);
@@ -24,11 +33,18 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
 
 //delete booking by bookingId, and update ticket amounts for associated event
 export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
-  if (!params.eventId) {
-    return;
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
+
+  if (!params.eventId) {
+    return NextResponse.json({ error: 'no event ID given' }, { status: 400 });
+  }
+
   if (!params.bookingId) {
-    return;
+    return NextResponse.json({ error: 'no booking ID given' }, { status: 400 });
   }
   const eventId = parseInt(params.eventId);
   const bookingId = parseInt(params.bookingId);

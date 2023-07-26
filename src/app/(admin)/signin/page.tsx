@@ -1,6 +1,6 @@
-import { getServerSession } from 'next-auth';
 import SigninForm from '../components/auth/signinForm';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 
 const AdminLogin = async () => {

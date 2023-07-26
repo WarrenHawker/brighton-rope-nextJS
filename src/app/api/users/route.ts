@@ -1,6 +1,7 @@
 import { prismaClient } from '@/lib/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
+import { getServerSession } from 'next-auth/next';
 
 //create new user
 export const POST = async (request: NextRequest) => {

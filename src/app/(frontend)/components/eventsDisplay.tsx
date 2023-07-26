@@ -13,6 +13,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEventsClient } from '@/utils/clientFetch';
+import WaitingListForm from './waitlistForm';
 
 interface EventsDisplayProps {
   page: string;
@@ -31,9 +32,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
 
   const showBookingForm = (id: any) => {
-    setBookingFormEvent(
-      data.events.filter((event: EventsData) => event.id == id)[0]
-    );
+    setBookingFormEvent(data.filter((event: EventsData) => event.id == id)[0]);
     setBookingFormOpen(true);
   };
   return (
@@ -75,7 +74,9 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
                       className="btn btn-primary"
                       onClick={(e) => showBookingForm(event.id)}
                     >
-                      Book Tickets
+                      {event.ticketsRemaining > 0
+                        ? 'Book Tickets'
+                        : 'join waiting list'}
                     </button>
                   ) : null}
 
@@ -86,6 +87,16 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
                     Learn more
                   </Link>
                 </div>
+                {event.ticketsRemaining == 0 && (
+                  <div className="event-display-banner sold-out">
+                    <h3>SOLD OUT</h3>
+                  </div>
+                )}
+                {event.prices.length == 0 && (
+                  <div className="event-display-banner free">
+                    <h3>FREE</h3>
+                  </div>
+                )}
               </article>
             );
           })}
@@ -106,7 +117,13 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
               ) : null
             }
           >
-            {bookingFormEvent ? <BookingForm event={bookingFormEvent} /> : null}
+            {bookingFormEvent ? (
+              bookingFormEvent.ticketsRemaining > 0 ? (
+                <BookingForm event={bookingFormEvent} />
+              ) : (
+                <WaitingListForm event={bookingFormEvent} />
+              )
+            ) : null}
           </Overlay>
         </>
       )}

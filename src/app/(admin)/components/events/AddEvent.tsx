@@ -1,12 +1,52 @@
 'use client';
-
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import { Address, EventDateTime, Prices } from '@/utils/interfaces';
+import {
+  Address,
+  EventDateTime,
+  NewEventsData,
+  Prices,
+} from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const AddEvent = () => {
+interface AddEventProps {
+  setAddEvent: (value: boolean) => void;
+}
+
+const AddEvent = ({ setAddEvent }: AddEventProps) => {
+  const queryClient = useQueryClient();
+
+  const addEvent = useMutation(
+    (event: NewEventsData) =>
+      fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ['events'] });
+        setAddEvent(false);
+        setTitle('');
+        setDescription('');
+        setLocation({
+          lineOne: '',
+          lineTwo: '',
+          city: '',
+          country: '',
+          postcode: '',
+        });
+        setCapacity(0);
+        setAllowMultipleTickets(true);
+        setDatesTimes([{ date: '', startTime: '', endTime: '', error: null }]);
+        setPrices([]);
+      },
+    }
+  );
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState<Address>({
@@ -269,10 +309,21 @@ const AddEvent = () => {
     );
   });
 
+  const changeLocation = (e: any) => {
+    const key = e.target.name;
+    const value = e.target.value;
+    setLocation((prevLocation) => {
+      return {
+        ...prevLocation,
+        [key]: value,
+      };
+    });
+  };
+
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const event = {
+    const event: NewEventsData = {
       title: title,
       description: description,
       startDate: new Date(datesTimes[0].date),
@@ -284,26 +335,7 @@ const AddEvent = () => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch('/api/events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(event),
-    });
-
-    const data = await res.json();
-  };
-
-  const changeLocation = (e: any) => {
-    const key = e.target.name;
-    const value = e.target.value;
-    setLocation((prevLocation) => {
-      return {
-        ...prevLocation,
-        [key]: value,
-      };
-    });
+    addEvent.mutate(event);
   };
 
   return (

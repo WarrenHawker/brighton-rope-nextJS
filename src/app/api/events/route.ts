@@ -1,22 +1,33 @@
-import prisma from '@/lib/prisma/client';
+import { prismaClient } from '@/lib/prisma/client';
+import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
-import { revalidateTag } from 'next/cache';
+import { authOptions } from '../auth/[...nextauth]/route';
 
+//create new event
 export const POST = async (request: NextRequest) => {
-  const tag = request.nextUrl.searchParams.get('tag');
-  if (tag) {
-    revalidateTag(tag);
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
   const res = await request.json();
-  const event = await prisma.event.create({
+  const event = await prismaClient.events.create({
     data: res,
   });
 
   return NextResponse.json({ message: 'event created successfully', event });
 };
 
+/*get collection of events
+uses search params to filter events, as follows:
+  limit: sets the number of events returned by request. If no number is given, will return all events
+  old: either returns old and upcoming events (true) or just upcoming events (false). If no value given, will return old and upcoming events
+*/
 export const GET = async (request: NextRequest) => {
-  const eventOption = request.nextUrl.searchParams.get('events');
+  const session = await getServerSession(authOptions);
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const eventOption = request.nextUrl.searchParams.get('limit');
   let oldOption = request.nextUrl.searchParams.get('old');
   let eventAmount: number = -1;
   let events;
@@ -24,23 +35,31 @@ export const GET = async (request: NextRequest) => {
     eventAmount = parseInt(eventOption);
   }
   if (oldOption == 'true') {
+    if (!session) {
+      return NextResponse.json(
+        { error: 'unauthorized access' },
+        { status: 401 }
+      );
+    }
     if (eventAmount == -1) {
-      events = await prisma.event.findMany({ orderBy: { startDate: 'desc' } });
+      events = await prismaClient.events.findMany({
+        orderBy: { startDate: 'desc' },
+      });
     } else {
-      events = await prisma.event.findMany({
+      events = await prismaClient.events.findMany({
         take: eventAmount,
         orderBy: { startDate: 'desc' },
       });
     }
   } else {
     if (eventAmount == -1) {
-      events = await prisma.event.findMany({
-        where: { startDate: { gte: new Date() } },
+      events = await prismaClient.events.findMany({
+        where: { startDate: { gte: yesterday } },
         orderBy: { startDate: 'desc' },
       });
     } else {
-      events = await prisma.event.findMany({
-        where: { startDate: { gte: new Date() } },
+      events = await prismaClient.events.findMany({
+        where: { startDate: { gte: yesterday } },
         take: eventAmount,
         orderBy: { startDate: 'desc' },
       });

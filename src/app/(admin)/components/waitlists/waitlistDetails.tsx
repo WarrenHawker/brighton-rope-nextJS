@@ -1,4 +1,4 @@
-const WaitingDetails = () => {
+const WaitlistDetails = () => {
   return (
     <>
       <h3>waiting list details</h3>
@@ -6,4 +6,4 @@ const WaitingDetails = () => {
   );
 };
 
-export default WaitingDetails;
+export default WaitlistDetails;

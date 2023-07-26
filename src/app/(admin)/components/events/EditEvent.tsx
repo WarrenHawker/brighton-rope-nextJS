@@ -1,9 +1,16 @@
 'use client';
 
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import { Address, EventDateTime, EventsData, Prices } from '@/utils/interfaces';
+import {
+  Address,
+  EventDateTime,
+  EventsData,
+  NewEventsData,
+  Prices,
+} from '@/utils/interfaces';
 import { MdEditor } from 'md-editor-rt';
-import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
+import { useState, ChangeEvent, MouseEvent } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface EditEventProps {
   event: EventsData;
@@ -11,6 +18,39 @@ interface EditEventProps {
 }
 
 const EditEvent = ({ event, setEditing }: EditEventProps) => {
+  const queryClient = useQueryClient();
+
+  const deleteEvent = useMutation(
+    () =>
+      fetch(`/api/events/${event.id}`, {
+        method: 'DELETE',
+      }),
+    {
+      onMutate: async () => {
+        queryClient.invalidateQueries({ queryKey: ['events'] });
+      },
+    }
+  );
+
+  const editEvent = useMutation(
+    (updatedEvent: NewEventsData) =>
+      fetch(`/api/events/${event.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedEvent),
+      }),
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({
+          queryKey: ['events'],
+        });
+        setEditing(false);
+      },
+    }
+  );
+
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
   const [location, setLocation] = useState<Address>({
@@ -287,9 +327,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
   };
 
   const saveEdits = async () => {
-    setEditing(false);
-
-    const updatedevent = {
+    const updatedEvent: NewEventsData = {
       title: title,
       description: description,
       startDate: new Date(datesTimes[0].date),
@@ -301,16 +339,8 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
     };
-    const res = await fetch(`/api/events/${event.id}`, {
-      next: { tags: ['events'] },
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedevent),
-    });
 
-    const data = await res.json();
+    editEvent.mutate(updatedEvent);
   };
 
   const cancelEdits = () => {
@@ -324,16 +354,13 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     setPrices(event.prices);
   };
 
-  const deleteEvent = async () => {
+  const deleteEventClick = async () => {
     if (
       confirm(
         'Are you sure you want to delete this event? This process is irreversible'
       )
     ) {
-      const res = await fetch(`/api/events/${event.id}`, {
-        method: 'DELETE',
-        next: { tags: ['events'] },
-      });
+      deleteEvent.mutate();
     } else return;
   };
 
@@ -346,7 +373,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         <button onClick={cancelEdits} className="btn">
           Cancel
         </button>
-        <button className="btn btn-delete" onClick={deleteEvent}>
+        <button className="btn btn-delete" onClick={deleteEventClick}>
           Delete
         </button>
       </div>

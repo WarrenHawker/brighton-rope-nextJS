@@ -8,7 +8,7 @@ export const fetchEventsClient = async (options?: {
   const amount = options?.amount ? options.amount : -1;
   const old = options?.old ? options.old : 'true';
 
-  const res = await fetch(`/api/events?events=${amount}&old=${old}`);
+  const res = await fetch(`/api/events?limit=${amount}&old=${old}`);
   const data = await res.json();
   const events = data.events.map((event: any) => {
     return {
@@ -57,7 +57,7 @@ export const fetchBookingsByEventClient = async (
     return '';
   }
 
-  const res = await fetch(`/api/bookings?event=${eventId}`);
+  const res = await fetch(`/api/events/${eventId}/bookings`);
   const data = await res.json();
   const bookings = data.bookings.map((booking: any) => {
     return {

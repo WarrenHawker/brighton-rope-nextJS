@@ -107,6 +107,21 @@ input[type='date'] {
   max-width: 200px;
 }
 
+.required {
+  color: red;
+  font-size: 20px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+.invalid {
+  border: 2px red dashed;
+}
+
 @media (max-width: 550px) {
   form {
     grid-template-columns: 1fr;

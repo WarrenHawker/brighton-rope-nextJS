@@ -2,7 +2,7 @@
 
 import { isContact } from '@/utils/functions';
 import { EventsData, UserChoices, TicketChoices } from '@/utils/interfaces';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import BookingPageOne from './bookingFormPages/bookingPageOne';
 import BookingPageThree from './bookingFormPages/bookingPageThree';
 import BookingPageTwo from './bookingFormPages/bookingPageTwo';
@@ -19,6 +19,7 @@ const BookingForm = ({ event }: BookingFormProps) => {
       value: item.value.maxPrice ? item.value.maxPrice : item.value.minPrice,
       quantity: 0,
     })),
+    totalTickets: 0,
     contact: {
       firstName: '',
       lastName: '',
@@ -70,10 +71,14 @@ const BookingForm = ({ event }: BookingFormProps) => {
           }
         }
       });
+      const totalTickets = updatedTickets
+        .map((item) => item.quantity)
+        .reduce((acc, value) => acc + value, 0);
       return {
         ...prevChoices,
         tickets: updatedTickets,
         amountToPay: updateAmountToPay(updatedTickets),
+        totalTickets,
       };
     });
   };
@@ -96,19 +101,16 @@ const BookingForm = ({ event }: BookingFormProps) => {
       hasPaid: false,
       bookingDate: new Date(),
       adminNotes: '',
+      totalTickets: userChoices.totalTickets,
     };
 
-    const res = await fetch('/api/bookings', {
+    const res = await fetch(`/api/events/${event.id}/bookings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { tags: ['bookings'] },
       body: JSON.stringify(booking),
     });
-
-    const data = res.json();
-    console.log(data);
   };
 
   return (

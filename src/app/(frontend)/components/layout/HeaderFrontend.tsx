@@ -1,11 +1,15 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 const HeaderFrontend = () => {
   const [showTopNav, setShowTopNav] = useState<boolean>(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setShowTopNav(false);
+  }, [pathname]);
   return (
     <header>
       <div className="header-inner">

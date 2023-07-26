@@ -32,6 +32,19 @@ export interface EventsData {
   allowMultipleTickets: boolean;
 }
 
+export interface NewEventsData {
+  title: string;
+  description: string;
+  startDate: Date;
+  dateTimes: string;
+  location: string;
+  maxTickets: number;
+  ticketsSold: number;
+  ticketsRemaining: number;
+  prices: string;
+  allowMultipleTickets: boolean;
+}
+
 export interface ContextProviderProps {
   children?: ReactNode;
 }
@@ -44,6 +57,7 @@ export interface TicketChoices {
 
 export interface UserChoices {
   tickets: TicketChoices[];
+  totalTickets: number;
   contact: {
     firstName: string;
     lastName: string;
@@ -88,4 +102,42 @@ export interface IRequest {
   request: {
     url: string;
   };
+}
+
+export interface EditBookingsData {
+  contact?: string;
+  additionalInfo?: string | undefined;
+  adminNotes?: string | undefined;
+  eventId?: number;
+}
+
+export interface NewBookingsData {
+  eventId: string;
+  tickets: string;
+  contact: string;
+  amountToPay: number;
+  additionalInfo: string | undefined;
+  hasPaid: boolean;
+  bookingDate: Date;
+  adminNotes: string | undefined;
+}
+
+export interface ApiParams {
+  params: {
+    eventId: string | undefined;
+    bookingId: string | undefined;
+    waitlistId: string | undefined;
+    email: string | undefined;
+    teacherId: string | undefined;
+  };
+}
+
+export interface Session {
+  user: {
+    id: string;
+    name?: string;
+    role: string;
+    email: string;
+  };
+  expires: string;
 }

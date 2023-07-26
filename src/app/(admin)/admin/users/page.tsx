@@ -1,7 +1,7 @@
 import RegisterForm from '../../components/auth/registerForm';
 import UsersList from '../../components/auth/usersList';
 
-const AdminUsers = () => {
+const AdminUsers = async () => {
   return (
     <>
       <h1 className="page-title">Users</h1>

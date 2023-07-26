@@ -17,13 +17,13 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         ></Script>
       </head>
       <body suppressHydrationWarning={true}>
-        <HeaderAdmin />
-        <div className="content-wrapper">
-          <AuthProvider>
+        <AuthProvider>
+          <HeaderAdmin />
+          <div className="content-wrapper">
             <QueryProvider>{children}</QueryProvider>
-          </AuthProvider>
-        </div>
-        <FooterAdmin />
+          </div>
+          <FooterAdmin />
+        </AuthProvider>
       </body>
     </html>
   );

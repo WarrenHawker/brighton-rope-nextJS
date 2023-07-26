@@ -1,6 +1,6 @@
 import AdminEvents from '../views/Events';
 
-const AdminHome = () => {
+const AdminHome = async () => {
   return (
     <>
       <AdminEvents />

@@ -2,10 +2,12 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
 const HeaderAdmin = () => {
   const [showTopNav, setShowTopNav] = useState<boolean>(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   useEffect(() => {
     setShowTopNav(false);
@@ -13,6 +15,7 @@ const HeaderAdmin = () => {
 
   return (
     <header>
+      <pre>{JSON.stringify(session)}</pre>
       <div className="header-inner">
         <i
           className="fa-solid fa-bars"
@@ -46,7 +49,7 @@ const HeaderAdmin = () => {
         <div className="profile-dropdown">
           <h2 className="profile-link">
             <i className="fa-solid fa-user"></i>{' '}
-            <span className="profile-name">Warren</span>
+            <span className="profile-name">{session?.user?.name}</span>
           </h2>
           <nav className="profile-nav">
             <ul>
@@ -60,7 +63,9 @@ const HeaderAdmin = () => {
                 <Link href="/admin/profile">Profile</Link>
               </li>
               <li className="top-nav-links">
-                <Link href="/admin/signin">Sign Out</Link>
+                <button onClick={() => signOut({ callbackUrl: '/signin' })}>
+                  Sign Out
+                </button>
               </li>
             </ul>
           </nav>

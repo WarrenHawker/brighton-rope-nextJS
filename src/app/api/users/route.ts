@@ -14,8 +14,7 @@ export const POST = async (request: NextRequest) => {
   }
 
   //hash password with salt
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(password, salt);
+  const hash = await bcrypt.hash(password, 12);
 
   try {
     const user = await prismaClient.users.create({

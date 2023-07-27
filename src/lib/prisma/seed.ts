@@ -13,7 +13,6 @@ const main = async () => {
     update: {},
     create: {
       email: 'brightonrope@gmail.com',
-      name: 'Admin',
       hashedPassword: password,
       role: 'ADMIN',
     },
@@ -25,7 +24,6 @@ const main = async () => {
     update: {},
     create: {
       email: 'hawker.warren@gmail.com',
-      name: 'SuperAdmin',
       hashedPassword: password,
       role: 'SUPERADMIN',
     },

@@ -13,6 +13,7 @@ declare module 'next-auth' {
       role: Role;
       claimed: boolean;
       name: string | undefined;
+      email: string;
     } & DefaultSession;
   }
 }

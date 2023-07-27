@@ -22,9 +22,7 @@ const SigninForm = () => {
       password: password,
     });
 
-    console.log(res);
-
-    //if response contains a url link, redirect to that link
+    //if response contains a url link, refresh the page (causes a redirect from middleware)
     if (res?.url) {
       router.refresh();
     }

@@ -53,25 +53,10 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    // signIn({ user }) {
-    //   if (!user) {
-    //     return false;
-    //   }
-    //   const u = user as unknown as any;
-    //   if (u.claimed) {
-    //     return true;
-    //   } else {
-    //     return '/new-user';
-    //   }
-    // },
-    // redirect({ url, baseUrl }) {
-    //   // Allows relative callback URLs
-    //   if (url.startsWith('/')) return `${baseUrl}${url}`;
-    //   // Allows callback URLs on the same origin
-    //   else if (new URL(url).origin === baseUrl) return url;
-    //   return baseUrl;
-    // },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger == 'update' && session?.claimed) {
+        token.claimed = session.claimed;
+      }
       if (user) {
         token.role = user.role;
         token.claimed = user.claimed;

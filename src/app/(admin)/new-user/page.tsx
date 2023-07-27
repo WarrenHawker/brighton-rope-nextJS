@@ -1,8 +1,12 @@
+import NewUserForm from '../components/auth/newUserForm';
+
 const NewUser = () => {
   return (
-    <>
-      <h1>Welcome new user</h1>
-    </>
+    <div>
+      <h1 className="page-title">Welcome to the Brighton Rope admin panel</h1>
+      <h2>Before you can view everything, please fill in the form below</h2>
+      <NewUserForm />
+    </div>
   );
 };
 

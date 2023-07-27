@@ -7,8 +7,15 @@ export default withAuth(function middleware(request: NextRequestWithAuth) {
     request.nextUrl.pathname.startsWith('/admin') &&
     !request.nextauth.token
   ) {
-    // return NextResponse.redirect(new URL('/signin', request.url));
     return NextResponse.rewrite(new URL('/signin', request.url));
+  }
+
+  //if user is logged in but hasn't claimed their account, redirect to new user page
+  if (
+    request.nextUrl.pathname.startsWith('/admin') &&
+    !request.nextauth.token?.claimed
+  ) {
+    return NextResponse.rewrite(new URL('/new-user', request.url));
   }
 });
 

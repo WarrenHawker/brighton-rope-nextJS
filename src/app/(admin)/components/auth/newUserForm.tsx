@@ -258,7 +258,7 @@ const NewUserForm = () => {
             <img src={imageUrl} />
           </div>
         </fieldset>
-
+        {error ? <p className="error">{error}</p> : null}
         <div className="button-container">
           <button type="button" className="btn btn-large" onClick={submitForm}>
             Submit

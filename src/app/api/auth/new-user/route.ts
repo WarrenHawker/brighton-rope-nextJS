@@ -43,7 +43,12 @@ export const PUT = async (request: NextRequest) => {
     return NextResponse.json({ user, userBio }, { status: 201 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return NextResponse.json({ error: error.meta }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: `code: ${error.code}, from: ${error.meta?.target}, message: ${error.message}`,
+        },
+        { status: 400 }
+      );
     } else return NextResponse.json({ error: error }, { status: 400 });
   }
 };

@@ -13,6 +13,8 @@ const HeaderAdmin = () => {
     setShowTopNav(false);
   }, [pathname]);
 
+  console.log(session);
+
   if (!session?.user) {
     return (
       <header>

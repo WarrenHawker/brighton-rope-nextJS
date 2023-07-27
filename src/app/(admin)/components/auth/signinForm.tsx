@@ -26,7 +26,7 @@ const SigninForm = () => {
 
     //if response contains a url link, redirect to that link
     if (res?.url) {
-      router.push(res?.url);
+      router.refresh();
     }
 
     //show error if credentials are incorrect

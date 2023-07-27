@@ -53,44 +53,37 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    signIn({ user }) {
-      if (!user) {
-        return false;
-      }
-      const u = user as unknown as any;
-      if (u.claimed) {
-        return true;
-      } else {
-        return '/new-user';
-      }
-    },
-    redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    },
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          role: token.userRole,
-        },
-      };
-    },
-    jwt: ({ token, user }) => {
+    // signIn({ user }) {
+    //   if (!user) {
+    //     return false;
+    //   }
+    //   const u = user as unknown as any;
+    //   if (u.claimed) {
+    //     return true;
+    //   } else {
+    //     return '/new-user';
+    //   }
+    // },
+    // redirect({ url, baseUrl }) {
+    //   // Allows relative callback URLs
+    //   if (url.startsWith('/')) return `${baseUrl}${url}`;
+    //   // Allows callback URLs on the same origin
+    //   else if (new URL(url).origin === baseUrl) return url;
+    //   return baseUrl;
+    // },
+    async jwt({ token, user }) {
       if (user) {
-        const u = user as unknown as any;
-        return {
-          ...token,
-          id: u.id,
-          userRole: u.role,
-        };
+        token.role = user.role;
+        token.claimed = user.claimed;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.role = token.role;
+        session.user.claimed = token.claimed;
+      }
+      return session;
     },
   },
   pages: {

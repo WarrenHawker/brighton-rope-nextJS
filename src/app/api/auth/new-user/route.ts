@@ -10,7 +10,7 @@ import { Prisma } from '@prisma/client';
 export const PUT = async (request: NextRequest) => {
   const session = await getServerSession(authOptions);
   const body = await request.json();
-  // const newPassword = await bcrypt.hash(body.password, 12);
+  const newPassword = await bcrypt.hash(body.accountPassword, 12);
 
   //check authorisation
   if (session?.user.email != body.accountEmail) {
@@ -23,7 +23,7 @@ export const PUT = async (request: NextRequest) => {
       where: { email: body.accountEmail },
       data: {
         name: body.accountName,
-        hashedPassword: body.password,
+        hashedPassword: newPassword,
         claimed: true,
       },
     });

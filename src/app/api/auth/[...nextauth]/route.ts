@@ -47,36 +47,28 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          claimed: user.claimed,
         };
       },
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      if (url == `/signin`) {
-        return `${baseUrl}/signin`;
-      } else return `${baseUrl}/admin`;
-    },
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          role: token.userRole,
-        },
-      };
-    },
-    jwt: ({ token, user }) => {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger == 'update' && session?.claimed) {
+        token.claimed = session.claimed;
+      }
       if (user) {
-        const u = user as unknown as any;
-        return {
-          ...token,
-          id: u.id,
-          userRole: u.role,
-        };
+        token.role = user.role;
+        token.claimed = user.claimed;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.role = token.role;
+        session.user.claimed = token.claimed;
+      }
+      return session;
     },
   },
   pages: {

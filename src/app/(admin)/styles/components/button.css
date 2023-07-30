@@ -5,6 +5,7 @@
   margin: 1em auto;
   flex-wrap: wrap;
   gap: 1em;
+  grid-column: 1 / -1;
 }
 
 .btn {

@@ -116,14 +116,51 @@ input[type='date'] {
   color: red;
   font-weight: bold;
   text-align: center;
+  grid-column: 1 / -1;
 }
 
 .invalid {
   border: 2px red dashed;
 }
 
+.image-fieldset {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.image-fieldset textarea {
+  width: 250px;
+  min-height: 200px;
+  resize: vertical;
+}
+
+.image-fieldset img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
 @media (max-width: 550px) {
   form {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .image-fieldset {
+    flex-direction: column;
+  }
+
+  .image-fieldset div {
+    width: 100%;
+    margin: 1em auto;
+  }
+
+  .image-fieldset label,
+  .image-fieldset textarea,
+  .image-fieldset img {
+    display: block;
+    margin: 0.5em auto;
   }
 }

@@ -57,7 +57,7 @@ model Users {
   name                String?
   role                Role        @default(ADMIN)
   hashedPassword      String
-  bio                 UserBios?    
+  bio                 UserBios?  
   claimed             Boolean     @default(false)
   preferences         Json?
 }
@@ -69,8 +69,9 @@ model UserBios {
   user          Users         @relation(fields: [email], references: [email])
   pronouns      String
   bio           String
-  position      Position      @default(NULL)
+  position      Position      @default(OTHER)
   public        Boolean
+  imageUrl      String
 }
 
 enum Role {
@@ -82,5 +83,5 @@ enum Position {
   RIGGER
   SWITCH
   BOTTOM
-  NULL
+  OTHER
 }

@@ -7,17 +7,27 @@ const prismaClient = new PrismaClient();
 
 const main = async () => {
   const password = await bcrypt.hash('admin123', 12);
-  const user = await prismaClient.users.upsert({
+  //default admin
+  const admin = await prismaClient.users.upsert({
+    where: { email: 'brightonrope@gmail.com' },
+    update: {},
+    create: {
+      email: 'brightonrope@gmail.com',
+      hashedPassword: password,
+      role: 'ADMIN',
+    },
+  });
+
+  //default super admin
+  const superAdmin = await prismaClient.users.upsert({
     where: { email: 'hawker.warren@gmail.com' },
     update: {},
     create: {
       email: 'hawker.warren@gmail.com',
-      name: 'Default SuperAdmin',
       hashedPassword: password,
       role: 'SUPERADMIN',
     },
   });
-  console.log({ user });
 };
 main()
   .then(() => prismaClient.$disconnect())

@@ -64,28 +64,32 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
           {getFullDate(selectedEvent.dateTimes[0].date)}
         </h2>
       ) : null}
-      <table className="main-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th className="hide-mobile">Email</th>
-            <th>Booking Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookings.map((booking) => (
-            <tr onClick={() => showBookingDetails(booking)} key={booking.id}>
-              <td>{booking.id}</td>
-              <td>
-                {booking.contact.firstName} {booking.contact.lastName}
-              </td>
-              <td className="hide-mobile">{booking.contact.email}</td>
-              <td>{getFullDate(booking.bookingDate)}</td>
+      {!selectedEvent?.isFree ? (
+        <table className="main-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th className="hide-mobile">Email</th>
+              <th>Booking Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {bookings.map((booking) => (
+              <tr onClick={() => showBookingDetails(booking)} key={booking.id}>
+                <td>{booking.id}</td>
+                <td>
+                  {booking.contact.firstName} {booking.contact.lastName}
+                </td>
+                <td className="hide-mobile">{booking.contact.email}</td>
+                <td>{getFullDate(booking.bookingDate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <h3 className="center">There are no bookings for free events</h3>
+      )}
     </div>
   );
 };

@@ -22,6 +22,7 @@ export const fetchEventsClient = async (options?: {
       dateTimes: JSON.parse(event.dateTimes),
       allowMultipleTickets: event.allowMultipleTickets,
       prices: JSON.parse(event.prices),
+      isFree: event.isFree,
     };
   });
   return events;
@@ -44,6 +45,7 @@ export const fetchEventByIdClient = async (id: string) => {
     dateTimes: JSON.parse(data.event.dateTimes),
     allowMultipleTickets: data.event.allowMultipleTickets,
     prices: JSON.parse(data.event.prices),
+    isFree: data.event.isFree,
   };
 
   return event;

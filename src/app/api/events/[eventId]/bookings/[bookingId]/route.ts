@@ -51,5 +51,16 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
   const booking = await prismaClient.bookings.delete({
     where: { id: bookingId },
   });
-  return NextResponse.json({ message: 'event deleted successfully', booking });
+  const event = await prismaClient.events.update({
+    where: { id: eventId },
+    data: {
+      ticketsSold: { decrement: booking.totalTickets },
+      ticketsRemaining: { increment: booking.totalTickets },
+    },
+  });
+  return NextResponse.json({
+    message: 'event deleted successfully',
+    booking,
+    event,
+  });
 };

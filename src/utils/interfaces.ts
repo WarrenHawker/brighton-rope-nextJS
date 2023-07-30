@@ -30,6 +30,7 @@ export interface EventsData {
   ticketsRemaining: number;
   prices: Prices[];
   allowMultipleTickets: boolean;
+  isFree: boolean;
 }
 
 export interface NewEventsData {
@@ -43,6 +44,7 @@ export interface NewEventsData {
   ticketsRemaining: number;
   prices: string;
   allowMultipleTickets: boolean;
+  isFree: boolean;
 }
 
 export interface ContextProviderProps {

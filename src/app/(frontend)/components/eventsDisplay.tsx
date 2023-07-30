@@ -38,8 +38,8 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
   return (
     <section className="events-container">
       <h1>Our Upcoming Events</h1>
-      {!data ? (
-        <h2>I&apos;m sorry, there are no upcoming events</h2>
+      {data.length == 0 ? (
+        <h2 className="center">I&apos;m sorry, there are no upcoming events</h2>
       ) : (
         <>
           {data.map((event: EventsData) => {
@@ -127,7 +127,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
           </Overlay>
         </>
       )}
-      {page == 'home' ? (
+      {page == 'home' && data.length > 0 ? (
         <Link href="/events" className="btn btn-primary">
           See All Events
         </Link>

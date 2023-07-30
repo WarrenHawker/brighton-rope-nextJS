@@ -141,6 +141,17 @@ input[type='date'] {
   height: auto;
 }
 
+.full-width-fieldset {
+  width: fit-content;
+  margin: auto;
+  grid-column: 1 / -1;
+}
+
+.full-width-fieldset div {
+  width: fit-content;
+  margin: auto;
+}
+
 @media (max-width: 550px) {
   form {
     grid-template-columns: 1fr;

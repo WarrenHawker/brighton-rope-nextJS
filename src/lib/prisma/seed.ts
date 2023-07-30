@@ -15,6 +15,7 @@ const main = async () => {
       email: 'brightonrope@gmail.com',
       hashedPassword: password,
       role: 'ADMIN',
+      createdOn: new Date(),
     },
   });
 
@@ -26,6 +27,7 @@ const main = async () => {
       email: 'hawker.warren@gmail.com',
       hashedPassword: password,
       role: 'SUPERADMIN',
+      createdOn: new Date(),
     },
   });
 };

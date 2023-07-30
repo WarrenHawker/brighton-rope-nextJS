@@ -60,6 +60,8 @@ model Users {
   bio                 UserBios?  
   claimed             Boolean     @default(false)
   preferences         Json?
+  createdOn           DateTime
+  claimedOn           DateTime
 }
 
 model UserBios {
@@ -72,11 +74,14 @@ model UserBios {
   position      Position      @default(OTHER)
   public        Boolean
   imageUrl      String
+  createdOn     DateTime
+  updatedOn     DateTime
 }
 
 enum Role {
-  ADMIN
-  SUPERADMIN
+  ADMIN //has access to events, bookings and waitlists. Can only see and edit own userBio
+  SUPERADMIN //has access to everything
+  INACTIVE //has no access to admin panel
 }
 
 enum Position {

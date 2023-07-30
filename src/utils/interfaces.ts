@@ -78,8 +78,12 @@ export interface BookingsData extends UserChoices {
 }
 
 export interface User {
-  id: string | null;
-  name: string | null;
+  id: string;
+  email: string;
+  role: string;
+  claimed: boolean;
+  createdOn: string;
+  claimedOn: string;
 }
 
 export interface EventDateTime {

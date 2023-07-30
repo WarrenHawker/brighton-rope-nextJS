@@ -88,28 +88,28 @@ const RegisterForm = () => {
     <>
       <Toaster />
       <h2>Register New User</h2>
-      <form className="login-form" autoComplete="off">
+      <form className="login-form">
         <label htmlFor="email">
           Email <span className="required">*</span>
         </label>
         <input
           ref={emailInput}
-          autoComplete="new-password"
           className={emptyFields.includes('email') ? 'invalid' : ''}
           name="email"
           type="email"
           defaultValue={data.email}
           onChange={(e) => handleChange('email', e.target.value)}
         />
-        <label htmlFor="password">
+        <label htmlFor="new-password">
           Password <span className="required">*</span>
         </label>
         <input
           ref={passwordInput}
-          autoComplete="new-password"
           className={emptyFields.includes('password') ? 'invalid' : ''}
-          name="password"
+          name="new-password"
           type="password"
+          id="new-password"
+          autoComplete="new-password"
           defaultValue={data.password}
           onChange={(e) => handleChange('password', e.target.value)}
         />

@@ -62,6 +62,7 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
     { date: '', startTime: '', endTime: '', error: null },
   ]);
   const [prices, setPrices] = useState<Prices[]>([]);
+  const [isFree, setIsFree] = useState<boolean>(false);
 
   const addDateTime = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -334,6 +335,7 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
       ticketsRemaining: capacity,
       prices: JSON.stringify(prices),
       allowMultipleTickets: allowMultipleTickets,
+      isFree: isFree,
     };
     addEvent.mutate(event);
   };
@@ -358,6 +360,20 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
             onChange={setDescription}
           />
         </div>
+        <fieldset className="full-width-fieldset">
+          <legend>Is this event free or paid?</legend>
+          <div>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                defaultChecked={isFree}
+                onChange={(e) => setIsFree(e.target.checked)}
+              />
+              <span className="slider"></span>
+              <span className="labels" data-on="Free" data-off="Paid"></span>
+            </label>
+          </div>
+        </fieldset>
         <div className="form-column">
           <fieldset className="location">
             <legend>Location</legend>
@@ -402,37 +418,49 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
             />
           </fieldset>
 
-          <fieldset>
-            <legend>Price brackets</legend>
-            {pricesDisplay}
-            <button type="button" onClick={(e) => addPrice(e)} className="btn">
-              Add new price bracket
-            </button>
-          </fieldset>
+          {!isFree ? (
+            <fieldset>
+              <legend>Price brackets</legend>
+              {pricesDisplay}
+              <button
+                type="button"
+                onClick={(e) => addPrice(e)}
+                className="btn"
+              >
+                Add new price bracket
+              </button>
+            </fieldset>
+          ) : null}
         </div>
 
         <div className="form-column">
-          <fieldset className="event-details-fields">
-            <legend>Event Details</legend>
-            <label htmlFor="capacity">Number of tickets available</label>
-            <input
-              type="number"
-              name="capacity"
-              defaultValue={capacity}
-              onChange={(e) => setCapacity(parseInt(e.target.value))}
-              min="0"
-            />
-            <div className="checkbox-container">
-              <label htmlFor="allowMultipleTickets">
-                Allow customer to buy multiple tickets?
-              </label>
+          {!isFree ? (
+            <fieldset className="event-details-fields">
+              <legend>Event Details</legend>
+              <label htmlFor="capacity">Number of tickets available</label>
               <input
-                type="checkbox"
-                checked={allowMultipleTickets}
-                onChange={(e) => setAllowMultipleTickets(e.target.checked)}
+                type="number"
+                name="capacity"
+                defaultValue={capacity}
+                onChange={(e) => setCapacity(parseInt(e.target.value))}
+                min="0"
               />
-            </div>
-          </fieldset>
+              <div className="toggle-container">
+                <label className="label-main">
+                  Allow customer to buy multiple tickets?
+                </label>
+                <label className="toggle">
+                  <input
+                    type="checkbox"
+                    defaultChecked={allowMultipleTickets}
+                    onChange={(e) => setAllowMultipleTickets(e.target.checked)}
+                  />
+                  <span className="slider"></span>
+                  <span className="labels" data-on="Yes" data-off="No"></span>
+                </label>
+              </div>
+            </fieldset>
+          ) : null}
 
           <fieldset>
             <legend>Dates and Times</legend>

@@ -2,12 +2,19 @@
 
 import Overlay from '@/utils/globalComponents/Overlay';
 import { getFullDate } from '@/utils/functions';
-import { BookingsData } from '@/utils/interfaces';
+import { BookingsData, EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import WaitlistDetails from './waitlistDetails';
 
-const Waitlist = () => {
-  const [eventInfo, setEventInfo] = useState({ title: '', date: '' });
+interface WaitlistProps {
+  selectedEvent: EventsData | null;
+}
+
+const Waitlist = ({ selectedEvent }: WaitlistProps) => {
+  const [eventInfo, setEventInfo] = useState({
+    title: selectedEvent?.title,
+    date: selectedEvent?.startDate,
+  });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedInquiry, setSelectedInquiry] = useState<BookingsData | null>(
     null
@@ -34,31 +41,35 @@ const Waitlist = () => {
 
       {eventInfo ? (
         <h2 className="booking-list-header">
-          Bookings for {eventInfo.title} - {eventInfo.date}
+          Waitlist for {eventInfo.title} - {getFullDate(eventInfo.date)}
         </h2>
       ) : null}
-      <table className="main-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th className="hide-mobile">Email</th>
-            <th>Inquiry Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedBookings.map((booking) => (
-            <tr key={booking.id}>
-              <td>{booking.id}</td>
-              <td>
-                {booking.contact.firstName} {booking.contact.lastName}
-              </td>
-              <td className="hide-mobile">{booking.contact.email}</td>
-              <td>{booking.bookingDate}</td>
+      {!selectedEvent?.isFree ? (
+        <table className="main-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th className="hide-mobile">Email</th>
+              <th>Inquiry Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {displayedBookings.map((booking) => (
+              <tr key={booking.id}>
+                <td>{booking.id}</td>
+                <td>
+                  {booking.contact.firstName} {booking.contact.lastName}
+                </td>
+                <td className="hide-mobile">{booking.contact.email}</td>
+                <td>{booking.bookingDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <h3 className="center">There is no waitlist for free events</h3>
+      )}
     </div>
   );
 };

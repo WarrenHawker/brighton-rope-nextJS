@@ -73,7 +73,10 @@ const AdminEvents = () => {
                 <BookingsList selectedEvent={selectedEvent} events={events} />
               ),
             },
-            { name: 'Waiting List', element: <Waitlist /> },
+            {
+              name: 'Waiting List',
+              element: <Waitlist selectedEvent={selectedEvent} />,
+            },
           ]}
         />
       </main>

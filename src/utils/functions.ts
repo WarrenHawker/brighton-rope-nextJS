@@ -22,12 +22,7 @@ export const getLongDate = (date: Date | string): string => {
 };
 
 export const isContact = (option: string) => {
-  if (
-    option == 'firstName' ||
-    option == 'lastName' ||
-    option == 'email' ||
-    option == 'phone'
-  ) {
+  if (option == 'firstName' || option == 'lastName' || option == 'email') {
     return true;
   } else return false;
 };
@@ -137,9 +132,8 @@ export const getTimeString = (time: string): string => {
   }
 };
 
-export const testFetch = async () => {
-  const res = await fetch('/api/events?events=3&old=false').then((res) =>
-    res.json()
+export const excludePropertyFromObject = (obj: {}, keys: any[]) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !keys.includes(key))
   );
-  return res;
 };

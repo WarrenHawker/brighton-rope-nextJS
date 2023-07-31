@@ -1,10 +1,10 @@
 'use client';
-import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import validator from 'validator';
+import { MdEditor } from 'md-editor-rt';
 
 const NewUserForm = () => {
   const router = useRouter();

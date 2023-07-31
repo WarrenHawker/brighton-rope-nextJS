@@ -28,6 +28,7 @@ export const POST = async (request: NextRequest) => {
         email: email,
         hashedPassword: hash,
         role: role,
+        createdOn: new Date(),
       },
     });
     return NextResponse.json({ id: user.id, email, role }, { status: 201 });
@@ -52,9 +53,14 @@ export const GET = async (request: NextRequest) => {
         name: user.name,
         role: user.role,
         claimed: user.claimed,
+        createdOn: user.createdOn,
+        claimedOn: user.claimedOn,
       };
     });
-    return NextResponse.json({ users });
+    if (!users) {
+      return NextResponse.json({ error: 'no users found' }, { status: 404 });
+    }
+    return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
   }

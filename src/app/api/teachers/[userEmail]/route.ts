@@ -3,10 +3,8 @@ import { ApiParams } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import bcrypt from 'bcrypt';
-import { excludePropertyFromObject } from '@/utils/functions';
 
-//get single user by userEmail
+//get single teacher by userEmail
 export const GET = async (request: NextRequest, { params }: ApiParams) => {
   //check email param
   if (!params.userEmail) {
@@ -24,33 +22,18 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
 
   //try fetching user from database
   try {
-    const userData = await prismaClient.users.findUnique({
+    const teacher = await prismaClient.userBios.findUnique({
       where: { email: params.userEmail },
     });
-    if (userData) {
-      const user = excludePropertyFromObject(userData, ['hashedPassword']);
-      return NextResponse.json({ user }, { status: 200 });
+    if (teacher) {
+      return NextResponse.json({ teacher }, { status: 200 });
     } else {
-      return NextResponse.json({ error: 'No user found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'No teacher bio found' },
+        { status: 404 }
+      );
     }
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
   }
-};
-
-//edit single user by userEmail
-export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
-  const email = params.userEmail;
-
-  //check if there's an email param
-  if (!email) {
-    return NextResponse.json({ error: 'no user email given' }, { status: 400 });
-  }
-
-  return NextResponse.json({});
-};
-
-//delete single user by userEmail
-export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
-  return NextResponse.json({});
 };

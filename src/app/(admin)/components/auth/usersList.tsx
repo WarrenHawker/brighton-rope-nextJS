@@ -1,28 +1,40 @@
 'use client';
 
+import useFetchUsers from '@/hooks/users/useFetchUsers';
+import { getFullDate } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
 import { User } from '@/utils/interfaces';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import UserDetails from './userDetails';
 
 const UsersList = () => {
-  const [users, setUsers] = useState<User[]>();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
-  console.log(users);
+  const { data, status } = useFetchUsers();
 
-  const fetchUsers = async () => {
-    const res = await fetch('/api/users');
-    const data = await res.json();
-    setUsers(data.users);
-  };
+  if (status == 'loading') {
+    return (
+      <>
+        <h2 className="center">Users List</h2>
+        <h3 className="center">Loading...</h3>
+      </>
+    );
+  }
+
+  if (status == 'error') {
+    return (
+      <>
+        <h2 className="center">Users List</h2>
+        <h3 className="center error">{data.error}</h3>
+      </>
+    );
+  }
+
   return (
     <>
       <h2 className="center">Users List</h2>
-      {users ? (
+      {data.users ? (
         <table className="main-table">
           <thead>
             <tr>
@@ -33,7 +45,7 @@ const UsersList = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {data.users.map((user: User) => (
               <tr
                 key={user.id}
                 onClick={() => {
@@ -44,7 +56,7 @@ const UsersList = () => {
                 <td>{user.id}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>
-                <td>{user.createdOn}</td>
+                <td>{getFullDate(user.createdOn)}</td>
               </tr>
             ))}
           </tbody>
@@ -52,8 +64,9 @@ const UsersList = () => {
       ) : (
         <h3 className="center">No Users Found</h3>
       )}
-
-      <Overlay isOpen={isModalOpen} setIsOpen={setIsModalOpen}></Overlay>
+      <Overlay isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+        {selectedUser ? <UserDetails user={selectedUser} /> : null}
+      </Overlay>
     </>
   );
 };

@@ -1,3 +1,4 @@
+import useUsers from '@/hooks/users/useFetchUsers';
 import AdminEvents from '../views/Events';
 
 const AdminHome = async () => {

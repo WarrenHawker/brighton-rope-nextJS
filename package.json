@@ -13,7 +13,6 @@
     "@next-auth/prisma-adapter": "^1.0.6",
     "@prisma/client": "^5.0.0",
     "@tanstack/react-query-devtools": "^4.29.25",
-    "@types/node": "20.3.3",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "bcrypt": "^5.1.0",
@@ -26,11 +25,13 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-query": "^3.39.3",
+    "ts-node": "^10.9.1",
     "typescript": "5.1.6",
     "validator": "^13.9.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/node": "^20.4.5",
     "@types/validator": "^13.7.17",
     "prisma": "^5.0.0"
   },

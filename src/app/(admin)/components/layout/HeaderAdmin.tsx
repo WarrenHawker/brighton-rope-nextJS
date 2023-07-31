@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
+import useFetchUser from '@/hooks/users/useFetchUser';
 
 const HeaderAdmin = () => {
   const [showTopNav, setShowTopNav] = useState<boolean>(false);

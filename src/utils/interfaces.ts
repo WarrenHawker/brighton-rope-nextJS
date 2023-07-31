@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 export type AdminView = 'Events' | 'Add Event' | 'Account';
 export type MdeTab = 'write' | 'preview' | undefined;
 export type EventView = 'details' | 'bookings' | 'waiting list';
+export type UserRole = 'ADMIN' | 'SUPERADMIN' | 'INACTIVE';
 
 export type Contact = {
   firstName: string;
@@ -11,7 +12,7 @@ export type Contact = {
 };
 
 export type UserIdEmail = {
-  userId: number;
+  userId: number | string;
   userEmail: string;
 };
 
@@ -142,24 +143,37 @@ export interface WaitlistDataEdit {
 export interface User {
   id: string;
   email: string;
+  name: string;
   role: string;
   claimed: boolean;
   createdOn: string;
   claimedOn?: string;
+  updatedOn?: Date;
+  updatedBy?: UserIdEmail;
 }
 
-//user bios (teachers) base
-export interface UserBios {
+//edited user data sent to database
+export interface UserDataEdit {
+  email?: string;
+  name?: string;
+  password?: string;
+  role?: UserRole;
+  updatedOn?: Date;
+  updatedBy?: UserIdEmail;
+}
+
+//teacher bio base
+export interface TeacherBio {
   id: number;
   name: string;
   pronouns: string;
   position: string;
   imageUrl: string;
-  bio: string;
+  description: string;
 }
 
-//user bios admin
-export interface UserBiosAdmin extends UserBios {
+//teacher bio admin
+export interface TeacherBioAdmin extends TeacherBio {
   email: string;
   public: boolean;
   createdOn: Date;
@@ -177,7 +191,6 @@ export interface ApiParams {
     bookingId: string | undefined;
     waitlistId: string | undefined;
     userEmail: string | undefined;
-    teacherId: string | undefined;
   };
 }
 

@@ -40,8 +40,8 @@ const UsersList = () => {
             <tr>
               <th>ID</th>
               <th>Email</th>
-              <th>Role</th>
-              <th>Date Created</th>
+              <th className="hide-mobile">Role</th>
+              <th className="hide-mobile">Date Created</th>
             </tr>
           </thead>
           <tbody>
@@ -55,8 +55,8 @@ const UsersList = () => {
               >
                 <td>{user.id}</td>
                 <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td>{getFullDate(user.createdOn)}</td>
+                <td className="hide-mobile">{user.role}</td>
+                <td className="hide-mobile">{getFullDate(user.createdOn)}</td>
               </tr>
             ))}
           </tbody>
@@ -64,7 +64,29 @@ const UsersList = () => {
       ) : (
         <h3 className="center">No Users Found</h3>
       )}
-      <Overlay isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+      <Overlay
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        header={
+          <div className="booking-details-header">
+            <h2>User Details for User ID: {selectedUser?.id}</h2>
+            <p className="left">
+              <strong>Creation Date: </strong>
+              {getFullDate(selectedUser?.createdOn)}
+            </p>
+            <p className="left">
+              <strong>Has been claimed? </strong>
+              {selectedUser?.claimed ? 'yes' : 'no'}
+            </p>
+            {selectedUser?.claimed && (
+              <p className="left">
+                <strong>Claimed Date: </strong>
+                {getFullDate(selectedUser?.claimedOn)}
+              </p>
+            )}
+          </div>
+        }
+      >
         {selectedUser ? <UserDetails user={selectedUser} /> : null}
       </Overlay>
     </>

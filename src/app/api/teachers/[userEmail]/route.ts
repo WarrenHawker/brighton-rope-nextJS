@@ -20,9 +20,9 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
 
-  //try fetching user from database
+  //try fetching teacher bio from database
   try {
-    const teacher = await prismaClient.userBios.findUnique({
+    const teacher = await prismaClient.teachers.findUnique({
       where: { email: params.userEmail },
     });
     if (teacher) {
@@ -37,3 +37,25 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
     return NextResponse.json({ error: error }, { status: 500 });
   }
 };
+
+//edit single teacher by userEmail
+export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
+  const body = await request.json();
+  //check email param
+  if (!params.userEmail) {
+    return NextResponse.json({ error: 'no user email given' }, { status: 400 });
+  }
+
+  //check authorisation
+  const session = await getServerSession(authOptions);
+  if (
+    session?.user.role != 'SUPERADMIN' &&
+    session?.user.email != params.userEmail
+  ) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
+  }
+
+  //try updating teacher
+};
+
+//delete single teacher by userEmail

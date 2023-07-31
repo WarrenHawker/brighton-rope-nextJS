@@ -1,4 +1,4 @@
-import NewUserForm from '../components/auth/newUserForm';
+import NewUserForm from '../components/users/newUserForm';
 
 const NewUser = () => {
   return (

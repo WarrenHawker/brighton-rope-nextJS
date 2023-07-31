@@ -1,17 +1,39 @@
-import { useQuery } from '@tanstack/react-query';
+import { User, UserDataEdit } from '@/utils/interfaces';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
-export const updateUserById = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
+export type updateUserOptions = {
+  url: string;
+  updateData: UserDataEdit;
 };
 
-const useUpdateUser = async () => {
-  const { data, status } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => updateUserById('/api/users'),
+export const updateUserByEmail = async (options: updateUserOptions) => {
+  const res = await fetch(options.url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(options.updateData),
   });
-  return { data, status };
+  const data = await res.json();
+  return data.updatedUser;
+};
+
+const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+  const { update } = useSession();
+  return useMutation<User, Error, updateUserOptions>(updateUserByEmail, {
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries(['users']);
+      if (data.email) {
+        update({ email: data.email });
+      }
+      if (data.name) {
+        update({ name: data.name });
+      }
+    },
+  });
 };
 
 export default useUpdateUser;

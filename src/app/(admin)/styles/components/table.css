@@ -47,6 +47,11 @@ caption {
   gap: 2em;
 }
 
+td input,
+td select {
+  margin: 0;
+}
+
 @media screen and (max-width: 400px) {
   .sub-table {
     width: 100%;

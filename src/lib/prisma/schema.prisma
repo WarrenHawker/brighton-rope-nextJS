@@ -43,8 +43,8 @@ model Bookings {
   additionalInfo  String
   createdOn       DateTime
   adminNotes      String
-  updatedOn       DateTime
-  updatedBy       Json //object contains userID, email
+  updatedOn       DateTime?
+  updatedBy       Json? //object contains userID, email
 }
 
 model Waitlists {
@@ -55,8 +55,8 @@ model Waitlists {
   createdOn       String
   additionalInfo  String
   adminNotes      String
-  updatedOn       DateTime
-  updatedBy       Json //object contains userID, email
+  updatedOn       DateTime?
+  updatedBy       Json? //object contains userID, email
 }
 
 
@@ -65,27 +65,29 @@ model Users {
   email               String      @unique
   name                String?
   role                Role        @default(ADMIN)
-  hashedPassword      String
-  bio                 UserBios?  
+  password            String
+  bio                 Teachers?  
   claimed             Boolean     @default(false)
   preferences         Json?
   createdOn           DateTime
   claimedOn           DateTime?
+  updatedOn           DateTime?
+  updatedBy           Json? //object contains userID, email
 }
 
-model UserBios {
+model Teachers {
   id            Int           @id @default(autoincrement())
   name          String
   email         String        @unique  
   user          Users         @relation(fields: [email], references: [email])
   pronouns      String
-  bio           String
+  description   String
   position      Position      @default(OTHER)
   public        Boolean
   imageUrl      String
   createdOn     DateTime
-  updatedOn     DateTime
-  updatedBy     Json //object contains userID, email
+  updatedOn     DateTime?
+  updatedBy     Json? //object contains userID, email
 }
 
 enum Role {

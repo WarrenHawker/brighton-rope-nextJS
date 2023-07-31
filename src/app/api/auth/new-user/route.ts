@@ -29,14 +29,14 @@ export const PUT = async (request: NextRequest) => {
     });
 
     //create user bio
-    const userBio = await prismaClient.userBios.create({
+    const userBio = await prismaClient.teachers.create({
       data: {
         name: body.bio.name,
         email: body.accountEmail,
         pronouns: body.bio.pronouns,
         position: body.bio.position,
         public: body.bio.public,
-        bio: body.bio.bio,
+        description: body.bio.bio,
         imageUrl: body.bio.imageUrl,
       },
     });

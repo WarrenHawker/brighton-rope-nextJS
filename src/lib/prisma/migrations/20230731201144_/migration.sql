@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "Bookings" ALTER COLUMN "updatedBy" DROP NOT NULL,
+ALTER COLUMN "updatedOn" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Teachers" ALTER COLUMN "updatedOn" DROP NOT NULL,
+ALTER COLUMN "updatedBy" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Users" ALTER COLUMN "updatedBy" DROP NOT NULL,
+ALTER COLUMN "updatedOn" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Waitlists" ALTER COLUMN "updatedBy" DROP NOT NULL,
+ALTER COLUMN "updatedOn" DROP NOT NULL;

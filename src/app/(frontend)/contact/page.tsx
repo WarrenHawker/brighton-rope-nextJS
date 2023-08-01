@@ -1,5 +1,5 @@
 import ContactForm from '../components/contactForm';
-import SocialLinks from '../components/socialLinks';
+import SocialLinks from '../components/SocialLinks';
 
 const ContactPage = () => {
   return (

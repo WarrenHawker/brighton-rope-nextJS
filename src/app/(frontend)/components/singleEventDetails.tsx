@@ -4,13 +4,13 @@ import { getFullDate, getLongDate, getTimeString } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
 import { EventDateTime, EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
-import BookingForm from './bookingForm/bookingForm';
+import BookingForm from './bookingForm/BookingForm';
 import Link from 'next/link';
 import { MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { fetchEventByIdClient } from '@/utils/clientFetch';
 import { useQuery } from '@tanstack/react-query';
-import WaitingListForm from './waitlistForm';
+import WaitingListForm from './WaitlistForm';
 
 interface Props {
   eventId: string;

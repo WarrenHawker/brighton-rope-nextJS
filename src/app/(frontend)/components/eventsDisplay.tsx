@@ -8,12 +8,12 @@ import {
 } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
 import { EventsData } from '@/utils/interfaces';
-import BookingForm from './bookingForm/bookingForm';
+import BookingForm from './bookingForm/BookingForm';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEventsClient } from '@/utils/clientFetch';
-import WaitingListForm from './waitlistForm';
+import WaitingListForm from './WaitlistForm';
 
 interface EventsDisplayProps {
   page: string;

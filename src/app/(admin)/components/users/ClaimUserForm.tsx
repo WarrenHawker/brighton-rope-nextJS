@@ -126,7 +126,6 @@ const NewUserForm = () => {
       setError(json.error);
     }
     if (res.ok) {
-      console.log('hello');
       await update({ claimed: 'true' });
       router.refresh();
     }

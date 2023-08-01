@@ -1,4 +1,4 @@
-import EventsDisplay from '../components/eventsDisplay';
+import EventsDisplay from '../components/EventsDisplay';
 import { fetchEventsServer } from '@/utils/serverFetch';
 import getQueryClient from '@/lib/react-query/getQueryClient';
 import { dehydrate } from '@tanstack/react-query';

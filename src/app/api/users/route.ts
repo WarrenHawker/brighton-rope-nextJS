@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
+import validator from 'validator';
+
+
 
 //create new user
 export const POST = async (request: NextRequest) => {
@@ -10,7 +13,32 @@ export const POST = async (request: NextRequest) => {
   if (session?.user.role != 'SUPERADMIN') {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
-  const { email, password, role } = await request.json();
+  let { email, password, role } = await request.json();
+
+  const emptyFields = []
+  //validate inputs
+  if(validator.isEmpty(email)) {
+    emptyFields.push('email')
+  }
+  if(validator.isEmpty(password)) {
+    emptyFields.push('password')
+  }
+  if(validator.isEmpty(role)) {
+    emptyFields.push('role')
+  }
+  if(emptyFields.length > 0) {
+    return NextResponse.json({error: 'empty fields', emptyFields}, {status: 400})
+  }
+  if(!validator.isEmail(email)) {
+    return NextResponse.json({error: 'invalid email'}, {status: 400})
+  }
+
+  //sanitise inputs
+  email = validator.normalizeEmail(email)
+  email = validator.escape(email).trim()
+  password = validator.escape(password).trim()
+
+
   //check is user exists
   const exists = await prismaClient.users.findUnique({
     where: { email: email },
@@ -31,9 +59,14 @@ export const POST = async (request: NextRequest) => {
         createdOn: new Date(),
       },
     });
-    return NextResponse.json({ id: user.id, email, role }, { status: 201 });
+    if(user) {
+      return NextResponse.json({ id: user.id, email, role }, { status: 201 });
+    } else {
+      return NextResponse.json({ error: 'could not create user' }, { status: 500 });
+    }
+    
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 400 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 };
 

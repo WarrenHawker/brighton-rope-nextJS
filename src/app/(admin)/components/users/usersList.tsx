@@ -62,7 +62,7 @@ const UsersList = () => {
           </tbody>
         </table>
       ) : (
-        <h3 className="center">No Users Found</h3>
+        <h3 className="center">{data.error}</h3>
       )}
       <Overlay
         isOpen={isModalOpen}
@@ -87,7 +87,7 @@ const UsersList = () => {
           </div>
         }
       >
-        {selectedUser ? <UserDetails user={selectedUser} /> : null}
+        {selectedUser ? <UserDetails user={selectedUser} setIsModalOpen={setIsModalOpen} setSelectedUser={setSelectedUser}/> : null}
       </Overlay>
     </>
   );

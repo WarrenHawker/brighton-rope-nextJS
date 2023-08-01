@@ -105,5 +105,29 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
 
 //delete single user by userEmail
 export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
-  return NextResponse.json({});
+  //check email param
+  if (!params.userEmail) {
+    return NextResponse.json({ error: 'no user email given' }, { status: 400 });
+  }
+
+  //check authorisation
+  const session = await getServerSession(authOptions);
+  if (
+    session?.user.role != 'SUPERADMIN'
+  ) {
+    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
+  }
+
+  //try deleting user from database
+  try {
+    const deletedUser = await prismaClient.users.delete({where: {email: params.userEmail}})
+    if(deletedUser) {
+      return NextResponse.json({message: 'user deleted successfully'}, {status: 200})
+    } else {
+      return NextResponse.json({error: 'user not found'}, {status: 404})
+    }
+    
+  } catch (error) {
+    return NextResponse.json({error: error}, {status: 500})
+  }
 };

@@ -24,7 +24,6 @@ const useUpdateUser = () => {
   const { update } = useSession();
   return useMutation<User, Error, updateUserOptions>(updateUserByEmail, {
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries(['users']);
       if (data.email) {
         update({ email: data.email });

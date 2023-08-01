@@ -5,12 +5,15 @@ import { User, UserDataEdit, UserRole } from '@/utils/interfaces';
 import { useState } from 'react';
 import TeacherBio from './teacherBio';
 import useUpdateUser from '@/hooks/users/useUpdateUser';
+import useDeleteUser from '@/hooks/users/useDeleteUser';
 
 interface Props {
   user: User;
+  setSelectedUser:(user: User | null) => void;
+  setIsModalOpen: (value: boolean) => void;
 }
 
-const UserDetails = ({ user }: Props) => {
+const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
   const { data, status } = useFetchTeacher(user.email);
   const [editing, setEditing] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState({
@@ -18,7 +21,8 @@ const UserDetails = ({ user }: Props) => {
     name: user.name,
     role: user.role as UserRole,
   });
-  const { mutate } = useUpdateUser();
+  const { mutate: updateUser } = useUpdateUser();
+  const {mutate: deleteUser} = useDeleteUser();
 
   const saveEdit = () => {
     setEditing(false);
@@ -35,8 +39,7 @@ const UserDetails = ({ user }: Props) => {
     if (userDetails.role != user.role) {
       updateData.role = userDetails.role;
     }
-
-    mutate({ url: `/api/users/${user.email}`, updateData });
+    updateUser({ url: `/api/users/${user.email}`, updateData });
   };
 
   const cancelEdit = () => {
@@ -48,7 +51,13 @@ const UserDetails = ({ user }: Props) => {
     });
   };
 
-  const deleteUser = () => {};
+  const handleDeleteUser = () => {
+    if(confirm("are you sure you want to delete this user? This process is irreversible!")) {
+      deleteUser(`/api/users/${user.email}`)
+      setIsModalOpen(false);
+      setSelectedUser(null);
+    } else return   
+  };
 
   if (status == 'loading') {
     return (
@@ -86,7 +95,7 @@ const UserDetails = ({ user }: Props) => {
             Edit
           </button>
         )}
-        <button className="btn btn-delete" onClick={deleteUser}>
+        <button className="btn btn-delete" onClick={handleDeleteUser}>
           Delete
         </button>
       </div>

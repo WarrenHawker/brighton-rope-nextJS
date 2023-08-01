@@ -1,17 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export const deleteUserById = async (url: string) => {
-  const res = await fetch(url);
+export const deleteUserByEmail = async (url: string) => {
+  const res = await fetch(url, {method: 'DELETE'});
   const data = await res.json();
   return data;
 };
 
-const useDeleteUser = async () => {
-  const { data, status } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => deleteUserById('/api/users'),
+const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, string>(deleteUserByEmail, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+    },
   });
-  return { data, status };
 };
 
 export default useDeleteUser;

@@ -1,10 +1,12 @@
 import { prismaClient } from '@/lib/prisma/client';
-import { ApiParams, UserDataEdit, UserIdEmail } from '@/utils/interfaces';
+import { ApiParams, UpdateUserData, UserDB, UserDataEdit, UserIdEmail, UserPatchReq } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import bcrypt from 'bcrypt';
 import { excludePropertyFromObject } from '@/utils/functions';
+import { Prisma } from '@prisma/client';
+import validator from 'validator';
 
 //get single user by userEmail
 export const GET = async (request: NextRequest, { params }: ApiParams) => {
@@ -28,8 +30,9 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
       where: { email: params.userEmail },
     });
     if (userData) {
-      const user = excludePropertyFromObject(userData, ['hashedPassword']);
-      return NextResponse.json({ user }, { status: 200 });
+      //remove password field from user data
+      const {password, ...user} = userData
+      return NextResponse.json(user as UserDB, { status: 200 });
     } else {
       return NextResponse.json({ error: 'No user found' }, { status: 404 });
     }
@@ -40,22 +43,22 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
 
 //edit single user by userEmail
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
-  const body = await request.json();
-  const userEmail = params.userEmail;
+  const body:UserPatchReq = await request.json();
 
   //check if there's an email param
-  if (!userEmail) {
+  if (!params.userEmail) {
     return NextResponse.json({ error: 'no user email given' }, { status: 400 });
   }
 
   //check authorisation
   const session = await getServerSession(authOptions);
-  if (session?.user.role != 'SUPERADMIN' && session?.user.email != userEmail) {
+  if (session?.user.role != 'SUPERADMIN' && session?.user.email != params.userEmail) {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
 
   //if password in body, hash the password
   if (body.password) {
+    body.password = validator.escape(body.password).trim();
     body.password = await bcrypt.hash(body.password, 12);
   }
 
@@ -67,6 +70,10 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
 
   //if body has email, check database for existing email
   if (body.email) {
+    if(!validator.isEmail(body.email)) {
+      return NextResponse.json({error: 'invalid email'}, {status: 400})
+    }
+    body.email = validator.normalizeEmail(body.email).toString();
     const user = await prismaClient.users.findUnique({
       where: { email: body.email },
     });
@@ -78,23 +85,26 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
     }
   }
 
-  const updateData: UserDataEdit = {
+  //sanitise inputs 
+  if(body.name) {
+    body.name = validator.escape(body.name).trim();
+  }
+
+  const updateData:UpdateUserData = {
     ...body,
     updatedOn: new Date(),
-    updatedBy: JSON.stringify(loggedInUser),
+    updatedBy: loggedInUser as Prisma.JsonObject,
   };
 
   //try updating user
   try {
     const updatedUserData = await prismaClient.users.update({
-      where: { email: userEmail },
+      where: { email: params.userEmail },
       data: updateData,
     });
     if (updatedUserData) {
-      const updatedUser = excludePropertyFromObject(updatedUserData, [
-        'password',
-      ]);
-      return NextResponse.json({ updatedUser }, { status: 200 });
+      const {password, ...updatedUser} = updatedUserData
+      return NextResponse.json(updatedUser as UserDB, { status: 200 });
     } else {
       return NextResponse.json({ error: 'No user found' }, { status: 404 });
     }
@@ -120,9 +130,10 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
 
   //try deleting user from database
   try {
-    const deletedUser = await prismaClient.users.delete({where: {email: params.userEmail}})
-    if(deletedUser) {
-      return NextResponse.json({message: 'user deleted successfully'}, {status: 200})
+    const deletedUserData = await prismaClient.users.delete({where: {email: params.userEmail}})
+    if(deletedUserData) {
+      const {password, ...deletedUser} = deletedUserData
+      return NextResponse.json(deletedUser as UserDB, {status: 200})
     } else {
       return NextResponse.json({error: 'user not found'}, {status: 404})
     }

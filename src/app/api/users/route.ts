@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 import validator from 'validator';
+import { UserPostReq, CreateUserData, UserDB } from '@/utils/interfaces';
+import { Prisma } from '@prisma/client';
 
 
 
@@ -13,7 +15,7 @@ export const POST = async (request: NextRequest) => {
   if (session?.user.role != 'SUPERADMIN') {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
-  let { email, password, role } = await request.json();
+  let { email, password, role }:UserPostReq = await request.json();
 
   const emptyFields = []
   //validate inputs
@@ -34,9 +36,9 @@ export const POST = async (request: NextRequest) => {
   }
 
   //sanitise inputs
-  email = validator.normalizeEmail(email)
-  email = validator.escape(email).trim()
-  password = validator.escape(password).trim()
+  email = validator.normalizeEmail(email).toString();
+  email = validator.escape(email).trim();
+  password = validator.escape(password).trim();
 
 
   //check is user exists
@@ -51,16 +53,19 @@ export const POST = async (request: NextRequest) => {
   const hash = await bcrypt.hash(password, 12);
 
   try {
-    const user = await prismaClient.users.create({
+    const userData = await prismaClient.users.create({
       data: {
         email: email,
         password: hash,
         role: role,
         createdOn: new Date(),
-      },
+      } as CreateUserData,
     });
-    if(user) {
-      return NextResponse.json({ id: user.id, email, role }, { status: 201 });
+
+    if(userData) {
+      //remove password field from user data
+      const {password, ...user} = userData
+      return NextResponse.json(user as UserDB, { status: 201 });
     } else {
       return NextResponse.json({ error: 'could not create user' }, { status: 500 });
     }
@@ -79,7 +84,7 @@ export const GET = async (request: NextRequest) => {
 
   try {
     const usersData = await prismaClient.users.findMany();
-    const users = usersData.map((user: any) => {
+    const users:UserDB[] = usersData.map((user: UserDB) => {
       return {
         id: user.id,
         email: user.email,
@@ -88,6 +93,9 @@ export const GET = async (request: NextRequest) => {
         claimed: user.claimed,
         createdOn: user.createdOn,
         claimedOn: user.claimedOn,
+        updatedOn: user.updatedOn,
+        updatedBy: user.updatedBy,
+        preferences: user.preferences,
       };
     });
     if (!users) {

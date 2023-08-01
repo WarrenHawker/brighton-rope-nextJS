@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { ReactNode } from 'react';
 
 export type AdminView = 'Events' | 'Add Event' | 'Account';
@@ -219,3 +220,52 @@ export interface IRequest {
     url: string;
   };
 }
+
+
+// //////////////////////////////////////////////////////////
+export type UserPostReq = {
+  email: string;
+  password: string;
+  role: UserRole
+}
+
+export type CreateUserData = {
+  email: string;
+  password: string;
+  role: UserRole;
+  createdOn: Date;
+}
+
+export type UserDB = {
+  id: number;
+  email: string;
+  name: string | null;
+  role: UserRole;
+  claimed: boolean;
+  createdOn: Date;
+  claimedOn: Date | null;
+  updatedOn: Date | null;
+  updatedBy: JsonValue;
+  preferences: JsonValue;
+}
+
+export interface UserPatchReq {
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: UserRole;
+  preferences?: any;
+}
+
+export interface UpdateUserData extends UserPatchReq {
+  updatedOn: Date;
+  updatedBy: Prisma.JsonObject;
+}
+
+export declare type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | Prisma.JsonObject
+  | Prisma.JsonArray

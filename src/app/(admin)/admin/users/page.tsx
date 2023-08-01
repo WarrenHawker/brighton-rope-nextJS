@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
-import RegisterForm from '../../components/users/registerForm';
-import UsersList from '../../components/users/usersList';
+import RegisterForm from '../../components/users/RegisterUserForm';
+import UsersList from '../../components/users/UsersList';
 import { Session } from '@/utils/interfaces';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 

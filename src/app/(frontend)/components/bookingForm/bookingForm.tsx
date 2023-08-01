@@ -3,9 +3,9 @@
 import { isContact } from '@/utils/functions';
 import { EventsData, UserChoices, TicketChoices } from '@/utils/interfaces';
 import { useState } from 'react';
-import BookingPageOne from './bookingFormPages/bookingPageOne';
-import BookingPageThree from './bookingFormPages/bookingPageThree';
-import BookingPageTwo from './bookingFormPages/bookingPageTwo';
+import BookingPageOne from './bookingFormPages/BookingPageOne';
+import BookingPageThree from './bookingFormPages/BookingPageThree';
+import BookingPageTwo from './bookingFormPages/BookingPageTwo';
 
 interface BookingFormProps {
   event: EventsData;

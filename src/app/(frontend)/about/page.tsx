@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import TeachersDisplay from '../components/teachersDisplay';
+import TeachersDisplay from '../components/TeachersDisplay';
 
 const AboutPage = () => {
   return (

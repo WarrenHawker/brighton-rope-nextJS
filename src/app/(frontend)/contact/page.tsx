@@ -1,4 +1,4 @@
-import ContactForm from '../components/contactForm';
+import ContactForm from '../components/ContactForm';
 import SocialLinks from '../components/SocialLinks';
 
 const ContactPage = () => {

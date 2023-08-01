@@ -4,7 +4,7 @@ import Overlay from '@/utils/globalComponents/Overlay';
 import { getFullDate } from '@/utils/functions';
 import { BookingsData, EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
-import WaitlistDetails from './waitlistDetails';
+import WaitlistDetails from './WaitlistDetails';
 
 interface WaitlistProps {
   selectedEvent: EventsData | null;

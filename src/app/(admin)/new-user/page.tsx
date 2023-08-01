@@ -1,4 +1,4 @@
-import NewUserForm from '../components/users/newUserForm';
+import NewUserForm from '../components/users/ClaimUserForm';
 
 const NewUser = () => {
   return (

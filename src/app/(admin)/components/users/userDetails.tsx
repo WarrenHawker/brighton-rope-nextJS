@@ -3,7 +3,7 @@
 import useFetchTeacher from '@/hooks/teachers/useFetchTeacher';
 import { User, UserDataEdit, UserRole } from '@/utils/interfaces';
 import { useState } from 'react';
-import TeacherBio from './teacherBio';
+import TeacherBio from './TeacherBio';
 import useUpdateUser from '@/hooks/users/useUpdateUser';
 import useDeleteUser from '@/hooks/users/useDeleteUser';
 import toast from 'react-hot-toast';

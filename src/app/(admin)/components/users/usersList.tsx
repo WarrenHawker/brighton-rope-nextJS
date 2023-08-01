@@ -5,7 +5,7 @@ import { getFullDate } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
 import { User } from '@/utils/interfaces';
 import { useState } from 'react';
-import UserDetails from './userDetails';
+import UserDetails from './UserDetails';
 
 const UsersList = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);

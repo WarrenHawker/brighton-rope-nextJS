@@ -2,12 +2,12 @@ import { User, UserDataEdit } from '@/utils/interfaces';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
-export type updateUserOptions = {
+export type UpdateUserOptions = {
   url: string;
   updateData: UserDataEdit;
 };
 
-export const updateUserByEmail = async (options: updateUserOptions) => {
+export const updateUserByEmail = async (options: UpdateUserOptions) => {
   const res = await fetch(options.url, {
     method: 'PATCH',
     headers: {
@@ -16,13 +16,16 @@ export const updateUserByEmail = async (options: updateUserOptions) => {
     body: JSON.stringify(options.updateData),
   });
   const data = await res.json();
-  return data.updatedUser;
+  if(!res.ok) {
+    throw new Error(data.error)
+  }
+  return data.updatedUser
 };
 
 const useUpdateUser = () => {
   const queryClient = useQueryClient();
   const { update } = useSession();
-  return useMutation<User, Error, updateUserOptions>(updateUserByEmail, {
+  return useMutation<User, Error, UpdateUserOptions>(updateUserByEmail, {
     onSuccess: (data) => {
       queryClient.invalidateQueries(['users']);
       if (data.email) {

@@ -1,17 +1,32 @@
-import { useQuery } from '@tanstack/react-query';
+import { User, UserDataNew } from '@/utils/interfaces';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export const createUser = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
+export type CreateUserOptions = {
+  url: string;
+  userData: UserDataNew;
 };
 
-const useCreateUser = async () => {
-  const { data, status } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => createUser('/api/users'),
+export const createUser = async (options: CreateUserOptions ) => {
+  const res = await fetch(options.url, {
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json',
+    },  
+    body: JSON.stringify(options.userData),});
+  const data = await res.json();
+  if(!res.ok) {
+    throw new Error(data.error)
+  }
+  return data
+};
+
+const useCreateUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, CreateUserOptions>(createUser, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+    },
   });
-  return { data, status };
 };
 
 export default useCreateUser;

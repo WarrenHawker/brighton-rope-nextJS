@@ -162,6 +162,12 @@ export interface UserDataEdit {
   updatedBy?: UserIdEmail;
 }
 
+export interface UserDataNew {
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
 //teacher bio base
 export interface TeacherBio {
   id: number;

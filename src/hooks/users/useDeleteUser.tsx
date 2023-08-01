@@ -3,7 +3,10 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 export const deleteUserByEmail = async (url: string) => {
   const res = await fetch(url, {method: 'DELETE'});
   const data = await res.json();
-  return data;
+  if(!res.ok) {
+    throw new Error(data.error)
+  }
+  return data
 };
 
 const useDeleteUser = () => {

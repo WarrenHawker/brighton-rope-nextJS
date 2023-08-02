@@ -2,7 +2,7 @@
 import Overlay from '@/utils/globalComponents/Overlay';
 import ViewTabs from '@/utils/globalComponents/ViewTabs';
 import { useEffect, useState } from 'react';
-import 'md-editor-rt/lib/style.css';
+// import 'md-editor-rt/lib/style.css';
 import { EventsData } from '@/utils/interfaces';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEventsClient } from '@/utils/clientFetch';

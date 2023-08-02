@@ -391,11 +391,11 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
 
         <div className="description-container">
           <label className="description-label">Description</label>
-          <MdEditor
+          {/* <MdEditor
             modelValue={description}
             language="en-US"
             onChange={setDescription}
-          />
+          /> */}
         </div>
         <fieldset className="full-width-fieldset">
           <legend>Is this event free or paid?</legend>

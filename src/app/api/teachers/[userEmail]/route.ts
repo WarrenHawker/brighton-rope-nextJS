@@ -1,5 +1,5 @@
 import { prismaClient } from '@/lib/prisma/client';
-import { ApiParams } from '@/utils/interfaces';
+import { ApiParams, TeacherBioAdmin } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
@@ -26,7 +26,7 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
       where: { email: params.userEmail },
     });
     if (teacher) {
-      return NextResponse.json({ teacher }, { status: 200 });
+      return NextResponse.json(teacher as TeacherBioAdmin, { status: 200 });
     } else {
       return NextResponse.json(
         { error: 'No teacher bio found' },

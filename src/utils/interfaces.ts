@@ -184,13 +184,9 @@ export interface TeacherBioAdmin extends TeacherBio {
   email: string;
   public: boolean;
   createdOn: Date;
-  updatedOn: Date;
+  updatedOn: Date | null;
   updatedBy: UserIdEmail;
 }
-
-//new user bio data sent to database
-
-//edited user bio data sent to database
 
 export interface ApiParams {
   params: {
@@ -221,20 +217,19 @@ export interface IRequest {
   };
 }
 
-
 // //////////////////////////////////////////////////////////
 export type UserPostReq = {
   email: string;
   password: string;
-  role: UserRole
-}
+  role: UserRole;
+};
 
 export type CreateUserData = {
   email: string;
   password: string;
   role: UserRole;
   createdOn: Date;
-}
+};
 
 export type UserDB = {
   id: number;
@@ -247,7 +242,7 @@ export type UserDB = {
   updatedOn: Date | null;
   updatedBy: JsonValue;
   preferences: JsonValue;
-}
+};
 
 export interface UserPatchReq {
   name?: string;
@@ -268,4 +263,4 @@ export declare type JsonValue =
   | boolean
   | null
   | Prisma.JsonObject
-  | Prisma.JsonArray
+  | Prisma.JsonArray;

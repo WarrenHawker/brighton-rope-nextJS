@@ -9,6 +9,7 @@ import {
 import { MdEditor } from 'md-editor-rt';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import MDEditor from '@uiw/react-md-editor';
 
 interface AddEventProps {
   setAddEvent: (value: boolean) => void;
@@ -354,9 +355,14 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
 
         <div className="description-container">
           <label className="description-label">Description</label>
-          <MdEditor
+          {/* <MdEditor
             modelValue={description}
             language="en-US"
+            onChange={setDescription}
+          /> */}
+          <MDEditor
+            height={200}
+            value={description}
             onChange={setDescription}
           />
         </div>

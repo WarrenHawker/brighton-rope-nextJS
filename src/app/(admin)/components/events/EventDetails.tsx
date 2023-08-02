@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { getFullDate } from '../../../../utils/functions';
 import { MdPreview } from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
+// import 'md-editor-rt/lib/style.css';
 
 import { EventsData } from '@/utils/interfaces';
 import EditEvent from './EditEvent';
@@ -152,7 +152,7 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
             <tbody>
               <tr>
                 <td>
-                  <MdPreview modelValue={selectedEvent.description} />
+                  {/* <MdPreview modelValue={selectedEvent.description} /> */}
                 </td>
               </tr>
             </tbody>

@@ -4,10 +4,7 @@ import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 import validator from 'validator';
-import { UserPostReq, CreateUserData, UserDB } from '@/utils/interfaces';
-import { Prisma } from '@prisma/client';
-
-
+import { handleError } from '@/utils/functions';
 
 //create new user
 export const POST = async (request: NextRequest) => {
@@ -15,24 +12,27 @@ export const POST = async (request: NextRequest) => {
   if (session?.user.role != 'SUPERADMIN') {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
-  let { email, password, role }:UserPostReq = await request.json();
+  let { email, password, role } = await request.json();
 
-  const emptyFields = []
+  const emptyFields = [];
   //validate inputs
-  if(validator.isEmpty(email)) {
-    emptyFields.push('email')
+  if (validator.isEmpty(email)) {
+    emptyFields.push('email');
   }
-  if(validator.isEmpty(password)) {
-    emptyFields.push('password')
+  if (validator.isEmpty(password)) {
+    emptyFields.push('password');
   }
-  if(validator.isEmpty(role)) {
-    emptyFields.push('role')
+  if (validator.isEmpty(role)) {
+    emptyFields.push('role');
   }
-  if(emptyFields.length > 0) {
-    return NextResponse.json({error: 'empty fields', emptyFields}, {status: 400})
+  if (emptyFields.length > 0) {
+    return NextResponse.json(
+      { error: 'empty fields', emptyFields },
+      { status: 400 }
+    );
   }
-  if(!validator.isEmail(email)) {
-    return NextResponse.json({error: 'invalid email'}, {status: 400})
+  if (!validator.isEmail(email)) {
+    return NextResponse.json({ error: 'invalid email' }, { status: 400 });
   }
 
   //sanitise inputs
@@ -40,8 +40,7 @@ export const POST = async (request: NextRequest) => {
   email = validator.escape(email).trim();
   password = validator.escape(password).trim();
 
-
-  //check is user exists
+  // check is user exists
   const exists = await prismaClient.users.findUnique({
     where: { email: email },
   });
@@ -59,19 +58,22 @@ export const POST = async (request: NextRequest) => {
         password: hash,
         role: role,
         createdOn: new Date(),
-      } as CreateUserData,
+      },
     });
 
-    if(userData) {
+    if (userData) {
       //remove password field from user data
-      const {password, ...user} = userData
-      return NextResponse.json(user as UserDB, { status: 201 });
+      const { password, ...user } = userData;
+      return NextResponse.json({ user }, { status: 201 });
     } else {
-      return NextResponse.json({ error: 'could not create user' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'could not create user' },
+        { status: 500 }
+      );
     }
-    
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    const { message, status } = handleError(error);
+    return NextResponse.json({ error: message }, { status: status });
   }
 };
 
@@ -84,7 +86,7 @@ export const GET = async (request: NextRequest) => {
 
   try {
     const usersData = await prismaClient.users.findMany();
-    const users:UserDB[] = usersData.map((user: UserDB) => {
+    const users = usersData.map((user) => {
       return {
         id: user.id,
         email: user.email,
@@ -103,6 +105,7 @@ export const GET = async (request: NextRequest) => {
     }
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    const { message, status } = handleError(error);
+    return NextResponse.json({ error: message }, { status: status });
   }
 };

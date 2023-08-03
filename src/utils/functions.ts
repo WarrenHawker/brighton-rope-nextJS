@@ -1,3 +1,6 @@
+import { Prisma } from '@prisma/client';
+import { NextResponse } from 'next/server';
+
 export const getShortDate = (date: Date | string): String => {
   if (typeof date == 'string') {
     date = new Date(date);
@@ -136,4 +139,19 @@ export const excludePropertyFromObject = (obj: {}, keys: any[]) => {
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => !keys.includes(key))
   );
+};
+
+export const handleError = (
+  error: any
+): { message: string; status: number } => {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return {
+      message: `code: ${error.code}, from: ${error.meta?.target}, message: ${error.message}`,
+      status: 500,
+    };
+  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return { message: error.message, status: 500 };
+  } else if (error instanceof Prisma.PrismaClientValidationError) {
+    return { message: error.message, status: 400 };
+  } else return { message: error, status: 500 };
 };

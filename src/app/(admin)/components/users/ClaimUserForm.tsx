@@ -4,9 +4,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import validator from 'validator';
-import { MdEditor } from 'md-editor-rt';
 
-const NewUserForm = () => {
+const ClaimUserForm = () => {
   const router = useRouter();
   const { data: session, update } = useSession();
   const [accountData, setAccountData] = useState({
@@ -111,7 +110,7 @@ const NewUserForm = () => {
         name: bioData.name,
         pronouns: bioData.pronouns,
         position: bioData.position,
-        bio: bioDescription,
+        description: bioDescription,
         imageUrl: imageUrl,
       },
     };
@@ -236,11 +235,10 @@ const NewUserForm = () => {
         {error ? <p className="error">{error}</p> : null}
         <div className="description-container">
           <label className="description-label">Teacher Bio Description</label>
-          <MdEditor
+          {/* <MdEditor
             modelValue={bioDescription}
-            language="en-US"
             onChange={setBioDescription}
-          />
+          /> */}
         </div>
 
         <fieldset className="image-fieldset">
@@ -268,4 +266,4 @@ const NewUserForm = () => {
   );
 };
 
-export default NewUserForm;
+export default ClaimUserForm;

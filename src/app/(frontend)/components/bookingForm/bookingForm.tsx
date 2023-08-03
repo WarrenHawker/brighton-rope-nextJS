@@ -94,8 +94,8 @@ const BookingForm = ({ event }: BookingFormProps) => {
   const submitForm = async () => {
     const booking = {
       eventId: event.id,
-      tickets: JSON.stringify(userChoices.tickets),
-      contact: JSON.stringify(userChoices.contact),
+      tickets: userChoices.tickets,
+      contact: userChoices.contact,
       amountToPay: userChoices.amountToPay,
       additionalInfo: userChoices.additionalInfo,
       hasPaid: false,

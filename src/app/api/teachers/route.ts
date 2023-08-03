@@ -1,7 +1,6 @@
 import { prismaClient } from '@/lib/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { TeacherBio } from '@/utils/interfaces';
+import { handleError } from '@/utils/functions';
 
 //get all teacher bios, excludes email field
 export const GET = async (request: NextRequest) => {
@@ -11,7 +10,7 @@ export const GET = async (request: NextRequest) => {
       where: { public: true },
     });
     if (teachersData) {
-      const teachers: TeacherBio[] = teachersData.map((teacher) => {
+      const teachers = teachersData.map((teacher) => {
         return {
           id: teacher.id,
           name: teacher.name,
@@ -29,6 +28,7 @@ export const GET = async (request: NextRequest) => {
       );
     }
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    const { message, status } = handleError(error);
+    return NextResponse.json({ error: message }, { status: status });
   }
 };

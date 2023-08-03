@@ -1,8 +1,10 @@
 import { prismaClient } from '@/lib/prisma/client';
-import { ApiParams, TeacherBioAdmin } from '@/utils/interfaces';
+import { ApiParams, Position, TeacherBioAdmin, TeacherPatchReq, UserIdEmail } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
+import validator from 'validator';
+import { Prisma } from '@prisma/client';
 
 //get single teacher by userEmail
 export const GET = async (request: NextRequest, { params }: ApiParams) => {
@@ -40,7 +42,7 @@ export const GET = async (request: NextRequest, { params }: ApiParams) => {
 
 //edit single teacher by userEmail
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
-  const body = await request.json();
+  const body:TeacherPatchReq = await request.json();
   //check email param
   if (!params.userEmail) {
     return NextResponse.json({ error: 'no user email given' }, { status: 400 });
@@ -55,7 +57,48 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
     return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
   }
 
+  //sanitise inputs
+  if(body.name) {
+    body.name = validator.escape(body.name).trim();
+  }
+  if(body.pronouns) {
+    body.pronouns = validator.escape(body.pronouns).trim();
+  }
+  if(body.description) {
+    body.description = encodeURIComponent(body.description).trim();
+  }
+  if(body.position) {
+    body.position = validator.escape(body.position).trim() as Position;
+  }
+  if(body.imageUrl) {
+    body.imageUrl = encodeURIComponent(body.imageUrl).trim()
+  }
+
+   //get logged in user
+   const loggedInUser: UserIdEmail = {
+    userId: session!.user.id,
+    userEmail: session!.user.email,
+  };
+
+  //add logged in user and updated date to updateData
+  const updateData = {
+    ...body,
+    updatedOn: new Date(),
+    updatedBy: loggedInUser as Prisma.JsonObject,
+  }
+
   //try updating teacher
+  try {
+    const updatedTeacher = await prismaClient.teachers.update({
+      where: {email: params.userEmail}, 
+      data:updateData
+    })
+    if(updatedTeacher) {
+      return NextResponse.json(updatedTeacher as TeacherBioAdmin, {status: 200})
+    } else return NextResponse.json({error: 'could not update teacher'}, {status: 400})
+  } catch (error) {
+    return NextResponse.json({error: error}, {status: 500})
+  }
 };
 
 //delete single teacher by userEmail

@@ -1,10 +1,11 @@
-import { Prisma } from '@prisma/client';
 import { ReactNode } from 'react';
+import { Prisma } from '@prisma/client';
 
 export type AdminView = 'Events' | 'Add Event' | 'Account';
 export type MdeTab = 'write' | 'preview' | undefined;
 export type EventView = 'details' | 'bookings' | 'waiting list';
 export type UserRole = 'ADMIN' | 'SUPERADMIN' | 'INACTIVE';
+export type Position = 'RIGGER' | 'SWITCH' | 'BOTTOM' | 'OTHER';
 
 export type Contact = {
   firstName: string;
@@ -255,6 +256,16 @@ export interface UserPatchReq {
 export interface UpdateUserData extends UserPatchReq {
   updatedOn: Date;
   updatedBy: Prisma.JsonObject;
+}
+
+export type TeacherPatchReq = {
+  name?: string;
+  pronouns?: string;
+  description?: string;
+  public?: boolean;
+  position?: Position;
+  imageUrl?: string;
+
 }
 
 export declare type JsonValue =

@@ -54,6 +54,19 @@ export type Address = {
   postcode: string;
 };
 
+export interface UserDB {
+  email: string;
+  role: UserRole;
+  name: string | null;
+  id: number;
+  claimed: boolean;
+  preferences: Prisma.JsonValue;
+  createdOn: Date;
+  claimedOn: Date | null;
+  updatedOn: Date | null;
+  updatedBy: Prisma.JsonValue;
+}
+
 // export type Contact = {
 //   firstName: string;
 //   lastName: string;

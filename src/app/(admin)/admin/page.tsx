@@ -1,4 +1,3 @@
-import useUsers from '@/hooks/users/useFetchUsers';
 import AdminEvents from '../views/Events';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Session, getServerSession } from 'next-auth';
@@ -16,11 +15,7 @@ const AdminHome = async () => {
       </>
     );
   }
-  return (
-    <>
-      <AdminEvents />
-    </>
-  );
+  return <>{/* <AdminEvents /> */}</>;
 };
 
 export default AdminHome;

@@ -1,11 +1,10 @@
 import { getServerSession } from 'next-auth';
 import RegisterForm from '../../components/users/RegisterUserForm';
 import UsersList from '../../components/users/UsersList';
-import { Session } from '@/utils/interfaces';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const AdminUsers = async () => {
-  const session: Session | null = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   if (session?.user.role != 'SUPERADMIN') {
     return (
       <>

@@ -19,7 +19,7 @@ const RegisterForm = () => {
   const roleInput = useRef<HTMLSelectElement>(null);
   const submitButton = useRef<HTMLButtonElement>(null);
 
-  const {mutateAsync: createMutate, status: createStatus} = useCreateUser();
+  const { mutateAsync: createMutate, status: createStatus } = useCreateUser();
 
   const handleChange = (field: string, value: string) => {
     if (value.trim() != '') {
@@ -34,7 +34,7 @@ const RegisterForm = () => {
   };
 
   const handleFormSubmit = async (e: { preventDefault: () => void }) => {
-    // e.preventDefault();
+    setError(null);
     const newEmptyFields = [];
     //check if email field is empty
     if (validator.isEmpty(data.email)) {
@@ -65,7 +65,7 @@ const RegisterForm = () => {
       return;
     }
 
-    if(createStatus == 'loading') {
+    if (createStatus == 'loading') {
       emailInput.current!.disabled = true;
       passwordInput.current!.disabled = true;
       roleInput.current!.disabled = true;
@@ -73,7 +73,7 @@ const RegisterForm = () => {
     }
     //send POST request to server
     try {
-      await createMutate({url: '/api/users', userData:data})
+      await createMutate({ url: '/api/users', userData: data });
       setEmptyFields([]);
       setData({ email: '', password: '', role: 'ADMIN' });
       emailInput.current!.value = '';
@@ -81,10 +81,10 @@ const RegisterForm = () => {
       roleInput.current!.value = 'ADMIN';
       setError(null);
       toast.success('New user created');
-      return
-    } catch (error:any) {
-      setError(error.message)
-      return
+      return;
+    } catch (error: any) {
+      setError(error.message);
+      return;
     }
   };
 
@@ -92,7 +92,7 @@ const RegisterForm = () => {
     <>
       <Toaster />
       <h2>Register New User</h2>
-      <form className="login-form" autoComplete='off'>
+      <form className="login-form" autoComplete="off">
         <label htmlFor="email">
           Email <span className="required">*</span>
         </label>
@@ -101,7 +101,7 @@ const RegisterForm = () => {
           className={emptyFields.includes('email') ? 'invalid' : ''}
           name="email"
           type="email"
-          autoComplete='username'
+          autoComplete="username"
           defaultValue={data.email}
           onChange={(e) => handleChange('email', e.target.value)}
         />
@@ -112,7 +112,7 @@ const RegisterForm = () => {
           ref={passwordInput}
           className={emptyFields.includes('password') ? 'invalid' : ''}
           name="new-password"
-          autoComplete='new-password'
+          autoComplete="new-password"
           type="password"
           defaultValue={data.password}
           onChange={(e) => handleChange('password', e.target.value)}
@@ -124,16 +124,18 @@ const RegisterForm = () => {
           id="role"
           name="role"
           onChange={(e) =>
-            setData((prev) => ({ ...prev, role: e.target.value as UserRole}))
+            setData((prev) => ({ ...prev, role: e.target.value as UserRole }))
           }
         >
           <option value="ADMIN">Admin</option>
           <option value="SUPERADMIN">Super Admin</option>
         </select>
-        {createStatus == 'loading' && <p className='center'>Creating user...</p>}
+        {createStatus == 'loading' && (
+          <p className="center">Creating user...</p>
+        )}
         {error ? <p className="error">{error}</p> : null}
         <button
-        ref={submitButton}
+          ref={submitButton}
           type="button"
           onClick={handleFormSubmit}
           className="btn btn-large"

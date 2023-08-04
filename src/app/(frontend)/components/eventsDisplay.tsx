@@ -7,12 +7,10 @@ import {
   trimString,
 } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { EventsData } from '@/utils/interfaces';
 import BookingForm from './bookingForm/BookingForm';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { fetchEventsClient } from '@/utils/clientFetch';
 import WaitingListForm from './WaitlistForm';
 
 interface EventsDisplayProps {
@@ -22,17 +20,11 @@ interface EventsDisplayProps {
 const EventsDisplay = ({ page }: EventsDisplayProps) => {
   const eventsAmount = page == 'home' ? 3 : -1;
   const query = page == 'home' ? 'upcoming home' : 'upcoming all';
-  const { data } = useQuery({
-    queryKey: ['events', query],
-    queryFn: () => fetchEventsClient({ amount: eventsAmount, old: 'false' }),
-  });
-  const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(
-    null
-  );
-  const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
+  const [bookingFormEvent, setBookingFormEvent] = useState(null);
+  const [bookingFormOpen, setBookingFormOpen] = useState(false);
 
   const showBookingForm = (id: any) => {
-    setBookingFormEvent(data.filter((event: EventsData) => event.id == id)[0]);
+    setBookingFormEvent(data.filter((event) => event.id == id)[0]);
     setBookingFormOpen(true);
   };
   return (

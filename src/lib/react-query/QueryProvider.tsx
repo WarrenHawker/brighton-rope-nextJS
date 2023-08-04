@@ -1,16 +1,19 @@
 'use client';
 
-import { ContextProviderProps } from '@/utils/interfaces';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-export const QueryProvider = ({ children }: ContextProviderProps) => {
+interface Props {
+  children?: ReactNode;
+}
+
+export const QueryProvider = ({ children }: Props) => {
   const [client] = useState(new QueryClient());
   return (
     <QueryClientProvider client={client}>
       {children}
-      {/* <ReactQueryDevtools /> */}
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 };

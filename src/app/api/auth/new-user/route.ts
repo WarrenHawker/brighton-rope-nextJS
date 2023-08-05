@@ -20,7 +20,6 @@ export const PUT = async (request: NextRequest) => {
 
   //sanitise inputs
   body.accountName = validator.escape(body.accountName).trim();
-  body.accountEmail = validator.normalizeEmail(body.accountEmail);
   body.bio.name = validator.escape(body.bio.name).trim();
   body.bio.pronouns = validator.escape(body.bio.pronouns).trim();
   body.bio.description = encodeURIComponent(body.bio.description).trim();
@@ -46,7 +45,7 @@ export const PUT = async (request: NextRequest) => {
         pronouns: body.bio.pronouns,
         position: body.bio.position,
         public: body.bio.public,
-        description: body.bio.bio,
+        description: body.bio.description,
         imageUrl: body.bio.imageUrl,
         createdOn: new Date(),
       },

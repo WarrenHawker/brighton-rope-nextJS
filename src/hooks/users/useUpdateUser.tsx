@@ -1,10 +1,19 @@
-import { User, UserDataEdit } from '@/utils/interfaces';
+import { UserDB, UserRole } from '@/utils/interfaces';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 export type UpdateUserOptions = {
   url: string;
-  updateData: UserDataEdit;
+  updateData: {
+    email?: string;
+    name?: string;
+    role?: UserRole;
+    password?: string;
+  };
+};
+
+type PrevData = {
+  users?: UserDB[];
 };
 
 export const updateUserByEmail = async (options: UpdateUserOptions) => {
@@ -16,23 +25,35 @@ export const updateUserByEmail = async (options: UpdateUserOptions) => {
     body: JSON.stringify(options.updateData),
   });
   const data = await res.json();
-  if(!res.ok) {
-    throw new Error(data.error)
+  if (!res.ok) {
+    throw new Error(data.error);
   }
-  return data.updatedUser
+  return data.updatedUser;
 };
 
 const useUpdateUser = () => {
   const queryClient = useQueryClient();
   const { update } = useSession();
-  return useMutation<User, Error, UpdateUserOptions>(updateUserByEmail, {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['users']);
-      if (data.email) {
-        update({ email: data.email });
+  return useMutation<UserDB, Error, UpdateUserOptions>(updateUserByEmail, {
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(['users'], (prevData: PrevData | undefined) => {
+        if (!prevData) {
+          return {};
+        }
+        return {
+          ...prevData,
+          users: prevData.users?.map((item) => {
+            if (item.id == updatedUser.id) {
+              return updatedUser;
+            } else return item;
+          }),
+        };
+      });
+      if (updatedUser.email) {
+        update({ email: updatedUser.email });
       }
-      if (data.name) {
-        update({ name: data.name });
+      if (updatedUser.name) {
+        update({ name: updatedUser.name });
       }
     },
   });

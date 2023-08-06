@@ -1,5 +1,4 @@
 import { Prisma } from '@prisma/client';
-import { ReactNode } from 'react';
 
 export type AdminView = 'Events' | 'Add Event' | 'Account';
 export type EventView = 'details' | 'bookings' | 'waiting list';
@@ -65,6 +64,36 @@ export interface UserDB {
   claimedOn: Date | null;
   updatedOn: Date | null;
   updatedBy: Prisma.JsonValue;
+}
+
+export interface UserUpdateData {
+  email?: string | null;
+  name?: string | null;
+  role?: UserRole | null;
+  password?: string | null;
+}
+
+export interface TeacherDB {
+  id: number;
+  name: string;
+  email: string;
+  pronouns: string;
+  description: string;
+  position: Position;
+  public: boolean;
+  imageUrl: string;
+  createdOn: Date;
+  updatedOn: Date | null;
+  updatedBy: Prisma.JsonValue;
+}
+
+export interface TeacherUpdateData {
+  name?: string;
+  pronouns?: string;
+  position?: Position;
+  public?: boolean;
+  description?: string;
+  imageUrl?: string;
 }
 
 // export type Contact = {

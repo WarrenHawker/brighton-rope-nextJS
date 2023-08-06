@@ -3,13 +3,13 @@
 import useFetchUsers from '@/hooks/users/useFetchUsers';
 import { getFullDate } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { User } from '@/utils/interfaces';
+import { UserDB } from '@/utils/interfaces';
 import { useState } from 'react';
 import UserDetails from './UserDetails';
 
 const UsersList = () => {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<UserDB | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, status } = useFetchUsers();
 
@@ -45,7 +45,7 @@ const UsersList = () => {
             </tr>
           </thead>
           <tbody>
-            {data.users.map((user: User) => (
+            {data.users.map((user: UserDB) => (
               <tr
                 key={user.id}
                 onClick={() => {
@@ -87,7 +87,13 @@ const UsersList = () => {
           </div>
         }
       >
-        {selectedUser ? <UserDetails user={selectedUser} setIsModalOpen={setIsModalOpen} setSelectedUser={setSelectedUser}/> : null}
+        {selectedUser ? (
+          <UserDetails
+            user={selectedUser}
+            setIsModalOpen={setIsModalOpen}
+            setSelectedUser={setSelectedUser}
+          />
+        ) : null}
       </Overlay>
     </>
   );

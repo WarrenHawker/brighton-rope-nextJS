@@ -1,15 +1,10 @@
-import { UserDB, UserRole } from '@/utils/interfaces';
+import { UserDB, UserUpdateData } from '@/utils/interfaces';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
-export type UpdateUserOptions = {
+type UpdateUserOptions = {
   url: string;
-  updateData: {
-    email?: string;
-    name?: string;
-    role?: UserRole;
-    password?: string;
-  };
+  updateData: UserUpdateData;
 };
 
 type PrevData = {

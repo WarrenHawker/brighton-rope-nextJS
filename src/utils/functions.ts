@@ -1,5 +1,4 @@
 import { Prisma } from '@prisma/client';
-import { NextResponse } from 'next/server';
 
 export const getShortDate = (date: Date | string): String => {
   if (typeof date == 'string') {
@@ -43,7 +42,7 @@ export const trimString = (str: string, length: number): string => {
   return `${trimmedString}...`;
 };
 
-export const getFullDate = (date: Date | string | undefined): string => {
+export const getFullDate = (date: Date | string | undefined | null): string => {
   if (!date) {
     return '';
   }

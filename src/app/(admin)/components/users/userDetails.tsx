@@ -1,8 +1,8 @@
 'use client';
 
 import useFetchTeacher from '@/hooks/teachers/useFetchTeacher';
-import { User, UserDataEdit, UserRole } from '@/utils/interfaces';
-import { useState } from 'react';
+import { UserDB, UserRole, UserUpdateData } from '@/utils/interfaces';
+import { useEffect, useState } from 'react';
 import TeacherBio from './TeacherBio';
 import useUpdateUser from '@/hooks/users/useUpdateUser';
 import useDeleteUser from '@/hooks/users/useDeleteUser';
@@ -10,63 +10,73 @@ import toast from 'react-hot-toast';
 import validator from 'validator';
 
 interface Props {
-  user: User;
-  setSelectedUser:(user: User | null) => void;
+  user: UserDB;
+  setSelectedUser: (user: UserDB | null) => void;
   setIsModalOpen: (value: boolean) => void;
+}
+
+interface UserDetails {
+  email?: string | undefined;
+  name?: string | undefined;
+  role?: UserRole | undefined;
 }
 
 const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
   const { data, status } = useFetchTeacher(user.email);
-  const [error, setError] = useState<string | null | undefined>(null)
+  const [error, setError] = useState<string | null | undefined>(null);
   const [editing, setEditing] = useState<boolean>(false);
-  const [userDetails, setUserDetails] = useState({
-    email: user.email,
-    name: user.name,
-    role: user.role as UserRole,
-  });
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const { mutateAsync: updateMutate, status: updateStatus } = useUpdateUser();
   const { mutateAsync: deleteMutate, status: deleteStatus } = useDeleteUser();
 
-  const saveEdit = async() => {
+  useEffect(() => {
+    setUserDetails({
+      email: user.email,
+      name: user.name ? user.name : '',
+      role: user.role as UserRole,
+    });
+  }, [user]);
+
+  const saveEdit = async () => {
     //check if email field is empty or invalid {
-    if(userDetails.email == '') {
-      setError('Email cannot be empty')
-      return
+    if (userDetails!.email == '') {
+      setError('Email cannot be empty');
+      return;
     }
-    if(!validator.isEmail(userDetails.email)) {
-      setError('Email  is not valid')
-      return
+    if (!validator.isEmail(userDetails!.email!)) {
+      setError('Email  is not valid');
+      return;
     }
 
-    const updateData: UserDataEdit = {};
+    const updateData: UserUpdateData = {};
     //if email has changed, add to updateData
-    if (userDetails.email != user.email) {
-      updateData.email = userDetails.email;
+    if (userDetails!.email != user.email) {
+      updateData.email = userDetails!.email;
     }
     //if name has changed, add to updateData
-    if (userDetails.name != user.name) {
-      updateData.name = userDetails.name;
+    if (userDetails!.name != user.name) {
+      updateData.name = userDetails!.name;
     }
     //if role has changed, add to updateData
-    if (userDetails.role != user.role) {
-      updateData.role = userDetails.role;
+    if (userDetails!.role != user.role) {
+      updateData.role = userDetails!.role;
     }
 
     //if no changes found, end function
-    if(Object.keys(updateData).length == 0) {
-      setEditing(false)
-      setError(null)
-      return
+    if (Object.keys(updateData).length == 0) {
+      setEditing(false);
+      setError(null);
+      return;
     }
 
-    //try updating user 
+    //try updating user
     try {
       await updateMutate({ url: `/api/users/${user.email}`, updateData });
       setEditing(false);
       setError(null);
       toast.success('user updated successfully');
-    } catch (error:any) {
-      setError(error.message)
+    } catch (error: any) {
+      setError(error.message);
     }
   };
 
@@ -74,22 +84,27 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
     setEditing(false);
     setUserDetails({
       email: user.email,
-      name: user.name,
+      name: user.name ? user.name : '',
       role: user.role as UserRole,
     });
-    setError(null)
+    setError(null);
   };
 
-  const handleDeleteUser = async() => {
-    if(confirm("are you sure you want to delete this user? This process is irreversible!")) {
+  const handleDeleteUser = async () => {
+    if (
+      confirm(
+        'are you sure you want to delete this user? This process is irreversible!'
+      )
+    ) {
       try {
-        await deleteMutate(`/api/users/${user.email}`)
+        await deleteMutate(`/api/users/${user.email}`);
         setIsModalOpen(false);
         setSelectedUser(null);
-      } catch (error:any) {
-        setError(error.message)
+        toast.success('user deleted successfully');
+      } catch (error: any) {
+        setError(error.message);
       }
-    } else return   
+    } else return;
   };
 
   if (status == 'loading') {
@@ -108,6 +123,10 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
         <h3 className="center error">{data.error}</h3>
       </>
     );
+  }
+
+  if (!user || !userDetails) {
+    return <></>;
   }
 
   return (
@@ -132,7 +151,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
           Delete
         </button>
       </div>
-      {error && <p className='error'>{error}</p>}
+      {error && <p className="error">{error}</p>}
       <table>
         <tbody>
           <tr>
@@ -140,7 +159,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
             <td>
               <input
                 type="email"
-                defaultValue={userDetails.email}
+                defaultValue={userDetails!.email}
                 disabled={!editing}
                 onChange={(e) =>
                   setUserDetails((prev) => ({ ...prev, email: e.target.value }))
@@ -182,6 +201,12 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
           </tr>
         </tbody>
       </table>
+      {updateStatus == 'loading' && (
+        <h3 className="center">Updating User...</h3>
+      )}
+      {deleteStatus == 'loading' && (
+        <h3 className="center">Deleting User...</h3>
+      )}
       {data.error ? (
         <h3 className="center error">{data.error}</h3>
       ) : (

@@ -10,11 +10,11 @@ export const fetchUsers = async (url: string) => {
 };
 
 const useFetchUsers = () => {
-  const { data, status } = useQuery({
+  const { data, error, status } = useQuery({
     queryKey: ['users'],
     queryFn: () => fetchUsers('/api/users'),
   });
-  return { data, status };
+  return { data, error, status };
 };
 
 export default useFetchUsers;

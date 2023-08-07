@@ -5,14 +5,6 @@ export type EventView = 'details' | 'bookings' | 'waiting list';
 export type UserRole = 'ADMIN' | 'SUPERADMIN' | 'INACTIVE';
 export type Position = 'RIGGER' | 'SWITCH' | 'BOTTOM' | 'OTHER';
 
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | Prisma.JsonObject
-  | Prisma.JsonArray;
-
 export interface ApiParams {
   params: {
     eventId: string | undefined;
@@ -59,11 +51,11 @@ export interface UserDB {
   name: string | null;
   id: number;
   claimed: boolean;
-  preferences: Prisma.JsonValue;
+  preferences: Prisma.JsonObject;
   createdOn: Date;
   claimedOn: Date | null;
   updatedOn: Date | null;
-  updatedBy: Prisma.JsonValue;
+  updatedBy: Prisma.JsonObject;
 }
 
 export interface UserUpdateData {
@@ -84,7 +76,7 @@ export interface TeacherDB {
   imageUrl: string;
   createdOn: Date;
   updatedOn: Date | null;
-  updatedBy: Prisma.JsonValue;
+  updatedBy: Prisma.JsonObject;
 }
 
 export interface TeacherUpdateData {

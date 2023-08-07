@@ -1,8 +1,7 @@
 'use client';
 
-import useFetchTeacher from '@/hooks/teachers/useFetchTeacher';
 import { UserDB, UserRole, UserUpdateData } from '@/utils/interfaces';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import TeacherBio from './TeacherBio';
 import useUpdateUser from '@/hooks/users/useUpdateUser';
 import useDeleteUser from '@/hooks/users/useDeleteUser';
@@ -11,8 +10,8 @@ import validator from 'validator';
 
 interface Props {
   user: UserDB;
-  setSelectedUser: (user: UserDB | null) => void;
-  setIsModalOpen: (value: boolean) => void;
+  setSelectedUser?: (user: UserDB | null) => void;
+  setIsModalOpen?: (value: boolean) => void;
 }
 
 interface UserDetails {
@@ -22,12 +21,17 @@ interface UserDetails {
 }
 
 const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
-  const { data, status } = useFetchTeacher(user.email);
   const [error, setError] = useState<string | null | undefined>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const { mutateAsync: updateMutate, status: updateStatus } = useUpdateUser();
   const { mutateAsync: deleteMutate, status: deleteStatus } = useDeleteUser();
+
+  const emailInput = useRef<HTMLInputElement>(null);
+  const nameInput = useRef<HTMLInputElement>(null);
+  const roleInput = useRef<HTMLSelectElement>(null);
+
+  console.log(user.role);
 
   useEffect(() => {
     setUserDetails({
@@ -87,6 +91,11 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
       name: user.name ? user.name : '',
       role: user.role as UserRole,
     });
+    emailInput.current!.value = user.email;
+    nameInput.current!.value = user.name ? user.name : '';
+    if (user.role == 'SUPERADMIN') {
+      roleInput.current!.value = user.role as UserRole;
+    }
     setError(null);
   };
 
@@ -98,32 +107,18 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
     ) {
       try {
         await deleteMutate(`/api/users/${user.email}`);
-        setIsModalOpen(false);
-        setSelectedUser(null);
+        if (setIsModalOpen) {
+          setIsModalOpen(false);
+        }
+        if (setSelectedUser) {
+          setSelectedUser(null);
+        }
         toast.success('user deleted successfully');
       } catch (error: any) {
         setError(error.message);
       }
     } else return;
   };
-
-  if (status == 'loading') {
-    return (
-      <>
-        <h2 className="center">User Details</h2>
-        <h3 className="center">Loading...</h3>
-      </>
-    );
-  }
-
-  if (status == 'error') {
-    return (
-      <>
-        <h2 className="center">User Details</h2>
-        <h3 className="center error">{data.error}</h3>
-      </>
-    );
-  }
 
   if (!user || !userDetails) {
     return <></>;
@@ -137,7 +132,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
           <>
             <button className="btn" onClick={saveEdit}>
               Save
-            </button>{' '}
+            </button>
             <button className="btn" onClick={cancelEdit}>
               Cancel
             </button>
@@ -147,9 +142,11 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
             Edit
           </button>
         )}
-        <button className="btn btn-delete" onClick={handleDeleteUser}>
-          Delete
-        </button>
+        {user.role == 'SUPERADMIN' && (
+          <button className="btn btn-delete" onClick={handleDeleteUser}>
+            Delete
+          </button>
+        )}
       </div>
       {error && <p className="error">{error}</p>}
       <table>
@@ -158,6 +155,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
             <th>Email</th>
             <td>
               <input
+                ref={emailInput}
                 type="email"
                 defaultValue={userDetails!.email}
                 disabled={!editing}
@@ -171,6 +169,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
             <th>Name</th>
             <td>
               <input
+                ref={nameInput}
                 type="text"
                 defaultValue={userDetails.name}
                 disabled={!editing}
@@ -182,22 +181,27 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
           </tr>
           <tr>
             <th>Role</th>
-            <td>
-              <select
-                defaultValue={user.role}
-                disabled={!editing}
-                onChange={(e) =>
-                  setUserDetails((prev) => ({
-                    ...prev,
-                    role: e.target.value as UserRole,
-                  }))
-                }
-              >
-                <option value={'ADMIN'}>Admin</option>
-                <option value={'SUPERADMIN'}>Super Admin</option>
-                <option value={'INACTIVE'}>Inactive</option>
-              </select>
-            </td>
+            {user.role == 'SUPERADMIN' ? (
+              <td>
+                <select
+                  ref={roleInput}
+                  defaultValue={user.role}
+                  disabled={!editing}
+                  onChange={(e) =>
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      role: e.target.value as UserRole,
+                    }))
+                  }
+                >
+                  <option value={'ADMIN'}>Admin</option>
+                  <option value={'SUPERADMIN'}>Super Admin</option>
+                  <option value={'INACTIVE'}>Inactive</option>
+                </select>
+              </td>
+            ) : (
+              <td>{user.role}</td>
+            )}
           </tr>
         </tbody>
       </table>
@@ -207,11 +211,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
       {deleteStatus == 'loading' && (
         <h3 className="center">Deleting User...</h3>
       )}
-      {data.error ? (
-        <h3 className="center error">{data.error}</h3>
-      ) : (
-        <TeacherBio teacher={data.teacher} />
-      )}
+      <TeacherBio userEmail={user.email} role={user.role} />
     </>
   );
 };

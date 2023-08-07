@@ -6,15 +6,15 @@ export const fetchTeacherByEmail = async (url: string) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data;
+  return data.teacher;
 };
 
 const useFetchTeacher = (email: string) => {
-  const { data, status } = useQuery({
+  const { data, error, status } = useQuery({
     queryKey: ['teachers', email],
     queryFn: () => fetchTeacherByEmail(`/api/teachers/${email}`),
   });
-  return { data, status };
+  return { data, error, status };
 };
 
 export default useFetchTeacher;

@@ -1,14 +1,17 @@
 'use client';
 
+import useFetchTeacher from '@/hooks/teachers/useFetchTeacher';
 import useUpdateTeacher from '@/hooks/teachers/useUpdateTeacher';
 import { getFullDate } from '@/utils/functions';
-import { TeacherDB } from '@/utils/interfaces';
+import { Position, TeacherUpdateData, UserRole } from '@/utils/interfaces';
 import MDEditor from '@uiw/react-md-editor';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import validator from 'validator';
 
 interface TeacherBioProps {
-  teacher: TeacherDB;
+  userEmail: string;
+  role?: UserRole;
 }
 
 interface EditingData {
@@ -19,7 +22,12 @@ interface EditingData {
   imageUrl: string;
 }
 
-const TeacherBio = ({ teacher }: TeacherBioProps) => {
+const TeacherBio = ({ userEmail, role }: TeacherBioProps) => {
+  const {
+    data: fetchData,
+    error: fetchError,
+    status: fetchStatus,
+  } = useFetchTeacher(userEmail);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<EditingData>({
@@ -27,11 +35,14 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
     pronouns: '',
     position: '',
     imageUrl: '',
-    public: teacher.public,
+    public: true,
   });
-  const [description, setDescription] = useState<string | undefined>(
-    decodeURIComponent(teacher.description)
-  );
+  const [description, setDescription] = useState<string | undefined>();
+  const nameInput = useRef<HTMLInputElement>(null);
+  const pronounsInput = useRef<HTMLInputElement>(null);
+  const positionInput = useRef<HTMLSelectElement>(null);
+  const publicInput = useRef<HTMLInputElement>(null);
+  const imageUrlInput = useRef<HTMLTextAreaElement>(null);
 
   const { mutateAsync: updateMutate, status: updateStatus } =
     useUpdateTeacher();
@@ -39,44 +50,113 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
   useEffect(() => {
     decodeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teacher]);
+  }, [fetchData, userEmail]);
 
-  const decodeData = async () => {
+  const decodeData = () => {
+    if (!userEmail || !fetchData) {
+      return;
+    }
     const newData = {
-      name: validator.unescape(teacher.name),
-      pronouns: validator.unescape(teacher.pronouns),
-      position: validator.unescape(teacher.position),
-      public: teacher.public,
-      imageUrl: decodeURIComponent(teacher.imageUrl),
+      name: validator.unescape(fetchData.name),
+      pronouns: validator.unescape(fetchData.pronouns),
+      position: validator.unescape(fetchData.position),
+      public: fetchData.public,
+      imageUrl: decodeURIComponent(fetchData.imageUrl),
     };
+    setDescription(decodeURIComponent(fetchData.description));
     setEditingData(newData);
   };
 
   const saveEdit = async () => {
-    setEditing(false);
+    const updateData: TeacherUpdateData = {};
+    if (editingData.name != validator.unescape(fetchData.name)) {
+      updateData.name = editingData.name;
+    }
+    if (editingData.pronouns != validator.unescape(fetchData.pronouns)) {
+      updateData.pronouns = editingData.pronouns;
+    }
+    if (editingData.position != validator.unescape(fetchData.position)) {
+      updateData.position = editingData.position as Position;
+    }
+    if (editingData.public != fetchData.public) {
+      updateData.public = editingData.public;
+    }
+    if (description != decodeURIComponent(fetchData.description)) {
+      updateData.description = description;
+    }
+    if (editingData.imageUrl != decodeURIComponent(fetchData.imageUrl)) {
+      updateData.imageUrl = editingData.imageUrl;
+    }
+
+    //if no changes found, end function
+    if (Object.keys(updateData).length == 0) {
+      setEditing(false);
+      setError(null);
+      return;
+    }
+
+    try {
+      await updateMutate({
+        url: `/api/teachers/${fetchData.email}`,
+        updateData,
+      });
+      setEditing(false);
+      setError(null);
+      toast.success('teacher updated successfully');
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
-  const cancelEdit = async () => {
+  const cancelEdit = () => {
+    decodeData();
     setEditing(false);
+    nameInput.current!.value = validator.unescape(fetchData.name);
+    pronounsInput.current!.value = validator.unescape(fetchData.pronouns);
+    positionInput.current!.value = validator.unescape(fetchData.position);
+    publicInput.current!.checked = fetchData.public;
+    imageUrlInput.current!.value = decodeURIComponent(fetchData.imageUrl);
+    setError(null);
   };
+
+  if (fetchStatus == 'loading') {
+    return (
+      <>
+        <h3 className="center">Loading...</h3>
+      </>
+    );
+  }
+
+  if (fetchStatus == 'error') {
+    return (
+      <>
+        <h3 className="center error">{(fetchError as Error).message}</h3>
+      </>
+    );
+  }
 
   return (
     <>
       <h3 className="center">Teacher Bio</h3>
-      <p className="left">
-        <strong>Creation Date: </strong>
-        {getFullDate(teacher.createdOn)}
-      </p>
-      <p className="left">
-        <strong>Date Last Updated: </strong>
-        {teacher.updatedOn ? getFullDate(teacher.updatedOn) : 'never'}
-      </p>
-      {teacher.updatedBy && (
-        <p className="left">
-          <strong>Updated By (User): </strong>
-          {/* {`id: ${teacher.updatedBy.userId} email: ${teacher.updatedBy.userEmail}`} */}
-        </p>
+      {role == 'SUPERADMIN' && (
+        <div>
+          <p className="left">
+            <strong>Creation Date: </strong>
+            {fetchData?.createdOn && getFullDate(fetchData.createdOn)}
+          </p>
+          <p className="left">
+            <strong>Date Last Updated: </strong>
+            {fetchData?.updatedOn ? getFullDate(fetchData.updatedOn) : 'never'}
+          </p>
+          {fetchData?.updatedBy && (
+            <p className="left">
+              <strong>Updated By (User): </strong>
+              {`id: ${fetchData.updatedBy.userId} email: ${fetchData.updatedBy.userEmail}`}
+            </p>
+          )}
+        </div>
       )}
+
       {updateStatus == 'loading' && (
         <p className="center">Updating Profile...</p>
       )}
@@ -103,6 +183,7 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
             <th>Display Name</th>
             <td>
               <input
+                ref={nameInput}
                 type="text"
                 defaultValue={editingData.name}
                 onChange={(e) =>
@@ -117,6 +198,7 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
             <td>
               <input
                 type="text"
+                ref={pronounsInput}
                 defaultValue={editingData.pronouns}
                 onChange={(e) =>
                   setEditingData((prev) => ({
@@ -132,6 +214,7 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
             <th>Position</th>
             <td>
               <select
+                ref={positionInput}
                 disabled={!editing}
                 name="position"
                 defaultValue={editingData.position}
@@ -154,6 +237,7 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
             <td>
               <label className="toggle" style={{ marginTop: '0.5em' }}>
                 <input
+                  ref={publicInput}
                   disabled={!editing}
                   type="checkbox"
                   defaultChecked={editingData.public}
@@ -182,6 +266,7 @@ const TeacherBio = ({ teacher }: TeacherBioProps) => {
         <div>
           <label>Image URL</label>
           <textarea
+            ref={imageUrlInput}
             disabled={!editing}
             defaultValue={editingData.imageUrl}
             onChange={(e) =>

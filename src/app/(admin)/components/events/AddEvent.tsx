@@ -1,55 +1,18 @@
 'use client';
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import {
-  Address,
-  EventDateTime,
-  NewEventsData,
-  Prices,
-} from '@/utils/interfaces';
-import { MdEditor } from 'md-editor-rt';
+import { Address, EventDateTime, Prices } from '@/utils/interfaces';
 import { useState, ChangeEvent, FormEvent, MouseEvent } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor from '@uiw/react-md-editor';
+import useCreateEvent, { CreateEventData } from '@/hooks/events/useCreateEvent';
+import validator from 'validator';
 
 interface AddEventProps {
   setAddEvent: (value: boolean) => void;
 }
 
 const AddEvent = ({ setAddEvent }: AddEventProps) => {
-  const queryClient = useQueryClient();
-
-  const addEvent = useMutation(
-    (event: NewEventsData) =>
-      fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event),
-      }),
-    {
-      onSuccess: async () => {
-        queryClient.invalidateQueries({ queryKey: ['events'] });
-        setAddEvent(false);
-        setTitle('');
-        setDescription('');
-        setLocation({
-          lineOne: '',
-          lineTwo: '',
-          city: '',
-          country: '',
-          postcode: '',
-        });
-        setCapacity(0);
-        setAllowMultipleTickets(true);
-        setDatesTimes([{ date: '', startTime: '', endTime: '', error: null }]);
-        setPrices([]);
-      },
-    }
-  );
-
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState<string | undefined>(undefined);
   const [location, setLocation] = useState<Address>({
     lineOne: '',
     lineTwo: '',
@@ -57,13 +20,17 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
     country: '',
     postcode: '',
   });
-  const [capacity, setCapacity] = useState(0);
+  const [maxTickets, setMaxTickets] = useState(0);
   const [allowMultipleTickets, setAllowMultipleTickets] = useState(true);
   const [datesTimes, setDatesTimes] = useState<EventDateTime[]>([
     { date: '', startTime: '', endTime: '', error: null },
   ]);
   const [prices, setPrices] = useState<Prices[]>([]);
   const [isFree, setIsFree] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [emptyFields, setEmptyFields] = useState<string[]>([]);
+
+  const { mutateAsync: createMutate, status: createStatus } = useCreateEvent();
 
   const addDateTime = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -152,31 +119,53 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
           ) : null}
         </div>
 
-        <label htmlFor="singleDate">Date</label>
+        <label htmlFor="singleDate">
+          Date <span className="required">*</span>
+        </label>
         <input
+          className={emptyFields?.includes('date') ? 'invalid' : ''}
           type="date"
           name="singleDate"
           value={item.date}
-          onChange={(e) => changeDateTime(e, index, 'date')}
+          onChange={(e) => {
+            setEmptyFields((prev) => prev?.filter((item) => item != 'date'));
+            changeDateTime(e, index, 'date');
+          }}
         />
 
         <div className="time-input-container">
           <div>
-            <label htmlFor="singleStartTime">Start Time</label>
+            <label htmlFor="singleStartTime">
+              Start Time <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('start time') ? 'invalid' : ''}
               type="time"
               name="singleStartTime"
               value={item.startTime}
-              onChange={(e) => changeDateTime(e, index, 'start')}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'start time')
+                );
+                changeDateTime(e, index, 'start');
+              }}
             />
           </div>
           <div>
-            <label htmlFor="singleEndTime">End Time</label>
+            <label htmlFor="singleEndTime">
+              End Time <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('end time') ? 'invalid' : ''}
               type="time"
               value={item.endTime}
               name="singleEndTime"
-              onChange={(e) => changeDateTime(e, index, 'end')}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'end time')
+                );
+                changeDateTime(e, index, 'end');
+              }}
             />
           </div>
         </div>
@@ -324,42 +313,116 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
 
   const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setEmptyFields([]);
+    const newEmptyFields = [];
 
-    const event: NewEventsData = {
+    if (validator.isEmpty(title, { ignore_whitespace: true })) {
+      newEmptyFields.push('title');
+    }
+    if (!description) {
+      newEmptyFields.push('description');
+    } else {
+      if (validator.isEmpty(description, { ignore_whitespace: true })) {
+        newEmptyFields.push('description');
+      }
+    }
+    if (validator.isEmpty(datesTimes[0].date)) {
+      newEmptyFields.push('date');
+    }
+    if (validator.isEmpty(datesTimes[0].startTime)) {
+      newEmptyFields.push('start time');
+    }
+    if (validator.isEmpty(datesTimes[0].endTime)) {
+      newEmptyFields.push('end time');
+    }
+    if (validator.isEmpty(location.lineOne)) {
+      newEmptyFields.push('line one');
+    }
+    if (validator.isEmpty(location.city)) {
+      newEmptyFields.push('city');
+    }
+    if (validator.isEmpty(location.country)) {
+      newEmptyFields.push('country');
+    }
+    if (validator.isEmpty(location.postcode)) {
+      newEmptyFields.push('postcode');
+    }
+    if (newEmptyFields.length > 0) {
+      setError('please fill in all required fields');
+      setEmptyFields(newEmptyFields);
+      return;
+    }
+
+    if (!isFree && prices.length == 0) {
+      setError('paid events must have at least one price bracket');
+      return;
+    }
+
+    if (!isFree && maxTickets == 0) {
+      newEmptyFields.push('max tickets');
+      setEmptyFields(newEmptyFields);
+      setError(
+        'number of tickets available for paid events must be greater than zero'
+      );
+      return;
+    }
+    const event: CreateEventData = {
       title: title,
-      description: description,
+      description: description ? description : '',
       startDate: new Date(datesTimes[0].date),
       dateTimes: datesTimes,
       location: location,
-      maxTickets: capacity,
-      ticketsSold: 0,
-      ticketsRemaining: capacity,
-      prices: prices,
-      allowMultipleTickets: allowMultipleTickets,
       isFree: isFree,
     };
-    addEvent.mutate(event);
+
+    if (!event.isFree) {
+      event.prices = prices;
+      event.allowMultipleTickets = allowMultipleTickets;
+      event.maxTickets = maxTickets;
+    }
+
+    try {
+      await createMutate({ url: '/api/events', eventData: event });
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
 
   return (
     <>
       <form onSubmit={(e) => submitForm(e)} className="add-event-form">
         <input
-          className="title-input"
+          className={
+            emptyFields?.includes('title')
+              ? 'title-input invalid'
+              : 'title-input'
+          }
           type="text"
           name="title"
           defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setEmptyFields((prev) => prev?.filter((item) => item != 'title'));
+            setTitle(e.target.value);
+          }}
           placeholder="Add title"
         />
 
-        <div className="description-container">
-          <label className="description-label">Description</label>
-          {/* <MdEditor
-            modelValue={description}
-            language="en-US"
-            onChange={setDescription}
-          /> */}
+        <div
+          className={
+            emptyFields?.includes('description')
+              ? 'description-container invalid'
+              : 'description-container'
+          }
+          onInput={() =>
+            setEmptyFields((prev) =>
+              prev?.filter((item) => item != 'description')
+            )
+          }
+        >
+          <label className="description-label">
+            Description <span className="required">*</span>
+          </label>
           <MDEditor
             height={200}
             value={description}
@@ -383,12 +446,20 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
         <div className="form-column">
           <fieldset className="location">
             <legend>Location</legend>
-            <label htmlFor="lineOne">Street Address</label>
+            <label htmlFor="lineOne">
+              Street Address <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('line one') ? 'invalid' : ''}
               type="text"
               name="lineOne"
               defaultValue={location.lineOne}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'line one')
+                );
+                changeLocation(e);
+              }}
             />
 
             <label htmlFor="lineTwo">
@@ -401,26 +472,51 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
               onChange={(e) => changeLocation(e)}
             />
 
-            <label htmlFor="city">City</label>
+            <label htmlFor="city">
+              City <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('city') ? 'invalid' : ''}
               type="text"
               name="city"
               defaultValue={location.city}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'city')
+                );
+                changeLocation(e);
+              }}
             />
 
-            <label htmlFor="country">Country</label>
+            <label htmlFor="country">
+              Country <span className="required">*</span>
+            </label>
+
             <CountrySelector
               value={location.country}
-              changeHandler={(e: any) => changeLocation(e)}
+              changeHandler={(e: any) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'country')
+                );
+                changeLocation(e);
+              }}
+              styles={emptyFields?.includes('country') ? 'invalid' : ''}
             />
 
-            <label htmlFor="postcode">ZIP/postcode </label>
+            <label htmlFor="postcode">
+              ZIP/postcode <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('postcode') ? 'invalid' : ''}
               type="text"
               name="postcode"
               defaultValue={location.postcode}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'postcode')
+                );
+                changeLocation(e);
+              }}
             />
           </fieldset>
 
@@ -443,12 +539,20 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
           {!isFree ? (
             <fieldset className="event-details-fields">
               <legend>Event Details</legend>
-              <label htmlFor="capacity">Number of tickets available</label>
+              <label htmlFor="capacity">
+                Number of tickets available <span className="required">*</span>
+              </label>
               <input
+                className={emptyFields.includes('max tickets') ? 'invalid' : ''}
                 type="number"
                 name="capacity"
-                defaultValue={capacity}
-                onChange={(e) => setCapacity(parseInt(e.target.value))}
+                defaultValue={maxTickets}
+                onChange={(e) => {
+                  setEmptyFields((prev) =>
+                    prev?.filter((item) => item != 'max tickets')
+                  );
+                  setMaxTickets(parseInt(e.target.value));
+                }}
                 min="0"
               />
               <div className="toggle-container">
@@ -476,6 +580,10 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
             </button>
           </fieldset>
         </div>
+        {createStatus == 'loading' && (
+          <h3 className="center">Creating new Event...</h3>
+        )}
+        {error && <h3 className="center error">{error}</h3>}
 
         <div className="btn-submit-container">
           <button type="submit" className="btn btn-large">

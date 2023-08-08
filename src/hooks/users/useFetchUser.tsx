@@ -13,6 +13,9 @@ const useFetchUser = (email: string) => {
   const { data, error, status } = useQuery({
     queryKey: ['users', email],
     queryFn: () => fetchUserByEmail(`/api/users/${email}`),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   return { data, error, status };
 };

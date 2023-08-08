@@ -7,10 +7,6 @@ type UpdateUserOptions = {
   updateData: UserUpdateData;
 };
 
-type PrevData = {
-  users?: UserDB[];
-};
-
 export const updateUserByEmail = async (options: UpdateUserOptions) => {
   const res = await fetch(options.url, {
     method: 'PATCH',
@@ -28,28 +24,23 @@ export const updateUserByEmail = async (options: UpdateUserOptions) => {
 
 const useUpdateUser = () => {
   const queryClient = useQueryClient();
-  const { update } = useSession();
+  const { data: session, update } = useSession();
   return useMutation<UserDB, Error, UpdateUserOptions>(updateUserByEmail, {
     onSuccess: (updatedUser) => {
-      queryClient.setQueryData(['users'], (prevData: PrevData | undefined) => {
-        if (!prevData) {
-          return {};
+      queryClient.setQueryData(['users'], (prevData: UserDB[] | undefined) => {
+        if (session?.user.id == updatedUser.id) {
+          update({ email: updatedUser.email });
+          update({ name: updatedUser.name });
         }
-        return {
-          ...prevData,
-          users: prevData.users?.map((item) => {
-            if (item.id == updatedUser.id) {
-              return updatedUser;
-            } else return item;
-          }),
-        };
+        if (!prevData) {
+          return [];
+        }
+        return prevData.map((item) => {
+          if (item.id == updatedUser.id) {
+            return updatedUser;
+          } else return item;
+        });
       });
-      if (updatedUser.email) {
-        update({ email: updatedUser.email });
-      }
-      if (updatedUser.name) {
-        update({ name: updatedUser.name });
-      }
     },
   });
 };

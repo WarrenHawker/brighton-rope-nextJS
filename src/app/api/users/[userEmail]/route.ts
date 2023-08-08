@@ -145,7 +145,7 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
     });
     if (deletedUserData) {
       const { password, ...deletedUser } = deletedUserData;
-      return NextResponse.json(deletedUser, { status: 200 });
+      return NextResponse.json({ deletedUser }, { status: 200 });
     } else {
       return NextResponse.json({ error: 'user not found' }, { status: 404 });
     }

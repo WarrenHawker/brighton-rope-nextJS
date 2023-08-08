@@ -82,8 +82,8 @@ const RegisterForm = () => {
       setError(null);
       toast.success('New user created');
       return;
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError((error as Error).message);
       return;
     }
   };

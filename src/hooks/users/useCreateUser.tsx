@@ -22,7 +22,7 @@ export const createUser = async (options: CreateUserOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data;
+  return data.user;
 };
 
 const useCreateUser = () => {

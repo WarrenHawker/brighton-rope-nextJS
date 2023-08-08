@@ -1,11 +1,17 @@
 interface CountrySelectorProps {
   value: string;
   changeHandler: (e: any) => void;
+  styles: string;
 }
 
-const CountrySelector = ({ value, changeHandler }: CountrySelectorProps) => {
+const CountrySelector = ({
+  value,
+  changeHandler,
+  styles,
+}: CountrySelectorProps) => {
   return (
     <select
+      className={styles}
       id="country"
       name="country"
       defaultValue={value}

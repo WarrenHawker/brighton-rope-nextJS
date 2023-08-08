@@ -15,6 +15,8 @@ const AdminEvents = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { data: events, error, status } = useFetchEvents();
 
+  console.log(events);
+
   const changeSelectedEvent = (id: string) => {
     setSelectedEvent(events.filter((event: any) => event.id == id)[0]);
   };

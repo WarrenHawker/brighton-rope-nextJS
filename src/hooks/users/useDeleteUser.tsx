@@ -7,7 +7,7 @@ export const deleteUserByEmail = async (url: string) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data;
+  return data.deletedUser;
 };
 
 const useDeleteUser = () => {

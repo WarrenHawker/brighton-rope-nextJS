@@ -2,14 +2,17 @@
 
 import { useState } from 'react';
 import { getFullDate } from '../../../../utils/functions';
-import { MdPreview } from 'md-editor-rt';
-// import 'md-editor-rt/lib/style.css';
-
-import { EventsData } from '@/utils/interfaces';
 import EditEvent from './EditEvent';
+import {
+  Address,
+  EventDBAdmin,
+  EventDateTime,
+  Prices,
+} from '@/utils/interfaces';
+import MDEditor from '@uiw/react-md-editor';
 
 interface EventDetailsProps {
-  selectedEvent: EventsData | null;
+  selectedEvent: EventDBAdmin | null;
 }
 
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
@@ -41,8 +44,11 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
       <div className="event-details-header">
         <p>Event ID: {selectedEvent.id}</p>
         <h2>
-          {selectedEvent.title} - {getFullDate(selectedEvent.dateTimes[0].date)}
+          {selectedEvent.title} - {getFullDate(selectedEvent.startDate)}
         </h2>
+        <h3 className="center">
+          {selectedEvent.isFree ? 'FREE EVENT' : 'PAID EVENT'}
+        </h3>
       </div>
       {editing ? (
         <EditEvent event={selectedEvent} setEditing={setEditing} />
@@ -66,84 +72,90 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
               </tr>
             </thead>
             <tbody>
-              {selectedEvent.dateTimes.map((item, index) => (
-                <tr key={index}>
-                  <td>{getFullDate(item.date)}</td>
-                  <td>{item.startTime}</td>
-                  <td>{item.endTime}</td>
-                </tr>
-              ))}
+              {(selectedEvent.dateTimes as EventDateTime[]).map(
+                (item, index) => (
+                  <tr key={index}>
+                    <td>{getFullDate(item.date)}</td>
+                    <td>{item.startTime}</td>
+                    <td>{item.endTime}</td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
 
-          <table className="sub-table event-prices-table">
-            <caption>Prices</caption>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Fixed Price?</th>
-                <th>Amount (min-max)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedEvent.prices.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.key}</td>
-                  <td>{item.fixedPrice ? 'yes' : 'no'}</td>
-                  <td>
-                    {item.fixedPrice
-                      ? `£${item.value.minPrice}`
-                      : `£${item.value.minPrice} - £${item.value.maxPrice}`}
-                  </td>
+          {!selectedEvent.isFree && (
+            <table className="sub-table event-prices-table">
+              <caption>Prices</caption>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Fixed Price?</th>
+                  <th>Amount (min-max)</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {(selectedEvent.prices as Prices[]).map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.key}</td>
+                    <td>{item.fixedPrice ? 'yes' : 'no'}</td>
+                    <td>
+                      {item.fixedPrice
+                        ? `£${item.value.minPrice}`
+                        : `£${item.value.minPrice} - £${item.value.maxPrice}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
-          <table className="sub-table event-tickets-table">
-            <caption>Tickets</caption>
-            <tbody>
-              <tr>
-                <th>Max # of tickets</th>
-                <td>{selectedEvent.maxTickets}</td>
-              </tr>
-              <tr>
-                <th>Tickets Sold</th>
-                <td>{selectedEvent.ticketsSold}</td>
-              </tr>
-              <tr>
-                <th>Tickets Remaining</th>
-                <td>{selectedEvent.ticketsRemaining}</td>
-              </tr>
-              <tr>
-                <th>Allow Multiple Tickets?</th>
-                <td>{selectedEvent.allowMultipleTickets ? 'yes' : 'no'}</td>
-              </tr>
-            </tbody>
-          </table>
+          {!selectedEvent.isFree && (
+            <table className="sub-table event-tickets-table">
+              <caption>Tickets</caption>
+              <tbody>
+                <tr>
+                  <th>Max # of tickets</th>
+                  <td>{selectedEvent.maxTickets}</td>
+                </tr>
+                <tr>
+                  <th>Tickets Sold</th>
+                  <td>{selectedEvent.ticketsSold}</td>
+                </tr>
+                <tr>
+                  <th>Tickets Remaining</th>
+                  <td>{selectedEvent.ticketsRemaining}</td>
+                </tr>
+                <tr>
+                  <th>Allow Multiple Tickets?</th>
+                  <td>{selectedEvent.allowMultipleTickets ? 'yes' : 'no'}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
 
           <table className="sub-table event-location-table">
             <caption>Location</caption>
             <tbody>
               <tr>
                 <th>Address Line 1</th>
-                <td>{selectedEvent.location.lineOne}</td>
+                <td>{(selectedEvent.location as Address).lineOne}</td>
               </tr>
               <tr>
                 <th>Address Line 2</th>
-                <td>{selectedEvent.location.lineTwo}</td>
+                <td>{(selectedEvent.location as Address).lineTwo}</td>
               </tr>
               <tr>
                 <th>City</th>
-                <td>{selectedEvent.location.city}</td>
+                <td>{(selectedEvent.location as Address).city}</td>
               </tr>
               <tr>
                 <th>Country</th>
-                <td>{selectedEvent.location.country}</td>
+                <td>{(selectedEvent.location as Address).country}</td>
               </tr>
               <tr>
                 <th>Postcode</th>
-                <td>{selectedEvent.location.postcode}</td>
+                <td>{(selectedEvent.location as Address).postcode}</td>
               </tr>
             </tbody>
           </table>
@@ -152,7 +164,11 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
             <tbody>
               <tr>
                 <td>
-                  {/* <MdPreview modelValue={selectedEvent.description} /> */}
+                  {editing ? (
+                    <MDEditor value={selectedEvent.description} />
+                  ) : (
+                    <MDEditor.Markdown source={selectedEvent.description} />
+                  )}
                 </td>
               </tr>
             </tbody>

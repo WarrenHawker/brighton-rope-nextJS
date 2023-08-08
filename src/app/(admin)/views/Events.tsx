@@ -1,7 +1,7 @@
 'use client';
 import Overlay from '@/utils/globalComponents/Overlay';
 import ViewTabs from '@/utils/globalComponents/ViewTabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BookingsList from '../components/bookings/BookingsList';
 import AddEvent from '../components/events/AddEvent';
 import EventDetails from '../components/events/EventDetails';
@@ -15,11 +15,15 @@ const AdminEvents = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { data: events, error, status } = useFetchEvents();
 
-  console.log(events);
-
-  const changeSelectedEvent = (id: string) => {
+  const changeSelectedEvent = (id: number) => {
     setSelectedEvent(events.filter((event: any) => event.id == id)[0]);
   };
+
+  useEffect(() => {
+    if (events) {
+      setSelectedEvent(events[0]);
+    }
+  }, [events]);
 
   if (status == 'loading') {
     return (

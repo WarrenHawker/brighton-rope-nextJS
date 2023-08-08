@@ -1,10 +1,11 @@
 'use client';
+import { EventDBAdmin, EventDateTime } from '@/utils/interfaces';
 import { getFullDate } from '../../../../utils/functions';
 
 interface EventsListProps {
-  events: [];
-  selectedEvent: object | null;
-  changeSelectedEvent: (id: string) => void;
+  events: EventDBAdmin[];
+  selectedEvent: EventDBAdmin | null;
+  changeSelectedEvent: (id: number) => void;
 }
 
 const EventsList = ({
@@ -17,7 +18,7 @@ const EventsList = ({
       <h2>Events List</h2>
       <select
         className="events-selector"
-        onChange={(e) => changeSelectedEvent(e.target.value)}
+        onChange={(e) => changeSelectedEvent(parseInt(e.target.value))}
       >
         {events.map((event) => (
           <option key={event.id} value={event.id}>
@@ -33,7 +34,7 @@ const EventsList = ({
           </tr>
         </thead>
         <tbody>
-          {events.map((event) => (
+          {events.map((event: EventDBAdmin) => (
             <tr
               onClick={() => changeSelectedEvent(event.id)}
               key={event.id}
@@ -42,7 +43,7 @@ const EventsList = ({
               }
             >
               <td>{event.title}</td>
-              <td>{getFullDate(event.dateTimes[0].date)}</td>
+              <td>{getFullDate(event.startDate)}</td>
             </tr>
           ))}
         </tbody>

@@ -5,7 +5,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const AdminUsers = async () => {
   const session = await getServerSession(authOptions);
-  if (session?.user.role != 'SUPERADMIN') {
+  if (session?.user.role != 'SUPERADMIN' || !session.user.role) {
     return (
       <>
         <h1 className="page-title">Users</h1>
@@ -23,7 +23,7 @@ const AdminUsers = async () => {
         <RegisterForm />
       </aside>
       <main>
-        <UsersList />
+        <UsersList role={session.user.role} />
       </main>
     </>
   );

@@ -12,6 +12,7 @@ interface Props {
   user: UserDB;
   setSelectedUser?: (user: UserDB | null) => void;
   setIsModalOpen?: (value: boolean) => void;
+  role: UserRole | undefined;
 }
 
 interface UserDetails {
@@ -20,7 +21,12 @@ interface UserDetails {
   role?: UserRole | undefined;
 }
 
-const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
+const UserDetails = ({
+  user,
+  setIsModalOpen,
+  setSelectedUser,
+  role,
+}: Props) => {
   const [error, setError] = useState<string | null | undefined>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
@@ -31,14 +37,22 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
   const nameInput = useRef<HTMLInputElement>(null);
   const roleInput = useRef<HTMLSelectElement>(null);
 
-  console.log(user.role);
-
   useEffect(() => {
     setUserDetails({
       email: user.email,
       name: user.name ? user.name : '',
       role: user.role as UserRole,
     });
+
+    if (emailInput.current) {
+      emailInput.current.value = user.email;
+    }
+    if (nameInput.current) {
+      nameInput.current.value = user.name ? user.name : '';
+    }
+    if (roleInput.current) {
+      roleInput.current.value = user.role as UserRole;
+    }
   }, [user]);
 
   const saveEdit = async () => {
@@ -142,7 +156,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
             Edit
           </button>
         )}
-        {user.role == 'SUPERADMIN' && (
+        {role == 'SUPERADMIN' && (
           <button className="btn btn-delete" onClick={handleDeleteUser}>
             Delete
           </button>
@@ -181,7 +195,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
           </tr>
           <tr>
             <th>Role</th>
-            {user.role == 'SUPERADMIN' ? (
+            {role == 'SUPERADMIN' ? (
               <td>
                 <select
                   ref={roleInput}
@@ -211,7 +225,7 @@ const UserDetails = ({ user, setIsModalOpen, setSelectedUser }: Props) => {
       {deleteStatus == 'loading' && (
         <h3 className="center">Deleting User...</h3>
       )}
-      <TeacherBio userEmail={user.email} role={user.role} />
+      <TeacherBio userEmail={user.email} role={role} />
     </>
   );
 };

@@ -11,7 +11,7 @@ import validator from 'validator';
 
 interface TeacherBioProps {
   userEmail: string;
-  role?: UserRole;
+  role?: UserRole | undefined;
 }
 
 interface EditingData {
@@ -65,6 +65,22 @@ const TeacherBio = ({ userEmail, role }: TeacherBioProps) => {
     };
     setDescription(decodeURIComponent(fetchData.description));
     setEditingData(newData);
+
+    if (nameInput.current) {
+      nameInput.current.value = validator.unescape(fetchData.name);
+    }
+    if (pronounsInput.current) {
+      pronounsInput.current.value = validator.unescape(fetchData.pronouns);
+    }
+    if (positionInput.current) {
+      positionInput.current.value = validator.unescape(fetchData.position);
+    }
+    if (publicInput.current) {
+      publicInput.current.checked = fetchData.public;
+    }
+    if (imageUrlInput.current) {
+      imageUrlInput.current!.value = decodeURIComponent(fetchData.imageUrl);
+    }
   };
 
   const saveEdit = async () => {
@@ -111,11 +127,6 @@ const TeacherBio = ({ userEmail, role }: TeacherBioProps) => {
   const cancelEdit = () => {
     decodeData();
     setEditing(false);
-    nameInput.current!.value = validator.unescape(fetchData.name);
-    pronounsInput.current!.value = validator.unescape(fetchData.pronouns);
-    positionInput.current!.value = validator.unescape(fetchData.position);
-    publicInput.current!.checked = fetchData.public;
-    imageUrlInput.current!.value = decodeURIComponent(fetchData.imageUrl);
     setError(null);
   };
 

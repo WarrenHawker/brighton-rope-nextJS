@@ -20,7 +20,7 @@ const AdminProfile = async () => {
     `${protocal}://${host}/api/users/${session?.user.email}`
   );
 
-  if (session?.user.role == 'INACTIVE') {
+  if (session?.user.role == 'INACTIVE' || !session?.user.role) {
     return (
       <>
         <h1 className="page-title">Admin Profile</h1>
@@ -31,11 +31,12 @@ const AdminProfile = async () => {
       </>
     );
   }
+
   return (
     <>
       <h1 className="page-title">Admin Profile</h1>
       <div>
-        <UserDetails user={user} />
+        <UserDetails user={user} role={session?.user.role} />
       </div>
     </>
   );

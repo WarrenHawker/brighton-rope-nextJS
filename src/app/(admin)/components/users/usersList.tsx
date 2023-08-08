@@ -3,11 +3,15 @@
 import useFetchUsers from '@/hooks/users/useFetchUsers';
 import { getFullDate } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { UserDB } from '@/utils/interfaces';
+import { UserDB, UserRole } from '@/utils/interfaces';
 import { useState } from 'react';
 import UserDetails from './UserDetails';
 
-const UsersList = () => {
+interface UsersListProps {
+  role: UserRole | undefined;
+}
+
+const UsersList = ({ role }: UsersListProps) => {
   const [selectedUser, setSelectedUser] = useState<UserDB | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -92,6 +96,7 @@ const UsersList = () => {
             user={selectedUser}
             setIsModalOpen={setIsModalOpen}
             setSelectedUser={setSelectedUser}
+            role={role}
           />
         ) : null}
       </Overlay>

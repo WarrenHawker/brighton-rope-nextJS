@@ -15,7 +15,11 @@ const AdminHome = async () => {
       </>
     );
   }
-  return <>{/* <AdminEvents /> */}</>;
+  return (
+    <>
+      <AdminEvents />
+    </>
+  );
 };
 
 export default AdminHome;

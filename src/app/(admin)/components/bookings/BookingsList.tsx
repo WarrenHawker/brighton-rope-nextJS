@@ -16,13 +16,7 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    if (data) {
-      setBookings(data);
-    }
-  }, [data]);
-
-  const showBookingDetails = (booking: BookingsData) => {
+  const showBookingDetails = (booking) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
   };

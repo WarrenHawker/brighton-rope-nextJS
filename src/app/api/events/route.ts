@@ -6,6 +6,7 @@ import { handleError } from '@/utils/functions';
 import validator from 'validator';
 import {
   Address,
+  EventDB,
   EventDateTime,
   Prices,
   UserIdEmail,
@@ -96,8 +97,12 @@ export const POST = async (request: NextRequest) => {
 
 /*get collection of events
 uses search params to filter events, as follows:
-  limit: sets the number of events returned by request. If no number is given, will return all events
-  type: types of events are either "old", "upcoming", or "all". If no type is given, will return events of both types 
+
+  limit: sets the number of events returned by request. 
+    If no number is given, will return all events
+
+  type: types of events are either "old", "upcoming", or "all". 
+    If no type is given, will return events of both types 
 */
 export const GET = async (request: NextRequest) => {
   const yesterday = new Date();
@@ -125,10 +130,10 @@ export const GET = async (request: NextRequest) => {
   } else type = 'all';
 
   //check authorisation
-  const session = await getServerSession(authOptions);
-  if (session?.user.role != 'SUPERADMIN' && session?.user.role != 'ADMIN') {
-    return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
-  }
+  // const session = await getServerSession(authOptions);
+  // if (session?.user.role != 'SUPERADMIN' && session?.user.role != 'ADMIN') {
+  //   return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
+  // }
 
   //try getting events based on search params
   try {
@@ -172,9 +177,12 @@ export const GET = async (request: NextRequest) => {
       });
     }
     if (events) {
-      return NextResponse.json({ events }, { status: 200 });
-    } else
-      return NextResponse.json({ error: 'no events found' }, { status: 404 });
+      if (events.length > 0) {
+        return NextResponse.json({ events }, { status: 200 });
+      } else
+        return NextResponse.json({ error: 'no events found' }, { status: 404 });
+    }
+    // return NextResponse.json({ events }, { status: 200 });
   } catch (error) {
     const { message, status } = handleError(error);
     return NextResponse.json({ error: message }, { status: status });

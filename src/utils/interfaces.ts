@@ -88,6 +88,28 @@ export interface TeacherUpdateData {
   imageUrl?: string;
 }
 
+export interface EventDB {
+  id: number;
+  title: string;
+  description: string;
+  startDate: Date;
+  dateTimes: Prisma.JsonArray;
+  location: Prisma.JsonObject;
+  isFree: boolean;
+  maxTickets?: number;
+  ticketsSold?: number;
+  ticketsRemaining?: number;
+  prices?: Prisma.JsonArray;
+  allowMultipleTickets?: boolean;
+}
+
+export interface EventDBAdmin extends EventDB {
+  createdOn: Date;
+  createdBy: Prisma.JsonObject;
+  updatedOn?: Date;
+  updatedBy?: Prisma.JsonObject;
+}
+
 // export type Contact = {
 //   firstName: string;
 //   lastName: string;

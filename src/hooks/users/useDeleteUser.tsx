@@ -1,10 +1,6 @@
 import { UserDB } from '@/utils/interfaces';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-type PrevData = {
-  users?: UserDB[];
-};
-
 export const deleteUserByEmail = async (url: string) => {
   const res = await fetch(url, { method: 'DELETE' });
   const data = await res.json();
@@ -18,14 +14,11 @@ const useDeleteUser = () => {
   const queryClient = useQueryClient();
   return useMutation<UserDB, Error, string>(deleteUserByEmail, {
     onSuccess: (deletedUser) => {
-      queryClient.setQueryData(['users'], (prevData: PrevData | undefined) => {
+      queryClient.setQueryData(['users'], (prevData: UserDB[] | undefined) => {
         if (!prevData) {
-          return {};
+          return [];
         }
-        return {
-          ...prevData,
-          users: prevData.users?.filter((item) => item.id != deletedUser.id),
-        };
+        return prevData.filter((item) => item.id != deletedUser.id);
       });
     },
   });

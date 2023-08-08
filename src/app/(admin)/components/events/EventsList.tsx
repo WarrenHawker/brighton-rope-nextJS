@@ -1,10 +1,9 @@
 'use client';
-import { EventsData } from '@/utils/interfaces';
 import { getFullDate } from '../../../../utils/functions';
 
 interface EventsListProps {
-  events: EventsData[];
-  selectedEvent: EventsData | null;
+  events: [];
+  selectedEvent: object | null;
   changeSelectedEvent: (id: string) => void;
 }
 

@@ -10,10 +10,6 @@ type CreateUserOptions = {
   };
 };
 
-type PrevData = {
-  users: UserDB[];
-};
-
 export const createUser = async (options: CreateUserOptions) => {
   const res = await fetch(options.url, {
     method: 'POST',
@@ -26,21 +22,18 @@ export const createUser = async (options: CreateUserOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data.user;
+  return data;
 };
 
 const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation<UserDB, Error, CreateUserOptions>(createUser, {
     onSuccess: (user) => {
-      queryClient.setQueryData(['users'], (prevData: PrevData | undefined) => {
+      queryClient.setQueryData(['users'], (prevData: UserDB[] | undefined) => {
         if (!prevData) {
-          return { users: [user] };
+          return [user];
         }
-        return {
-          ...prevData,
-          users: [...prevData.users, user],
-        };
+        return [...prevData, user];
       });
     },
   });

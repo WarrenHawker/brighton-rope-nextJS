@@ -13,6 +13,9 @@ const useFetchTeacher = (email: string) => {
   const { data, error, status } = useQuery({
     queryKey: ['teachers', email],
     queryFn: () => fetchTeacherByEmail(`/api/teachers/${email}`),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   return { data, error, status };
 };

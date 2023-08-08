@@ -6,13 +6,16 @@ export const fetchUsers = async (url: string) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data;
+  return data.users;
 };
 
 const useFetchUsers = () => {
   const { data, error, status } = useQuery({
     queryKey: ['users'],
     queryFn: () => fetchUsers('/api/users'),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   return { data, error, status };
 };

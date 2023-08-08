@@ -132,6 +132,14 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
 
   //try deleting user from database
   try {
+    const teacher = await prismaClient.teachers.findUnique({
+      where: { email: params.userEmail },
+    });
+    if (teacher) {
+      const deletedTeacher = await prismaClient.teachers.delete({
+        where: { email: params.userEmail },
+      });
+    }
     const deletedUserData = await prismaClient.users.delete({
       where: { email: params.userEmail },
     });

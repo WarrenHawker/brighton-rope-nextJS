@@ -15,7 +15,7 @@ const UsersList = ({ role }: UsersListProps) => {
   const [selectedUser, setSelectedUser] = useState<UserDB | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, status } = useFetchUsers();
+  const { data: users, error, status } = useFetchUsers();
 
   if (status == 'loading') {
     return (
@@ -30,7 +30,7 @@ const UsersList = ({ role }: UsersListProps) => {
     return (
       <>
         <h2 className="center">Users List</h2>
-        <h3 className="center error">{data.error}</h3>
+        <h3 className="center error">{(error as Error).message}</h3>
       </>
     );
   }
@@ -38,7 +38,7 @@ const UsersList = ({ role }: UsersListProps) => {
   return (
     <>
       <h2 className="center">Users List</h2>
-      {data.users ? (
+      {users ? (
         <table className="main-table">
           <thead>
             <tr>
@@ -49,7 +49,7 @@ const UsersList = ({ role }: UsersListProps) => {
             </tr>
           </thead>
           <tbody>
-            {data.users.map((user: UserDB) => (
+            {users.map((user: UserDB) => (
               <tr
                 key={user.id}
                 onClick={() => {
@@ -66,7 +66,7 @@ const UsersList = ({ role }: UsersListProps) => {
           </tbody>
         </table>
       ) : (
-        <h3 className="center">{data.error}</h3>
+        <h3 className="center">{(error as Error).message}</h3>
       )}
       <Overlay
         isOpen={isModalOpen}

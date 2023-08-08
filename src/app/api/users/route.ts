@@ -36,7 +36,6 @@ export const POST = async (request: NextRequest) => {
   }
 
   //sanitise inputs
-  email = validator.normalizeEmail(email).toString();
   email = validator.escape(email).trim();
   password = validator.escape(password).trim();
 
@@ -100,10 +99,12 @@ export const GET = async (request: NextRequest) => {
         preferences: user.preferences,
       };
     });
-    if (!users) {
-      return NextResponse.json({ error: 'no users found' }, { status: 404 });
+    if (users) {
+      if (users.length > 0) {
+        return NextResponse.json({ users }, { status: 200 });
+      } else
+        return NextResponse.json({ error: 'no users found' }, { status: 404 });
     }
-    return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
     const { message, status } = handleError(error);
     return NextResponse.json({ error: message }, { status: status });

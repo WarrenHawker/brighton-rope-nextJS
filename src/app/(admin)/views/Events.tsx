@@ -8,6 +8,7 @@ import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
 import Waitlist from '../components/waitlists/Waitlists';
 import useFetchEvents from '@/hooks/events/useFetchEvents';
+import AddEditEvent from '../components/events/AddEditEvent';
 
 const AdminEvents = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
@@ -41,7 +42,7 @@ const AdminEvents = () => {
         <div>
           <h3 className="center error">{(error as Error).message}</h3>
           <h2>Add New Event</h2>
-          <AddEvent setAddEvent={setAddEvent} />
+          <AddEditEvent setAddEvent={setAddEvent} />
         </div>
       </>
     );
@@ -49,6 +50,7 @@ const AdminEvents = () => {
 
   return (
     <>
+      <h1 className="page-title">Events</h1>
       <aside>
         <button className="btn btn-large" onClick={() => setAddEvent(true)}>
           Create New Event
@@ -59,7 +61,7 @@ const AdminEvents = () => {
           setIsOpen={setAddEvent}
           header={<h2>Add New Event</h2>}
           // eslint-disable-next-line react/no-children-prop
-          children={<AddEvent setAddEvent={setAddEvent} />}
+          children={<AddEditEvent setAddEvent={setAddEvent} />}
         />
         <EventsList
           events={events}

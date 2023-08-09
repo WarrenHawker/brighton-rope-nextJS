@@ -10,6 +10,8 @@ import {
   Prices,
 } from '@/utils/interfaces';
 import MDEditor from '@uiw/react-md-editor';
+import useDeleteEvent from '@/hooks/events/useDeleteEvent';
+import AddEditEvent from './AddEditEvent';
 
 interface EventDetailsProps {
   selectedEvent: EventDBAdmin | null;
@@ -17,6 +19,8 @@ interface EventDetailsProps {
 
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
   const [editing, setEditing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { mutateAsync: deleteMutate, status: deleteStatus } = useDeleteEvent();
 
   const deleteEvent = async () => {
     if (
@@ -24,10 +28,11 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
         'Are you sure you want to delete this event? This process is irreversible'
       )
     ) {
-      const res = await fetch(`/api/events/${selectedEvent!.id}`, {
-        method: 'DELETE',
-        next: { tags: ['events'] },
-      });
+      try {
+        await deleteMutate(`/api/events/${selectedEvent!.id}`);
+      } catch (error) {
+        setError((error as Error).message);
+      }
     } else return;
   };
 
@@ -50,8 +55,12 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
           {selectedEvent.isFree ? 'FREE EVENT' : 'PAID EVENT'}
         </h3>
       </div>
+      {deleteStatus == 'loading' && (
+        <h3 className="center">Deleting Event...</h3>
+      )}
+      {error && <h3 className="center error">{error}</h3>}
       {editing ? (
-        <EditEvent event={selectedEvent} setEditing={setEditing} />
+        <AddEditEvent event={selectedEvent} setEditing={setEditing} />
       ) : (
         <>
           <div className="button-container">

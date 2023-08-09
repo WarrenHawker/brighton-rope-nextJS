@@ -6,7 +6,6 @@ import { handleError } from '@/utils/functions';
 import validator from 'validator';
 import {
   Address,
-  EventDB,
   EventDateTime,
   Prices,
   UserIdEmail,
@@ -129,60 +128,76 @@ export const GET = async (request: NextRequest) => {
     type = typeParam;
   } else type = 'all';
 
-  //check authorisation
-  // const session = await getServerSession(authOptions);
-  // if (session?.user.role != 'SUPERADMIN' && session?.user.role != 'ADMIN') {
-  //   return NextResponse.json({ error: 'unauthorized access' }, { status: 401 });
-  // }
+  const session = await getServerSession(authOptions);
 
   //try getting events based on search params
   try {
-    let events;
+    let eventsData;
     if (limit == -1 && type == 'all') {
       //all events all types
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
       });
     } else if (limit >= 0 && type == 'all') {
       //limited events all types
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
         take: limit,
       });
     } else if (limit == -1 && type == 'upcoming') {
       //all upcoming events
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
         where: { startDate: { gte: yesterday } },
       });
     } else if (limit == -1 && type == 'old') {
       //all old events
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
         where: { startDate: { lt: yesterday } },
       });
     } else if (limit >= 0 && type == 'upcoming') {
       //limited upcoming events
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
         where: { startDate: { gte: yesterday } },
         take: limit,
       });
     } else if (limit >= 0 && type == 'old') {
       //limited old events
-      events = await prismaClient.events.findMany({
+      eventsData = await prismaClient.events.findMany({
         orderBy: { startDate: 'desc' },
         where: { startDate: { lt: yesterday } },
         take: limit,
       });
     }
-    if (events) {
-      if (events.length > 0) {
-        return NextResponse.json({ events }, { status: 200 });
+    if (eventsData) {
+      if (eventsData.length > 0) {
+        if (
+          session?.user.role != 'ADMIN' &&
+          session?.user.role != 'SUPERADMIN'
+        ) {
+          const events = eventsData.map((event) => {
+            return {
+              id: event.id,
+              title: event.title,
+              description: event.description,
+              startDate: event.startDate,
+              dateTimes: event.dateTimes,
+              location: event.location,
+              isFree: event.isFree,
+              maxTickets: event.maxTickets,
+              ticketsSold: event.ticketsSold,
+              prices: event.prices,
+              allowMultipleTickets: event.allowMultipleTickets,
+            };
+          });
+          return NextResponse.json({ events }, { status: 200 });
+        }
+        return NextResponse.json({ events: eventsData }, { status: 200 });
       } else
         return NextResponse.json({ error: 'no events found' }, { status: 404 });
     }
-    // return NextResponse.json({ events }, { status: 200 });
   } catch (error) {
     const { message, status } = handleError(error);
     return NextResponse.json({ error: message }, { status: status });

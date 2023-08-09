@@ -36,7 +36,7 @@ export const createEvent = async (options: CreateEventOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data;
+  return data.event;
 };
 
 const useCreateUser = () => {

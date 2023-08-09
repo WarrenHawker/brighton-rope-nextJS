@@ -1,5 +1,8 @@
 'use client';
 
+import useCreateEvent from '@/hooks/events/useCreateEvent';
+import useDeleteEvent from '@/hooks/events/useDeleteEvent';
+import useUpdateEvent from '@/hooks/events/useUpdateEvent';
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
 import {
   Address,
@@ -7,32 +10,62 @@ import {
   EventDateTime,
   Prices,
 } from '@/utils/interfaces';
-import { useState, ChangeEvent, MouseEvent } from 'react';
+import MDEditor from '@uiw/react-md-editor';
+import { ChangeEvent, useState } from 'react';
 
-interface EditEventProps {
-  event: EventDBAdmin;
-  setEditing: (value: boolean) => void;
+interface Props {
+  setAddEvent?: (value: boolean) => void;
+  setEditing?: (value: boolean) => void;
+  event?: EventDBAdmin;
 }
 
-const EditEvent = ({ event, setEditing }: EditEventProps) => {
-  const [title, setTitle] = useState(event.title);
-  const [description, setDescription] = useState(event.description);
+const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState<string | undefined>(undefined);
   const [location, setLocation] = useState<Address>({
-    lineOne: (event.location as Address).lineOne,
-    lineTwo: (event.location as Address).lineTwo,
-    city: (event.location as Address).city,
-    country: (event.location as Address).country,
-    postcode: (event.location as Address).postcode,
+    lineOne: '',
+    lineTwo: '',
+    city: '',
+    country: '',
+    postcode: '',
   });
-  const [capacity, setCapacity] = useState(event.maxTickets);
-  const [allowMultipleTickets, setAllowMultipleTickets] = useState(
-    event.allowMultipleTickets
-  );
-  const [datesTimes, setDatesTimes] = useState<EventDateTime[]>(
-    event.dateTimes as EventDateTime[]
-  );
-  const [prices, setPrices] = useState<Prices[]>(event.prices as Prices[]);
-  const [isFree, setIsFree] = useState<boolean>(event.isFree);
+  const [maxTickets, setMaxTickets] = useState(0);
+  const [allowMultipleTickets, setAllowMultipleTickets] = useState(true);
+  const [datesTimes, setDatesTimes] = useState<EventDateTime[]>([
+    { date: '', startTime: '', endTime: '', error: null },
+  ]);
+  const [prices, setPrices] = useState<Prices[]>([]);
+  const [isFree, setIsFree] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [emptyFields, setEmptyFields] = useState<string[]>([]);
+
+  const { mutateAsync: deleteMutate, status: deleteStatus } = useDeleteEvent();
+  const { mutateAsync: createMutate, status: createStatus } = useCreateEvent();
+  const { mutateAsync: updateMutate, status: updateStatus } = useUpdateEvent();
+
+  const deleteEvent = async () => {
+    try {
+      await deleteMutate(`/api/events/${event!.id}`);
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
+  const updateEvent = async () => {
+    try {
+      await updateMutate({ url: `/api/events/${event!.id}`, updateData: {} });
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
+  const createEvent = async () => {
+    try {
+      await createMutate({ url: `/api/events`, eventData: {} });
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
 
   const addDateTime = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -121,31 +154,53 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
           ) : null}
         </div>
 
-        <label htmlFor="singleDate">Date</label>
+        <label htmlFor="singleDate">
+          Date <span className="required">*</span>
+        </label>
         <input
+          className={emptyFields?.includes('date') ? 'invalid' : ''}
           type="date"
           name="singleDate"
           value={item.date}
-          onChange={(e) => changeDateTime(e, index, 'date')}
+          onChange={(e) => {
+            setEmptyFields((prev) => prev?.filter((item) => item != 'date'));
+            changeDateTime(e, index, 'date');
+          }}
         />
 
         <div className="time-input-container">
           <div>
-            <label htmlFor="singleStartTime">Start Time</label>
+            <label htmlFor="singleStartTime">
+              Start Time <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('start time') ? 'invalid' : ''}
               type="time"
               name="singleStartTime"
               value={item.startTime}
-              onChange={(e) => changeDateTime(e, index, 'start')}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'start time')
+                );
+                changeDateTime(e, index, 'start');
+              }}
             />
           </div>
           <div>
-            <label htmlFor="singleEndTime">End Time</label>
+            <label htmlFor="singleEndTime">
+              End Time <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('end time') ? 'invalid' : ''}
               type="time"
               value={item.endTime}
               name="singleEndTime"
-              onChange={(e) => changeDateTime(e, index, 'end')}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'end time')
+                );
+                changeDateTime(e, index, 'end');
+              }}
             />
           </div>
         </div>
@@ -155,7 +210,7 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     );
   });
 
-  const addPrice = (e: MouseEvent<HTMLButtonElement>) => {
+  const addPrice = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setPrices((prev) => {
       return [
@@ -291,67 +346,65 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
     });
   };
 
-  const saveEdits = async () => {
-    const updatedEvent = {
-      title: title,
-      description: description,
-      startDate: new Date(datesTimes[0].date),
-      dateTimes: JSON.stringify(datesTimes),
-      location: JSON.stringify(location),
-      maxTickets: capacity,
-      ticketsSold: 0,
-      ticketsRemaining: capacity,
-      prices: JSON.stringify(prices),
-      allowMultipleTickets: allowMultipleTickets,
-      isFree: isFree,
-    };
-  };
-
-  const cancelEdits = () => {
-    setEditing(false);
-    setTitle(event.title);
-    setAllowMultipleTickets(event.allowMultipleTickets);
-    setCapacity(event.maxTickets);
-    setDatesTimes(event.dateTimes as EventDateTime[]);
-    setDescription(event.description);
-    setLocation(event.location as Address);
-    setPrices(event.prices as Prices[]);
-  };
-
-  const deleteEventClick = async () => {
-    if (
-      confirm(
-        'Are you sure you want to delete this event? This process is irreversible'
-      )
-    ) {
-    } else return;
-  };
-
   return (
     <>
-      <div className="button-container">
-        <button onClick={saveEdits} className="btn">
-          Save
-        </button>
-        <button onClick={cancelEdits} className="btn">
-          Cancel
-        </button>
-        <button className="btn btn-delete" onClick={deleteEventClick}>
-          Delete
-        </button>
-      </div>
+      <h2>{event ? 'Edit Event' : 'Add Event'}</h2>
+      {deleteStatus == 'loading' && (
+        <h3 className="center">Deleting event...</h3>
+      )}
+      {updateStatus == 'loading' && (
+        <h3 className="center">Updating event...</h3>
+      )}
+      {createStatus == 'loading' && (
+        <h3 className="center">Creating event...</h3>
+      )}
+      {error && <h3 className="center error">{error}</h3>}
+
+      {event && (
+        <div className="button-container">
+          <button className="btn">Save</button>
+          <button className="btn">Cancel</button>
+          <button className="btn btn-delete">Delete</button>
+        </div>
+      )}
+
       <form className="add-event-form">
         <input
-          className="title-input"
+          className={
+            emptyFields?.includes('title')
+              ? 'title-input invalid'
+              : 'title-input'
+          }
           type="text"
           name="title"
           defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setEmptyFields((prev) => prev?.filter((item) => item != 'title'));
+            setTitle(e.target.value);
+          }}
           placeholder="Add title"
         />
 
-        <div className="description-container">
-          <label className="description-label">Description</label>
+        <div
+          className={
+            emptyFields?.includes('description')
+              ? 'description-container invalid'
+              : 'description-container'
+          }
+          onInput={() =>
+            setEmptyFields((prev) =>
+              prev?.filter((item) => item != 'description')
+            )
+          }
+        >
+          <label className="description-label">
+            Description <span className="required">*</span>
+          </label>
+          <MDEditor
+            height={200}
+            value={description}
+            onChange={setDescription}
+          />
         </div>
         <fieldset className="full-width-fieldset">
           <legend>Is this event free or paid?</legend>
@@ -370,12 +423,20 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
         <div className="form-column">
           <fieldset className="location">
             <legend>Location</legend>
-            <label htmlFor="lineOne">Street Address</label>
+            <label htmlFor="lineOne">
+              Street Address <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('line one') ? 'invalid' : ''}
               type="text"
               name="lineOne"
               defaultValue={location.lineOne}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'line one')
+                );
+                changeLocation(e);
+              }}
             />
 
             <label htmlFor="lineTwo">
@@ -388,27 +449,51 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
               onChange={(e) => changeLocation(e)}
             />
 
-            <label htmlFor="city">City</label>
+            <label htmlFor="city">
+              City <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('city') ? 'invalid' : ''}
               type="text"
               name="city"
               defaultValue={location.city}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'city')
+                );
+                changeLocation(e);
+              }}
             />
 
-            <label htmlFor="country">Country</label>
+            <label htmlFor="country">
+              Country <span className="required">*</span>
+            </label>
+
             <CountrySelector
               value={location.country}
-              changeHandler={(e: any) => changeLocation(e)}
-              styles=""
+              changeHandler={(e: any) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'country')
+                );
+                changeLocation(e);
+              }}
+              styles={emptyFields?.includes('country') ? 'invalid' : ''}
             />
 
-            <label htmlFor="postcode">ZIP/postcode </label>
+            <label htmlFor="postcode">
+              ZIP/postcode <span className="required">*</span>
+            </label>
             <input
+              className={emptyFields?.includes('postcode') ? 'invalid' : ''}
               type="text"
               name="postcode"
               defaultValue={location.postcode}
-              onChange={(e) => changeLocation(e)}
+              onChange={(e) => {
+                setEmptyFields((prev) =>
+                  prev?.filter((item) => item != 'postcode')
+                );
+                changeLocation(e);
+              }}
             />
           </fieldset>
 
@@ -431,12 +516,20 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
           {!isFree ? (
             <fieldset className="event-details-fields">
               <legend>Event Details</legend>
-              <label htmlFor="capacity">Number of tickets available</label>
+              <label htmlFor="capacity">
+                Number of tickets available <span className="required">*</span>
+              </label>
               <input
+                className={emptyFields.includes('max tickets') ? 'invalid' : ''}
                 type="number"
                 name="capacity"
-                defaultValue={capacity}
-                onChange={(e) => setCapacity(parseInt(e.target.value))}
+                defaultValue={maxTickets}
+                onChange={(e) => {
+                  setEmptyFields((prev) =>
+                    prev?.filter((item) => item != 'max tickets')
+                  );
+                  setMaxTickets(parseInt(e.target.value));
+                }}
                 min="0"
               />
               <div className="toggle-container">
@@ -464,9 +557,21 @@ const EditEvent = ({ event, setEditing }: EditEventProps) => {
             </button>
           </fieldset>
         </div>
+        {createStatus == 'loading' && (
+          <h3 className="center">Creating new Event...</h3>
+        )}
+        {error && <h3 className="center error">{error}</h3>}
+
+        {!event && (
+          <div className="btn-submit-container">
+            <button type="submit" className="btn btn-large">
+              Create Event
+            </button>
+          </div>
+        )}
       </form>
     </>
   );
 };
 
-export default EditEvent;
+export default AddEditEvent;

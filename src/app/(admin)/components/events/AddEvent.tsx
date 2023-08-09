@@ -384,6 +384,7 @@ const AddEvent = ({ setAddEvent }: AddEventProps) => {
 
     try {
       await createMutate({ url: '/api/events', eventData: event });
+      setAddEvent(false);
     } catch (error) {
       setError((error as Error).message);
     }

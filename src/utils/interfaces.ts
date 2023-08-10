@@ -68,15 +68,18 @@ export interface UserUpdateData {
 export interface TeacherDB {
   id: number;
   name: string;
-  email: string;
   pronouns: string;
   description: string;
   position: Position;
-  public: boolean;
   imageUrl: string;
+}
+
+export interface TeacherDBAdmin extends TeacherDB {
+  public: boolean;
   createdOn: Date;
   updatedOn: Date | null;
   updatedBy: Prisma.JsonObject;
+  email: string;
 }
 
 export interface TeacherUpdateData {
@@ -108,6 +111,28 @@ export interface EventDBAdmin extends EventDB {
   createdBy: Prisma.JsonObject;
   updatedOn?: Date;
   updatedBy?: Prisma.JsonObject;
+}
+
+export interface EventClient {
+  id: number;
+  title: string;
+  description: string;
+  startDate: Date;
+  dateTimes: EventDateTime[];
+  location: Address;
+  isFree: boolean;
+  maxTickets?: number;
+  ticketsSold?: number;
+  ticketsRemaining?: number;
+  prices?: Prices[];
+  allowMultipleTickets?: boolean;
+}
+
+export interface EventClientAdmin extends EventClient {
+  createdOn: Date;
+  createdBy: UserIdEmail;
+  updatedOn?: Date;
+  updatedBy?: UserIdEmail;
 }
 
 // export type Contact = {

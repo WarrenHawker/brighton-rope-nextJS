@@ -1,9 +1,27 @@
-import { EventDBAdmin } from '@/utils/interfaces';
+import {
+  Address,
+  EventDBAdmin,
+  EventDateTime,
+  Prices,
+} from '@/utils/interfaces';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+export type UpdateEventData = {
+  title: string;
+  description: string;
+  startDate: Date;
+  location: Address;
+  isFree: boolean;
+
+  dateTimes?: EventDateTime[];
+  maxTickets?: number;
+  prices?: Prices[];
+  allowMultipleTickets?: boolean;
+};
 
 type UpdateEventOptions = {
   url: string;
-  updateData: object;
+  updateData: UpdateEventData;
 };
 
 export const updateEventById = async (options: UpdateEventOptions) => {

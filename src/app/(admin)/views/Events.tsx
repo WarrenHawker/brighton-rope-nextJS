@@ -3,7 +3,6 @@ import Overlay from '@/utils/globalComponents/Overlay';
 import ViewTabs from '@/utils/globalComponents/ViewTabs';
 import { useEffect, useState } from 'react';
 import BookingsList from '../components/bookings/BookingsList';
-import AddEvent from '../components/events/AddEvent';
 import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
 import Waitlist from '../components/waitlists/Waitlists';
@@ -42,7 +41,7 @@ const AdminEvents = () => {
         <div>
           <h3 className="center error">{(error as Error).message}</h3>
           <h2>Add New Event</h2>
-          <AddEditEvent setAddEvent={setAddEvent} />
+          <AddEditEvent setActive={setAddEvent} />
         </div>
       </>
     );
@@ -61,7 +60,7 @@ const AdminEvents = () => {
           setIsOpen={setAddEvent}
           header={<h2>Add New Event</h2>}
           // eslint-disable-next-line react/no-children-prop
-          children={<AddEditEvent setAddEvent={setAddEvent} />}
+          children={<AddEditEvent setActive={setAddEvent} />}
         />
         <EventsList
           events={events}

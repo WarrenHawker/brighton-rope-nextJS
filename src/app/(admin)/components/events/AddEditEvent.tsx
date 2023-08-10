@@ -1,25 +1,25 @@
 'use client';
 
-import useCreateEvent from '@/hooks/events/useCreateEvent';
+import useCreateEvent, { CreateEventData } from '@/hooks/events/useCreateEvent';
 import useDeleteEvent from '@/hooks/events/useDeleteEvent';
-import useUpdateEvent from '@/hooks/events/useUpdateEvent';
+import useUpdateEvent, { UpdateEventData } from '@/hooks/events/useUpdateEvent';
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
 import {
   Address,
-  EventDBAdmin,
+  EventClientAdmin,
   EventDateTime,
   Prices,
 } from '@/utils/interfaces';
 import MDEditor from '@uiw/react-md-editor';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import validator from 'validator';
 
 interface Props {
-  setAddEvent?: (value: boolean) => void;
-  setEditing?: (value: boolean) => void;
-  event?: EventDBAdmin;
+  setActive: (value: boolean) => void;
+  event?: EventClientAdmin;
 }
 
-const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
+const AddEditEvent = ({ event, setActive }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [location, setLocation] = useState<Address>({
@@ -43,6 +43,86 @@ const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
   const { mutateAsync: createMutate, status: createStatus } = useCreateEvent();
   const { mutateAsync: updateMutate, status: updateStatus } = useUpdateEvent();
 
+  const validateInputs = () => {
+    setError(null);
+    setEmptyFields([]);
+    const newEmptyFields = [];
+
+    if (validator.isEmpty(title, { ignore_whitespace: true })) {
+      newEmptyFields.push('title');
+    }
+    if (!description) {
+      newEmptyFields.push('description');
+    } else {
+      if (validator.isEmpty(description, { ignore_whitespace: true })) {
+        newEmptyFields.push('description');
+      }
+    }
+    if (validator.isEmpty(datesTimes[0].date)) {
+      newEmptyFields.push('date');
+    }
+    if (validator.isEmpty(datesTimes[0].startTime)) {
+      newEmptyFields.push('start time');
+    }
+    if (validator.isEmpty(datesTimes[0].endTime)) {
+      newEmptyFields.push('end time');
+    }
+    if (validator.isEmpty(location.lineOne)) {
+      newEmptyFields.push('line one');
+    }
+    if (validator.isEmpty(location.city)) {
+      newEmptyFields.push('city');
+    }
+    if (validator.isEmpty(location.country)) {
+      newEmptyFields.push('country');
+    }
+    if (validator.isEmpty(location.postcode)) {
+      newEmptyFields.push('postcode');
+    }
+    if (newEmptyFields.length > 0) {
+      setError('please fill in all required fields');
+      setEmptyFields(newEmptyFields);
+      return false;
+    }
+
+    if (!isFree && prices.length == 0) {
+      setError('paid events must have at least one price bracket');
+      return false;
+    }
+
+    if (!isFree && maxTickets == 0) {
+      newEmptyFields.push('max tickets');
+      setEmptyFields(newEmptyFields);
+      setError(
+        'number of tickets available for paid events must be greater than zero'
+      );
+      return false;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    if (event) {
+      setTitle(event.title);
+      setDescription(event.description);
+      setLocation({
+        lineOne: event.location.lineOne,
+        lineTwo: event.location.lineTwo,
+        city: event.location.city,
+        country: event.location.country,
+        postcode: event.location.postcode,
+      });
+      setIsFree(event.isFree);
+      setDatesTimes(event.dateTimes);
+
+      if (!event.isFree) {
+        setPrices(event.prices!);
+        setMaxTickets(event.maxTickets!);
+        setAllowMultipleTickets(event.allowMultipleTickets!);
+      }
+    }
+  }, [event]);
+
   const deleteEvent = async () => {
     try {
       await deleteMutate(`/api/events/${event!.id}`);
@@ -52,19 +132,76 @@ const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
   };
 
   const updateEvent = async () => {
-    try {
-      await updateMutate({ url: `/api/events/${event!.id}`, updateData: {} });
-    } catch (error) {
-      setError((error as Error).message);
+    if (validateInputs()) {
+      const updateData: UpdateEventData = {
+        title: title,
+        description: description || '',
+        startDate: new Date(datesTimes[0].date),
+        dateTimes: datesTimes,
+        location: location,
+        isFree: isFree,
+      };
+
+      if (!updateData.isFree) {
+        updateData.prices = prices;
+        updateData.allowMultipleTickets = allowMultipleTickets;
+        updateData.maxTickets = maxTickets;
+      }
+      try {
+        await updateMutate({ url: `/api/events/${event!.id}`, updateData });
+        setActive(false);
+      } catch (error) {
+        setError((error as Error).message);
+      }
     }
   };
 
   const createEvent = async () => {
-    try {
-      await createMutate({ url: `/api/events`, eventData: {} });
-    } catch (error) {
-      setError((error as Error).message);
+    if (validateInputs()) {
+      const eventData: CreateEventData = {
+        title: title,
+        description: description || '',
+        startDate: new Date(datesTimes[0].date),
+        dateTimes: datesTimes,
+        location: location,
+        isFree: isFree,
+      };
+      if (!eventData.isFree) {
+        eventData.prices = prices;
+        eventData.allowMultipleTickets = allowMultipleTickets;
+        eventData.maxTickets = maxTickets;
+      }
+
+      try {
+        await createMutate({ url: `/api/events`, eventData });
+        setActive(false);
+      } catch (error) {
+        setError((error as Error).message);
+      }
     }
+  };
+
+  const cancelEdits = async () => {
+    if (event) {
+      setTitle(event.title);
+      setDescription(event.description);
+      setLocation({
+        lineOne: event.location.lineOne,
+        lineTwo: event.location.lineTwo,
+        city: event.location.city,
+        country: event.location.country,
+        postcode: event.location.postcode,
+      });
+      setIsFree(event.isFree);
+      setDatesTimes(event.dateTimes);
+
+      if (!event.isFree) {
+        setPrices(event.prices!);
+        setMaxTickets(event.maxTickets!);
+        setAllowMultipleTickets(event.allowMultipleTickets!);
+      }
+    }
+    setActive(false);
   };
 
   const addDateTime = (e: { preventDefault: () => void }) => {
@@ -362,9 +499,15 @@ const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
 
       {event && (
         <div className="button-container">
-          <button className="btn">Save</button>
-          <button className="btn">Cancel</button>
-          <button className="btn btn-delete">Delete</button>
+          <button className="btn" onClick={updateEvent}>
+            Save
+          </button>
+          <button className="btn" onClick={cancelEdits}>
+            Cancel
+          </button>
+          <button className="btn btn-delete" onClick={deleteEvent}>
+            Delete
+          </button>
         </div>
       )}
 
@@ -564,7 +707,11 @@ const AddEditEvent = ({ setAddEvent, event, setEditing }: Props) => {
 
         {!event && (
           <div className="btn-submit-container">
-            <button type="submit" className="btn btn-large">
+            <button
+              type="button"
+              className="btn btn-large"
+              onClick={createEvent}
+            >
               Create Event
             </button>
           </div>

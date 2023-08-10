@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { getFullDate } from '../../../../utils/functions';
-import EditEvent from './EditEvent';
 import {
   Address,
-  EventDBAdmin,
+  EventClientAdmin,
   EventDateTime,
   Prices,
 } from '@/utils/interfaces';
@@ -14,7 +13,7 @@ import useDeleteEvent from '@/hooks/events/useDeleteEvent';
 import AddEditEvent from './AddEditEvent';
 
 interface EventDetailsProps {
-  selectedEvent: EventDBAdmin | null;
+  selectedEvent: EventClientAdmin | null;
 }
 
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
@@ -60,7 +59,7 @@ const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
       )}
       {error && <h3 className="center error">{error}</h3>}
       {editing ? (
-        <AddEditEvent event={selectedEvent} setEditing={setEditing} />
+        <AddEditEvent event={selectedEvent} setActive={setEditing} />
       ) : (
         <>
           <div className="button-container">

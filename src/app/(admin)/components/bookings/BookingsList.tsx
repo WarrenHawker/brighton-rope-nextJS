@@ -1,37 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { BookingsData, EventsData } from '@/utils/interfaces';
 import Overlay from '@/utils/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
 import { getFullDate } from '@/utils/functions';
 import { useQuery } from '@tanstack/react-query';
-import { fetchBookingsByEventClient } from '@/utils/clientFetch';
 
 interface BookingsListProps {
-  selectedEvent: EventsData | null;
-  events: EventsData[];
+  selectedEvent: Object | null;
+  events: [];
 }
 
 const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedBooking, setSelectedBooking] = useState<BookingsData | null>(
-    null
-  );
-  const [bookings, setBookings] = useState<BookingsData[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [bookings, setBookings] = useState([]);
 
-  const { data } = useQuery({
-    queryKey: ['bookings', selectedEvent?.id],
-    queryFn: () => fetchBookingsByEventClient(selectedEvent?.id),
-  });
-
-  useEffect(() => {
-    if (data) {
-      setBookings(data);
-    }
-  }, [data]);
-
-  const showBookingDetails = (booking: BookingsData) => {
+  const showBookingDetails = (booking) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
   };

@@ -2,45 +2,44 @@
 
 import { getFullDate, getLongDate, getTimeString } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { EventDateTime, EventsData } from '@/utils/interfaces';
+import { EventDateTime } from '@/utils/interfaces';
 import { useState } from 'react';
-import BookingForm from './bookingForm/bookingForm';
+import BookingForm from './bookingForm/BookingForm';
 import Link from 'next/link';
-import { MdPreview } from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
-import { fetchEventByIdClient } from '@/utils/clientFetch';
-import { useQuery } from '@tanstack/react-query';
-import WaitingListForm from './waitlistForm';
+import WaitingListForm from './WaitlistForm';
+import useFetchEvent from '@/hooks/events/useFetchEvent';
 
 interface Props {
-  eventId: string;
+  eventId: number;
 }
 
 const SingleEventDetails = ({ eventId }: Props) => {
   const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
-  const { data } = useQuery({
-    queryKey: ['events', eventId],
-    queryFn: () => fetchEventByIdClient(eventId),
-  });
 
-  if (!data) {
+  const { data: event, error, status } = useFetchEvent(eventId);
+
+  if (status == 'loading') {
+    return <h2 className="center">Loading...</h2>;
+  }
+
+  if (error || !event) {
     return (
-      <main>
-        <h1>No event found</h1>
-      </main>
+      <h2 className="center error">
+        I&apos;m sorry, we couldn&apos;t find this event
+      </h2>
     );
   }
 
   return (
     <main>
-      <h1 className="page-title">{data.title}</h1>
+      <h1 className="page-title">{event.title}</h1>
       <section className="single-event">
-        {!data.prices.length && (
+        {event.isFree && (
           <h2 className="single-event-free">
             This event is FREE! Just turn up and have fun
           </h2>
         )}
-        {data.ticketsRemaining == 0 && (
+        {event.ticketsRemaining == 0 && (
           <h2 className="single-event-free">
             We&apos;re sorry, this class is full. Click the button below to join
             the waiting list
@@ -49,16 +48,16 @@ const SingleEventDetails = ({ eventId }: Props) => {
         <div className="single-event-details">
           <div className="single-event-location">
             <h3>Location:</h3>
-            <p>{data.location.lineOne}</p>
-            <p>{data.location.lineTwo}</p>
-            <p>{data.location.city}</p>
-            <p>{data.location.country}</p>
-            <p>{data.location.postcode}</p>
+            <p>{event.location.lineOne}</p>
+            <p>{event.location.lineTwo}</p>
+            <p>{event.location.city}</p>
+            <p>{event.location.country}</p>
+            <p>{event.location.postcode}</p>
           </div>
 
           <div className="single-event-date-times">
             <h3>Dates and Times:</h3>
-            {data.dateTimes.map((item: EventDateTime, index: number) => (
+            {event.dateTimes.map((item: EventDateTime, index: number) => (
               <p key={index}>{`${getFullDate(item.date)}  ${getTimeString(
                 item.startTime
               )} - ${getTimeString(item.endTime)}`}</p>
@@ -66,15 +65,15 @@ const SingleEventDetails = ({ eventId }: Props) => {
           </div>
         </div>
 
-        <MdPreview modelValue={data.description} />
-
         <div className="button-container">
-          {data.prices.length ? (
+          {!event.isFree ? (
             <button
               onClick={() => setBookingFormOpen(true)}
               className="btn btn-primary"
             >
-              {data.ticketsRemaining > 0 ? 'Book Tickets' : 'Join Waiting List'}
+              {event.ticketsRemaining! > 0
+                ? 'Book Tickets'
+                : 'Join Waiting List'}
             </button>
           ) : null}
           <Link href="/events" className="btn btn-secondary">
@@ -85,10 +84,10 @@ const SingleEventDetails = ({ eventId }: Props) => {
           isOpen={bookingFormOpen}
           setIsOpen={setBookingFormOpen}
           header={
-            data ? (
+            event ? (
               <div className="event-info">
-                <h3>{data.title}</h3>
-                {data.dateTimes.map((item: EventDateTime, index: number) => (
+                <h3>{event.title}</h3>
+                {event.dateTimes.map((item: EventDateTime, index: number) => (
                   <h4 key={index}>{`${getLongDate(item.date)} ${
                     item.startTime
                   } - ${item.endTime}`}</h4>
@@ -97,11 +96,11 @@ const SingleEventDetails = ({ eventId }: Props) => {
             ) : null
           }
         >
-          {data ? (
-            data.ticketsRemaining > 0 ? (
-              <BookingForm event={data} />
+          {event ? (
+            event.ticketsRemaining! > 0 ? (
+              <BookingForm event={event} />
             ) : (
-              <WaitingListForm event={data} />
+              <WaitingListForm event={event} />
             )
           ) : null}
         </Overlay>

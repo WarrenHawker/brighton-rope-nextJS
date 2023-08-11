@@ -1,5 +1,5 @@
 import { fetchEventByIdServer } from '@/utils/serverFetch';
-import SingleEventDetails from '../../components/singleEventDetails';
+import SingleEventDetails from '../../components/SingleEventDetails';
 import getQueryClient from '@/lib/react-query/getQueryClient';
 import { dehydrate } from '@tanstack/react-query';
 import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';

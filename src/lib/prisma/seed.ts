@@ -6,15 +6,16 @@ const prismaClient = new PrismaClient();
 //run command "npx prisma db seed" to generate default super admin user (in case of emergencies)
 
 const main = async () => {
-  const password = await bcrypt.hash('admin123', 12);
+  const hash = await bcrypt.hash('admin123', 12);
   //default admin
   const admin = await prismaClient.users.upsert({
     where: { email: 'brightonrope@gmail.com' },
     update: {},
     create: {
       email: 'brightonrope@gmail.com',
-      hashedPassword: password,
+      password: hash,
       role: 'ADMIN',
+      createdOn: new Date(),
     },
   });
 
@@ -24,8 +25,9 @@ const main = async () => {
     update: {},
     create: {
       email: 'hawker.warren@gmail.com',
-      hashedPassword: password,
+      password: hash,
       role: 'SUPERADMIN',
+      createdOn: new Date(),
     },
   });
 };

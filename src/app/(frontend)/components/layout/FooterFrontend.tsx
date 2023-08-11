@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import SocialLinks from '../socialLinks';
+import SocialLinks from '../SocialLinks';
 
 const FooterFrontend = () => {
   const date = new Date().getFullYear();

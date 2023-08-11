@@ -1,14 +1,36 @@
 import Link from 'next/link';
-import EventsDisplay from './components/eventsDisplay';
-import { fetchEventsServer } from '@/utils/serverFetch';
+import EventsDisplay from './components/EventsDisplay';
 import getQueryClient from '@/lib/react-query/getQueryClient';
 import { dehydrate } from '@tanstack/react-query';
 import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
+import { headers } from 'next/headers';
+import { decodeEventAdmin, decodeEvent } from '@/utils/functions';
+import { EventClientAdmin, EventClient } from '@/utils/interfaces';
+
+const fetchEventsHome = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error);
+  }
+  if (data.events[0].createdOn) {
+    const events = data.events.map((event: EventClientAdmin) =>
+      decodeEventAdmin(event)
+    );
+    return events;
+  } else {
+    const events = data.events.map((event: EventClient) => decodeEvent(event));
+    return events;
+  }
+};
 
 const HomePage = async () => {
+  const host = headers().get('host');
+  const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
+  const fetchUrl = `${protocal}://${host}/api/events?limit=3&type=upcoming`;
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(['events', 'upcoming home'], () =>
-    fetchEventsServer({ amount: 3, old: 'false' })
+    fetchEventsHome(fetchUrl)
   );
   const dehydratedState = dehydrate(queryClient);
 

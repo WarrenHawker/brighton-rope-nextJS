@@ -1,12 +1,11 @@
 import { getServerSession } from 'next-auth';
-import RegisterForm from '../../components/auth/registerForm';
-import UsersList from '../../components/auth/usersList';
-import { Session } from '@/utils/interfaces';
+import RegisterForm from '../../components/users/RegisterUserForm';
+import UsersList from '../../components/users/UsersList';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const AdminUsers = async () => {
-  const session: Session | null = await getServerSession(authOptions);
-  if (session?.user.role != 'SUPERADMIN') {
+  const session = await getServerSession(authOptions);
+  if (session?.user.role != 'SUPERADMIN' || !session.user.role) {
     return (
       <>
         <h1 className="page-title">Users</h1>
@@ -24,7 +23,7 @@ const AdminUsers = async () => {
         <RegisterForm />
       </aside>
       <main>
-        <UsersList />
+        <UsersList role={session.user.role} />
       </main>
     </>
   );

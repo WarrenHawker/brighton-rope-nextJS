@@ -2,37 +2,50 @@
 import Overlay from '@/utils/globalComponents/Overlay';
 import ViewTabs from '@/utils/globalComponents/ViewTabs';
 import { useEffect, useState } from 'react';
-import 'md-editor-rt/lib/style.css';
-import { EventsData } from '@/utils/interfaces';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEventsClient } from '@/utils/clientFetch';
 import BookingsList from '../components/bookings/BookingsList';
-import AddEvent from '../components/events/AddEvent';
 import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
-import Waitlist from '../components/waitlists/waitlists';
+import Waitlist from '../components/waitlists/Waitlists';
+import useFetchEvents from '@/hooks/events/useFetchEvents';
+import AddEditEvent from '../components/events/AddEditEvent';
 
 const AdminEvents = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);
   const [view, setView] = useState<string>('Details');
-  const [events, setEvents] = useState<EventsData[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventsData | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const { data: events, error, status } = useFetchEvents();
 
-  const { data } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => fetchEventsClient(),
-  });
+  const changeSelectedEvent = (id: number) => {
+    setSelectedEvent(events.filter((event: any) => event.id == id)[0]);
+  };
 
   useEffect(() => {
-    if (data) {
-      setEvents(data);
-      setSelectedEvent(data[0]);
+    if (events) {
+      setSelectedEvent(events[0]);
     }
-  }, [data]);
+  }, [events]);
 
-  const changeSelectedEvent = (id: string) => {
-    setSelectedEvent(events.filter((event) => event.id == id)[0]);
-  };
+  if (status == 'loading') {
+    return (
+      <>
+        <h1 className="page-title">Events</h1>
+        <h3 className="center">Loading...</h3>
+      </>
+    );
+  }
+
+  if (status == 'error') {
+    return (
+      <>
+        <h1 className="page-title">Events</h1>
+        <div>
+          <h3 className="center error">{(error as Error).message}</h3>
+          <h2>Add New Event</h2>
+          <AddEditEvent setActive={setAddEvent} />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -47,7 +60,7 @@ const AdminEvents = () => {
           setIsOpen={setAddEvent}
           header={<h2>Add New Event</h2>}
           // eslint-disable-next-line react/no-children-prop
-          children={<AddEvent setAddEvent={setAddEvent} />}
+          children={<AddEditEvent setActive={setAddEvent} />}
         />
         <EventsList
           events={events}

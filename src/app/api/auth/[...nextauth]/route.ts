@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
 
         const isPasswordValid = await compare(
           credentials.password,
-          user.hashedPassword
+          user.password
         );
 
         if (!isPasswordValid) {
@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: user.id.toString(),
+          id: user.id,
           email: user.email,
           name: user.name,
           role: user.role,
@@ -57,7 +57,12 @@ export const authOptions: NextAuthOptions = {
       if (trigger == 'update' && session?.claimed) {
         token.claimed = session.claimed;
       }
+      if (trigger == 'update' && session?.name) {
+        token.name = session.name;
+      }
+
       if (user) {
+        token.id = user.id;
         token.role = user.role;
         token.claimed = user.claimed;
       }
@@ -65,6 +70,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
+        session.user.id = token.id;
         session.user.role = token.role;
         session.user.claimed = token.claimed;
       }

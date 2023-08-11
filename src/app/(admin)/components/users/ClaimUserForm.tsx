@@ -1,12 +1,15 @@
 'use client';
-import { MdEditor } from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import validator from 'validator';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
+import MDEditor from '@uiw/react-md-editor';
+import useClaimUser from '@/hooks/users/useClaimUser';
+import { Position } from '@/utils/interfaces';
 
-const NewUserForm = () => {
+const ClaimUserForm = () => {
   const router = useRouter();
   const { data: session, update } = useSession();
   const [accountData, setAccountData] = useState({
@@ -14,7 +17,7 @@ const NewUserForm = () => {
     password: '',
     confirmPassword: '',
   });
-  const [bioDescription, setBioDescription] = useState('');
+  const [bioDescription, setBioDescription] = useState<string | undefined>('');
   const [bioData, setBioData] = useState({
     public: false,
     name: '',
@@ -23,6 +26,8 @@ const NewUserForm = () => {
   });
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const { mutateAsync: claimMutate, status: claimStatus } = useClaimUser();
 
   const handleChange = (field: string, value: string | boolean) => {
     if (typeof value == 'boolean') {
@@ -60,6 +65,7 @@ const NewUserForm = () => {
   };
 
   const submitForm = async () => {
+    setError(null);
     const newEmptyFields = [];
     //check if any required fields are empty, and push empty fields to array
     if (validator.isEmpty(accountData.name)) {
@@ -110,25 +116,17 @@ const NewUserForm = () => {
         public: bioData.public,
         name: bioData.name,
         pronouns: bioData.pronouns,
-        position: bioData.position,
-        bio: bioDescription,
+        position: bioData.position as Position,
+        description: bioDescription || '',
         imageUrl: imageUrl,
       },
     };
 
-    const res = await fetch(`/api/auth/new-user`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-
-    const json = await res.json();
-    if (!res.ok) {
-      setError(json.error);
-    }
-    if (res.ok) {
-      console.log('hello');
-      await update({ claimed: 'true' });
+    try {
+      await claimMutate(data);
       router.refresh();
+    } catch (error: any) {
+      setError(error.message);
     }
   };
 
@@ -136,7 +134,7 @@ const NewUserForm = () => {
 
   return (
     <>
-      <form>
+      <form autoComplete="off">
         <fieldset>
           <legend>Account details</legend>
           <label htmlFor="name">
@@ -145,6 +143,7 @@ const NewUserForm = () => {
           <input
             className={emptyFields.includes('account name') ? 'invalid' : ''}
             type="text"
+            autoComplete="username"
             name="name"
             defaultValue={accountData.name}
             onChange={(e) => handleChange('account name', e.target.value)}
@@ -157,6 +156,7 @@ const NewUserForm = () => {
             className={emptyFields.includes('password') ? 'invalid' : ''}
             type="password"
             name="new-password"
+            autoComplete="new-password"
             defaultValue={accountData.password}
             onChange={(e) => handleChange('password', e.target.value)}
           />
@@ -195,7 +195,7 @@ const NewUserForm = () => {
           </div>
 
           <label htmlFor="bio-name">
-            Name <span className="required">*</span>
+            Display Name <span className="required">*</span>
           </label>
           <input
             className={emptyFields.includes('bio name') ? 'invalid' : ''}
@@ -234,14 +234,15 @@ const NewUserForm = () => {
             <option value="OTHER">Other</option>
           </select>
         </fieldset>
+        {claimStatus == 'loading' && (
+          <h3 className="center">Updating User Profile...</h3>
+        )}
         {error ? <p className="error">{error}</p> : null}
         <div className="description-container">
-          <label className="description-label">Teacher Bio Description</label>
-          <MdEditor
-            modelValue={bioDescription}
-            language="en-US"
-            onChange={setBioDescription}
-          />
+          <label className="description-label">
+            Teacher Bio Description <span className="required">*</span>
+          </label>
+          <MDEditor value={bioDescription} onChange={setBioDescription} />
         </div>
 
         <fieldset className="image-fieldset">
@@ -258,6 +259,9 @@ const NewUserForm = () => {
             <img src={imageUrl} />
           </div>
         </fieldset>
+        {claimStatus == 'loading' && (
+          <h3 className="center">Updating User Profile...</h3>
+        )}
         {error ? <p className="error">{error}</p> : null}
         <div className="button-container">
           <button type="button" className="btn btn-large" onClick={submitForm}>
@@ -269,4 +273,4 @@ const NewUserForm = () => {
   );
 };
 
-export default NewUserForm;
+export default ClaimUserForm;

@@ -7,42 +7,57 @@ import {
   trimString,
 } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { EventsData } from '@/utils/interfaces';
-import BookingForm from './bookingForm/bookingForm';
+import BookingForm from './bookingForm/BookingForm';
 import { useState } from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEventsClient } from '@/utils/clientFetch';
-import WaitingListForm from './waitlistForm';
+import WaitingListForm from './WaitlistForm';
+import useFetchEvents from '@/hooks/events/useFetchEvents';
+import { EventClient } from '@/utils/interfaces';
 
 interface EventsDisplayProps {
   page: string;
 }
 
 const EventsDisplay = ({ page }: EventsDisplayProps) => {
-  const eventsAmount = page == 'home' ? 3 : -1;
+  let limit: number | undefined;
+  if (page == 'home') {
+    limit = 3;
+  } else {
+    limit = undefined;
+  }
   const query = page == 'home' ? 'upcoming home' : 'upcoming all';
-  const { data } = useQuery({
-    queryKey: ['events', query],
-    queryFn: () => fetchEventsClient({ amount: eventsAmount, old: 'false' }),
-  });
-  const [bookingFormEvent, setBookingFormEvent] = useState<EventsData | null>(
+  const [bookingFormEvent, setBookingFormEvent] = useState<EventClient | null>(
     null
   );
-  const [bookingFormOpen, setBookingFormOpen] = useState<boolean>(false);
+  const [bookingFormOpen, setBookingFormOpen] = useState(false);
+
+  const { data: events, status } = useFetchEvents({
+    limit: limit,
+    type: 'upcoming',
+    queryKey: ['events', query],
+  });
 
   const showBookingForm = (id: any) => {
-    setBookingFormEvent(data.filter((event: EventsData) => event.id == id)[0]);
+    setBookingFormEvent(
+      events.filter((event: EventClient) => event.id == id)[0]
+    );
     setBookingFormOpen(true);
   };
+
+  if (status == 'loading') {
+    return <h3>Loading...</h3>;
+  }
+
+  console.log(events);
+
   return (
     <section className="events-container">
       <h1>Our Upcoming Events</h1>
-      {data.length == 0 ? (
+      {events.length == 0 ? (
         <h2 className="center">I&apos;m sorry, there are no upcoming events</h2>
       ) : (
         <>
-          {data.map((event: EventsData) => {
+          {events.map((event: EventClient) => {
             return (
               <article className="event" key={event.id}>
                 <div className="event-date-time">
@@ -69,12 +84,12 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
                 </div>
 
                 <div className="button-container">
-                  {event.prices.length ? (
+                  {!event.isFree ? (
                     <button
                       className="btn btn-primary"
                       onClick={(e) => showBookingForm(event.id)}
                     >
-                      {event.ticketsRemaining > 0
+                      {event.ticketsRemaining! > 0
                         ? 'Book Tickets'
                         : 'join waiting list'}
                     </button>
@@ -92,7 +107,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
                     <h3>SOLD OUT</h3>
                   </div>
                 )}
-                {event.prices.length == 0 && (
+                {event.isFree && (
                   <div className="event-display-banner free">
                     <h3>FREE</h3>
                   </div>
@@ -118,7 +133,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
             }
           >
             {bookingFormEvent ? (
-              bookingFormEvent.ticketsRemaining > 0 ? (
+              bookingFormEvent.ticketsRemaining! > 0 ? (
                 <BookingForm event={bookingFormEvent} />
               ) : (
                 <WaitingListForm event={bookingFormEvent} />
@@ -127,7 +142,7 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
           </Overlay>
         </>
       )}
-      {page == 'home' && data.length > 0 ? (
+      {page == 'home' && events.length > 0 ? (
         <Link href="/events" className="btn btn-primary">
           See All Events
         </Link>

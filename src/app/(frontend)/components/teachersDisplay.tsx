@@ -1,14 +1,38 @@
-import Link from 'next/link';
+'use client';
+
+import useFetchTeachers from '@/hooks/teachers/useFetchTeachers';
+import { TeacherDB } from '@/utils/interfaces';
+import MDEditor from '@uiw/react-md-editor';
 
 const TeachersDisplay = () => {
+  const { data: teachers, status } = useFetchTeachers();
+
+  if (status != 'success') {
+    return <></>;
+  }
+
   return (
     <section>
       <div className="teachers-header">
         <h1>MEET OUR TEAM</h1>
         <h2>~ Of Volunteer Teachers ~</h2>
       </div>
+
       <div className="teachers-container">
-        <article className="teacher">
+        {teachers.map((teacher: TeacherDB) => (
+          <article className="teacher" key={teacher.id}>
+            <div className="teacher-pic">
+              <img src={teacher.imageUrl} />
+            </div>
+
+            <h3>
+              {teacher.name.toUpperCase()} ({teacher.pronouns.toUpperCase()})
+            </h3>
+            <h4>{teacher.position.toUpperCase()}</h4>
+            <MDEditor.Markdown source={teacher.description} />
+          </article>
+        ))}
+        {/* <article className="teacher">
           <div className="teacher-pic">
             <img src="images/mist.png" />
           </div>
@@ -53,7 +77,7 @@ const TeachersDisplay = () => {
             and Amethyst wants to make you aware of the power you have while
             being tied and while being as safe as you choose to be.
           </p>
-        </article>
+        </article> */}
       </div>
     </section>
   );

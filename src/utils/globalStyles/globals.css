@@ -74,5 +74,14 @@ textarea {
 }
 
 .center {
-  text-align: center;
+  text-align: center !important;
+}
+
+.left {
+  text-align: left !important;
+}
+
+.w-md-editor {
+  border: 1px solid #d0d7de !important;
+  margin: 1em !important;
 }

@@ -2,7 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 
 const SigninForm = () => {
   const router = useRouter();

@@ -1,24 +1,36 @@
 import { prismaClient } from '@/lib/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { handleError } from '@/utils/functions';
 
 //get all teacher bios, excludes email field
 export const GET = async (request: NextRequest) => {
-  return NextResponse.json({});
+  //try fetching teacher bios from database
+  try {
+    const teachersData = await prismaClient.teachers.findMany({
+      where: { public: true },
+    });
+
+    const teachers = teachersData.map((teacher) => {
+      return {
+        id: teacher.id,
+        name: teacher.name,
+        pronouns: teacher.pronouns,
+        description: teacher.description,
+        imageUrl: teacher.imageUrl,
+        position: teacher.position,
+      };
+    });
+    if (teachers) {
+      if (teachers.length > 0) {
+        return NextResponse.json({ teachers }, { status: 200 });
+      } else
+        return NextResponse.json(
+          { error: 'No teacher bios found' },
+          { status: 404 }
+        );
+    }
+  } catch (error) {
+    const { message, status } = handleError(error);
+    return NextResponse.json({ error: message }, { status: status });
+  }
 };
-
-// Exclude keys from user
-// https://www.prisma.io/docs/concepts/components/prisma-client/excluding-fields
-// function exclude<User, Key extends keyof User>(
-//   user: User,
-//   keys: Key[]
-// ): Omit<User, Key> {
-//   return Object.fromEntries(
-//     Object.entries(user).filter(([key]) => !keys.includes(key))
-//   );
-// }
-
-// function main() {
-//   const user = await prisma.user.findUnique({ where: 1 });
-//   const userWithoutPassword = exclude(user, ['password']);
-// }

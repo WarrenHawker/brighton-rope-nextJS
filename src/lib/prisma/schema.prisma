@@ -1,6 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+//run command "npx prisma migrate dev" - after making any changes to this file
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,43 +11,52 @@ datasource db {
 }
 
 model Events {
-id                    Int             @id @default(autoincrement())
-title                 String   
-description           String
-startDate             DateTime
-dateTimes             Json 
-location              Json
-isFree                Boolean
-maxTickets            Int?
-ticketsSold           Int?
-ticketsRemaining      Int?
-prices                Json?
-allowMultipleTickets  Boolean?
-bookings              Bookings[]
-waitingList           Waitlists[]
+  id                    Int             @id @default(autoincrement())
+  title                 String   
+  description           String
+  startDate             DateTime
+  dateTimes             Json 
+  location              Json
+  isFree                Boolean
+  maxTickets            Int?
+  ticketsSold           Int?
+  ticketsRemaining      Int?
+  prices                Json?
+  allowMultipleTickets  Boolean?
+  bookings              Bookings[]
+  waitingList           Waitlists[]
+  createdOn             DateTime
+  createdBy             Json //object contains userID, email
+  updatedOn             DateTime?
+  updatedBy             Json? //object contains userID, email
 }
 
 model Bookings {
-id              Int         @id @default(autoincrement())
-eventId         Int
-event           Events       @relation(fields: [eventId], references: [id])
-tickets         Json
-totalTickets    Int
-contact         Json
-amountToPay     Float
-hasPaid         Boolean
-additionalInfo  String
-bookingDate     DateTime
-adminNotes      String
+  id              Int         @id @default(autoincrement())
+  eventId         Int
+  event           Events       @relation(fields: [eventId], references: [id])
+  tickets         Json
+  totalTickets    Int
+  contact         Json //object contains firstname, lastname and email
+  amountToPay     Float
+  hasPaid         Boolean
+  additionalInfo  String
+  createdOn       DateTime
+  adminNotes      String
+  updatedOn       DateTime?
+  updatedBy       Json? //object contains userID, email
 }
 
 model Waitlists {
-id            Int         @id @default(autoincrement())
-eventId       Int
-event         Events       @relation(fields: [eventId], references: [id])
-name          String
-email         String
-inquiryDate   String
+  id              Int         @id @default(autoincrement())
+  eventId         Int
+  event           Events       @relation(fields: [eventId], references: [id])
+  contact         Json //object contains firstname, lastname and email
+  createdOn       String
+  additionalInfo  String
+  adminNotes      String
+  updatedOn       DateTime?
+  updatedBy       Json? //object contains userID, email
 }
 
 
@@ -56,27 +65,35 @@ model Users {
   email               String      @unique
   name                String?
   role                Role        @default(ADMIN)
-  hashedPassword      String
-  bio                 UserBios?  
+  password            String
+  bio                 Teachers?  
   claimed             Boolean     @default(false)
   preferences         Json?
+  createdOn           DateTime
+  claimedOn           DateTime?
+  updatedOn           DateTime?
+  updatedBy           Json? //object contains userID, email
 }
 
-model UserBios {
+model Teachers {
   id            Int           @id @default(autoincrement())
   name          String
   email         String        @unique  
   user          Users         @relation(fields: [email], references: [email])
   pronouns      String
-  bio           String
+  description   String
   position      Position      @default(OTHER)
   public        Boolean
   imageUrl      String
+  createdOn     DateTime
+  updatedOn     DateTime?
+  updatedBy     Json? //object contains userID, email
 }
 
 enum Role {
-  ADMIN
-  SUPERADMIN
+  ADMIN //has access to events, bookings and waitlists. Can only see and edit own userBio
+  SUPERADMIN //has access to everything
+  INACTIVE //has no access to admin panel
 }
 
 enum Position {

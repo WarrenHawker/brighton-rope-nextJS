@@ -1,7 +1,32 @@
 import Link from 'next/link';
 import TeachersDisplay from '../components/TeachersDisplay';
+import { decodeTeacher } from '@/utils/functions';
+import { TeacherDB } from '@/utils/interfaces';
+import { headers } from 'next/headers';
+import getQueryClient from '@/lib/react-query/getQueryClient';
+import { dehydrate } from '@tanstack/react-query';
+import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
 
-const AboutPage = () => {
+const fetchTeachers = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error);
+  }
+  const teachers = data.teachers.map((teacher: TeacherDB) =>
+    decodeTeacher(teacher)
+  );
+  return teachers;
+};
+
+const AboutPage = async () => {
+  const host = headers().get('host');
+  const protocal = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
+  const fetchUrl = `${protocal}://${host}/api/events?limit=3&type=upcoming`;
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(['teachers'], () => fetchTeachers(fetchUrl));
+  const dehydratedState = dehydrate(queryClient);
+
   return (
     <main>
       <h1 className="page-title">About Us</h1>
@@ -29,7 +54,9 @@ const AboutPage = () => {
           </p>
         </div>
       </section>
-      <TeachersDisplay />
+      <ReactQueryHydrate state={dehydratedState}>
+        <TeachersDisplay />
+      </ReactQueryHydrate>
     </main>
   );
 };

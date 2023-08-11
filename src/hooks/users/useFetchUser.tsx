@@ -1,3 +1,4 @@
+import { decodeUser } from '@/utils/functions';
 import { useQuery } from '@tanstack/react-query';
 
 export const fetchUserByEmail = async (url: string) => {
@@ -6,7 +7,9 @@ export const fetchUserByEmail = async (url: string) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data.user;
+
+  const user = decodeUser(data.user);
+  return user;
 };
 
 const useFetchUser = (email: string) => {

@@ -1,4 +1,5 @@
-import { UserDB, UserRole } from '@/utils/interfaces';
+import { decodeUser } from '@/utils/functions';
+import { UserClient, UserRole } from '@/utils/interfaces';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 type CreateUserOptions = {
@@ -22,19 +23,24 @@ export const createUser = async (options: CreateUserOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data.user;
+
+  const user = decodeUser(data.user);
+  return user;
 };
 
 const useCreateUser = () => {
   const queryClient = useQueryClient();
-  return useMutation<UserDB, Error, CreateUserOptions>(createUser, {
+  return useMutation<UserClient, Error, CreateUserOptions>(createUser, {
     onSuccess: (user) => {
-      queryClient.setQueryData(['users'], (prevData: UserDB[] | undefined) => {
-        if (!prevData) {
-          return [user];
+      queryClient.setQueryData(
+        ['users'],
+        (prevData: UserClient[] | undefined) => {
+          if (!prevData) {
+            return [user];
+          }
+          return [...prevData, user];
         }
-        return [...prevData, user];
-      });
+      );
     },
   });
 };

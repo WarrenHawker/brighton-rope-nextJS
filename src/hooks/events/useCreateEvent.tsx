@@ -1,3 +1,4 @@
+import { decodeEventAdmin } from '@/utils/functions';
 import {
   Address,
   EventDBAdmin,
@@ -36,7 +37,9 @@ export const createEvent = async (options: CreateEventOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data.event;
+
+  const event = decodeEventAdmin(data.event);
+  return event;
 };
 
 const useCreateUser = () => {

@@ -53,9 +53,22 @@ export interface UserDB {
   claimed: boolean;
   preferences: Prisma.JsonObject;
   createdOn: Date;
-  claimedOn: Date | null;
-  updatedOn: Date | null;
-  updatedBy: Prisma.JsonObject;
+  claimedOn?: Date;
+  updatedOn?: Date;
+  updatedBy?: Prisma.JsonObject;
+}
+
+export interface UserClient {
+  email: string;
+  role: UserRole;
+  name?: string;
+  id: number;
+  claimed: boolean;
+  preferences: {};
+  createdOn: Date;
+  claimedOn?: Date;
+  updatedOn?: Date;
+  updatedBy?: UserIdEmail;
 }
 
 export interface UserUpdateData {
@@ -79,6 +92,14 @@ export interface TeacherDBAdmin extends TeacherDB {
   createdOn: Date;
   updatedOn: Date | null;
   updatedBy: Prisma.JsonObject;
+  email: string;
+}
+
+export interface TeacherAdminClient extends TeacherDB {
+  public: boolean;
+  createdOn: Date;
+  updatedOn: Date | null;
+  updatedBy: UserIdEmail;
   email: string;
 }
 

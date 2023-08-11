@@ -1,3 +1,4 @@
+import { decodeEventAdmin } from '@/utils/functions';
 import {
   Address,
   EventDBAdmin,
@@ -36,7 +37,9 @@ export const updateEventById = async (options: UpdateEventOptions) => {
   if (!res.ok) {
     throw new Error(data.error);
   }
-  return data.updatedEvent;
+
+  const updatedEvent = decodeEventAdmin(data.updatedEvent);
+  return updatedEvent;
 };
 
 const useUpdateEvent = () => {

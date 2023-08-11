@@ -188,6 +188,7 @@ export const GET = async (request: NextRequest) => {
               isFree: event.isFree,
               maxTickets: event.maxTickets,
               ticketsSold: event.ticketsSold,
+              ticketsRemaining: event.ticketsRemaining,
               prices: event.prices,
               allowMultipleTickets: event.allowMultipleTickets,
             };

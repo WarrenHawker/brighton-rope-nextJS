@@ -6,6 +6,8 @@ import { authOptions } from '../auth/[...nextauth]/route';
 import validator from 'validator';
 import { handleError } from '@/utils/functions';
 
+//TODO Add validation for all inputs
+
 //create new user
 export const POST = async (request: NextRequest) => {
   const session = await getServerSession(authOptions);

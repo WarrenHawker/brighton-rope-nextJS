@@ -1,19 +1,9 @@
-import { Prisma } from '@prisma/client';
-import {
-  Address,
-  EventClient,
-  EventClientAdmin,
-  EventDateTime,
-  Position,
-  Prices,
-  TeacherAdminClient,
-  TeacherDB,
-  TeacherDBAdmin,
-  UserClient,
-  UserIdEmail,
-  UserRole,
-} from './interfaces';
+import { Position, Prisma, Role } from '@prisma/client';
 import validator from 'validator';
+import { EventClientAdmin, EventDateTime, EventClient } from './types/events';
+import { Address, Prices, UserIdEmail } from './types/globals';
+import { TeacherAdminClient, TeacherDB } from './types/teachers';
+import { UserClient } from './types/users';
 
 export const getShortDate = (date: Date | string): String => {
   if (typeof date == 'string') {
@@ -249,7 +239,7 @@ export const decodeUser = (user: UserClient): UserClient => {
     claimedOn: user.claimedOn,
     updatedOn: user.updatedOn,
     updatedBy: user.updatedBy as UserIdEmail,
-    role: user.role as UserRole,
+    role: user.role as Role,
   };
 };
 

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import TeachersDisplay from '../components/TeachersDisplay';
 import { decodeTeacher } from '@/utils/functions';
-import { TeacherDB } from '@/utils/interfaces';
 import { headers } from 'next/headers';
 import getQueryClient from '@/lib/react-query/getQueryClient';
 import { dehydrate } from '@tanstack/react-query';
 import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
+import { TeacherDB } from '@/utils/types/teachers';
 
 const fetchTeachers = async (url: string) => {
   const res = await fetch(url);

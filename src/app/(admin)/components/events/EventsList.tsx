@@ -1,5 +1,5 @@
 'use client';
-import { EventDBAdmin, EventDateTime } from '@/utils/interfaces';
+import { EventDBAdmin } from '@/utils/types/events';
 import { getFullDate } from '../../../../utils/functions';
 
 interface EventsListProps {

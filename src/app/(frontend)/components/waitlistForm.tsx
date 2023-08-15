@@ -1,7 +1,9 @@
-import { EventsData } from '@/utils/interfaces';
+import { EventClient } from '@/utils/types/events';
+
+//TODO Create Waitlist form
 
 interface WaitlistFormProps {
-  event: EventsData;
+  event: EventClient;
 }
 
 const WaitlistForm = ({ event }: WaitlistFormProps) => {

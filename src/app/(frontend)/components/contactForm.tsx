@@ -1,5 +1,7 @@
 'use client';
 
+//TODO Implement submitForm post with email automation
+
 import { FormEvent, useRef, useState } from 'react';
 import validator from 'validator';
 

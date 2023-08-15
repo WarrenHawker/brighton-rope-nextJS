@@ -2,12 +2,15 @@
 
 import Overlay from '@/utils/globalComponents/Overlay';
 import { getFullDate } from '@/utils/functions';
-import { BookingsData, EventsData } from '@/utils/interfaces';
 import { useState } from 'react';
 import WaitlistDetails from './WaitlistDetails';
+import { EventClientAdmin } from '@/utils/types/events';
+import { BookingClient } from '@/utils/types/bookings';
+
+//TODO Add Waitlist query
 
 interface WaitlistProps {
-  selectedEvent: EventsData | null;
+  selectedEvent: EventClientAdmin | null;
 }
 
 const Waitlist = ({ selectedEvent }: WaitlistProps) => {
@@ -16,10 +19,10 @@ const Waitlist = ({ selectedEvent }: WaitlistProps) => {
     date: selectedEvent?.startDate,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedInquiry, setSelectedInquiry] = useState<BookingsData | null>(
+  const [selectedInquiry, setSelectedInquiry] = useState<BookingClient | null>(
     null
   );
-  const [displayedBookings, setDisplayedBookings] = useState<BookingsData[]>(
+  const [displayedBookings, setDisplayedBookings] = useState<BookingClient[]>(
     []
   );
   return (
@@ -30,7 +33,7 @@ const Waitlist = ({ selectedEvent }: WaitlistProps) => {
             <h2>Inquiry Details</h2>
             <p>Inquiry ID: {selectedInquiry?.id}</p>
             <p>Event ID: {selectedInquiry?.eventId}</p>
-            <p>Inquiry Date: {getFullDate(selectedInquiry?.bookingDate)}</p>
+            <p>Inquiry Date: {getFullDate(selectedInquiry?.createdOn)}</p>
           </div>
         }
         isOpen={isModalOpen}
@@ -62,7 +65,7 @@ const Waitlist = ({ selectedEvent }: WaitlistProps) => {
                   {booking.contact.firstName} {booking.contact.lastName}
                 </td>
                 <td className="hide-mobile">{booking.contact.email}</td>
-                <td>{booking.bookingDate}</td>
+                <td>{getFullDate(booking.createdOn)}</td>
               </tr>
             ))}
           </tbody>

@@ -7,11 +7,13 @@ import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import MDEditor from '@uiw/react-md-editor';
 import useClaimUser from '@/hooks/users/useClaimUser';
-import { Position } from '@/utils/interfaces';
+import { Position } from '@prisma/client';
+
+//TODO Implement nextjs Image component
 
 const ClaimUserForm = () => {
   const router = useRouter();
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [accountData, setAccountData] = useState({
     name: '',
     password: '',

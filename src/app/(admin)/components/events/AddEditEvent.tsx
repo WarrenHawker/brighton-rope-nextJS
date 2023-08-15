@@ -4,12 +4,8 @@ import useCreateEvent, { CreateEventData } from '@/hooks/events/useCreateEvent';
 import useDeleteEvent from '@/hooks/events/useDeleteEvent';
 import useUpdateEvent, { UpdateEventData } from '@/hooks/events/useUpdateEvent';
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import {
-  Address,
-  EventClientAdmin,
-  EventDateTime,
-  Prices,
-} from '@/utils/interfaces';
+import { EventClientAdmin, EventDateTime } from '@/utils/types/events';
+import { Prices, Address } from '@/utils/types/globals';
 import MDEditor from '@uiw/react-md-editor';
 import { ChangeEvent, useEffect, useState } from 'react';
 import validator from 'validator';

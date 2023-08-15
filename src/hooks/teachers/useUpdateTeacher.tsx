@@ -1,4 +1,4 @@
-import { TeacherDB, TeacherUpdateData } from '@/utils/interfaces';
+import { TeacherUpdateData, TeacherDBAdmin } from '@/utils/types/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type UpdateTeacherOptions = {
@@ -23,7 +23,7 @@ export const updateUserByEmail = async (options: UpdateTeacherOptions) => {
 
 const useUpdateTeacher = () => {
   const queryClient = useQueryClient();
-  return useMutation<TeacherDB, Error, UpdateTeacherOptions>(
+  return useMutation<TeacherDBAdmin, Error, UpdateTeacherOptions>(
     updateUserByEmail,
     {
       onSuccess: (updatedTeacher) => {

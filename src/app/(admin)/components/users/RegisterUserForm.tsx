@@ -1,7 +1,7 @@
 'use client';
 
 import useCreateUser from '@/hooks/users/useCreateUser';
-import { UserRole } from '@/utils/interfaces';
+import { Role } from '@prisma/client';
 import { useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import validator from 'validator';
@@ -10,7 +10,7 @@ const RegisterForm = () => {
   const [data, setData] = useState({
     email: '',
     password: '',
-    role: 'ADMIN' as UserRole,
+    role: 'ADMIN' as Role,
   });
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
   const [error, setError] = useState<string | null | undefined>(null);
@@ -124,7 +124,7 @@ const RegisterForm = () => {
           id="role"
           name="role"
           onChange={(e) =>
-            setData((prev) => ({ ...prev, role: e.target.value as UserRole }))
+            setData((prev) => ({ ...prev, role: e.target.value as Role }))
           }
         >
           <option value="ADMIN">Admin</option>

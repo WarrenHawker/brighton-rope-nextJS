@@ -1,16 +1,13 @@
 import { prismaClient } from '@/lib/prisma/client';
-import {
-  Address,
-  ApiParams,
-  EventDateTime,
-  Prices,
-  UserIdEmail,
-} from '@/utils/interfaces';
 import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import validator from 'validator';
 import { handleError } from '@/utils/functions';
+import { EventDateTime } from '@/utils/types/events';
+import { UserIdEmail, Prices, ApiParams, Address } from '@/utils/types/globals';
+
+//TODO Add validation for all inputs
 
 interface UpdateEventData {
   title: string;

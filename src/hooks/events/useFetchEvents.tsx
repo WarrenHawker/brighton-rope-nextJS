@@ -1,5 +1,5 @@
 import { decodeEvent, decodeEventAdmin } from '@/utils/functions';
-import { EventClient, EventClientAdmin } from '@/utils/interfaces';
+import { EventClient, EventClientAdmin } from '@/utils/types/events';
 import { useQuery } from '@tanstack/react-query';
 
 type FetchEventOptions = {

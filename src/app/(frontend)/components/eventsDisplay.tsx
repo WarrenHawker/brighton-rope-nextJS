@@ -12,7 +12,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WaitingListForm from './WaitlistForm';
 import useFetchEvents from '@/hooks/events/useFetchEvents';
-import { EventClient } from '@/utils/interfaces';
+import { EventClient } from '@/utils/types/events';
 
 interface EventsDisplayProps {
   page: string;

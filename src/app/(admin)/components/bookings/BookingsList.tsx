@@ -1,22 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Overlay from '@/utils/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
 import { getFullDate } from '@/utils/functions';
-import { useQuery } from '@tanstack/react-query';
+
+import { BookingClient } from '@/utils/types/bookings';
+import { EventClientAdmin } from '@/utils/types/events';
+
+// TODO Add fetchBookings query
 
 interface BookingsListProps {
-  selectedEvent: Object | null;
+  selectedEvent: EventClientAdmin | null;
   events: [];
 }
 
 const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState<BookingClient | null>(
+    null
+  );
   const [bookings, setBookings] = useState([]);
 
-  const showBookingDetails = (booking) => {
+  const showBookingDetails = (booking: BookingClient) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
   };
@@ -29,7 +35,7 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
             <h2>Booking Details</h2>
             <p>Booking ID: {selectedBooking?.id}</p>
             <p>Event ID: {selectedBooking?.eventId}</p>
-            <p>Booking Date: {getFullDate(selectedBooking?.bookingDate)}</p>
+            <p>Booking Date: {getFullDate(selectedBooking?.createdOn)}</p>
           </div>
         }
         isOpen={isModalOpen}
@@ -60,14 +66,14 @@ const BookingsList = ({ selectedEvent, events }: BookingsListProps) => {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking) => (
+            {bookings.map((booking: BookingClient) => (
               <tr onClick={() => showBookingDetails(booking)} key={booking.id}>
                 <td>{booking.id}</td>
                 <td>
                   {booking.contact.firstName} {booking.contact.lastName}
                 </td>
                 <td className="hide-mobile">{booking.contact.email}</td>
-                <td>{getFullDate(booking.bookingDate)}</td>
+                <td>{getFullDate(booking.createdOn)}</td>
               </tr>
             ))}
           </tbody>

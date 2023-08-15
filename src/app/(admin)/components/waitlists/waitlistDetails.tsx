@@ -1,3 +1,6 @@
+//TODO fill out WaitlistDetails
+//TODO Add Waitlist delete, edit and move mutations
+
 const WaitlistDetails = () => {
   return (
     <>

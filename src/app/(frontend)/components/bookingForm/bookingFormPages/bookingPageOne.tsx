@@ -1,6 +1,6 @@
 'use client';
 
-import { BookingPageProps } from '@/utils/interfaces';
+import { BookingPageProps, TicketChoices } from '@/utils/types/bookings';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 interface PageOneProps extends BookingPageProps {
@@ -24,7 +24,6 @@ const BookingPageOne = ({
     if (inputs.current) {
       inputs.current.forEach((input: HTMLInputElement | HTMLSelectElement) => {
         if (input.type == 'select-one') {
-          // input.value = '0';
         }
         if (input.type == 'range') {
           input.setAttribute('defaultValue', input.value);
@@ -52,56 +51,60 @@ const BookingPageOne = ({
 
   const nextPageClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const filter = userChoices.tickets.filter((item) => item.quantity > 0);
+    const filter = userChoices.tickets.filter(
+      (item: TicketChoices) => item.quantity > 0
+    );
     if (filter.length == 0) {
       setError('Please select at least 1 ticket from the categories above');
     } else nextPage();
   };
 
-  const ticketSelectDisplay = userChoices.tickets.map((price, index) => {
-    const eventDetails = event!.prices
-      .filter((item) => item.key == price.name)
-      .map((item) => {
-        return {
-          fixedPrice: item.fixedPrice,
-          minPrice: item.value.minPrice,
-          maxPrice: item.value.maxPrice,
-        };
-      })[0];
-    return (
-      <div className="select-input-container" key={index}>
-        <label htmlFor={price.name}>
-          {price.name}
-          <span className="prices-span">
-            {eventDetails.fixedPrice ? (
-              `£${eventDetails.minPrice}`
-            ) : (
-              <input
-                type="range"
-                ref={(el) => addInput(el)}
-                id={price.name}
-                min={eventDetails.minPrice}
-                max={eventDetails.maxPrice!}
-                defaultValue={price.value}
-              />
-            )}
-          </span>
-        </label>
-        <input
-          type="radio"
-          ref={(el) => addInput(el)}
-          name="ticket"
-          value={price.name}
-          checked={price.quantity == 1}
-          onChange={() => updateUserTickets(price.name, 'quantity', 1)}
-        />
-      </div>
-    );
-  });
+  const ticketSelectDisplay = userChoices.tickets.map(
+    (price: TicketChoices, index: number) => {
+      const eventDetails = event!
+        .prices!.filter((item) => item.key == price.key)
+        .map((item) => {
+          return {
+            fixedPrice: item.fixedPrice,
+            minPrice: item.value.minPrice,
+            maxPrice: item.value.maxPrice,
+          };
+        })[0];
+      return (
+        <div className="select-input-container" key={index}>
+          <label htmlFor={price.key}>
+            {price.key}
+            <span className="prices-span">
+              {eventDetails.fixedPrice ? (
+                `£${eventDetails.minPrice}`
+              ) : (
+                <input
+                  type="range"
+                  ref={(el) => addInput(el)}
+                  id={price.key}
+                  min={eventDetails.minPrice}
+                  max={eventDetails.maxPrice!}
+                  defaultValue={price.value}
+                />
+              )}
+            </span>
+          </label>
+          <input
+            type="radio"
+            ref={(el) => addInput(el)}
+            name="ticket"
+            value={price.key}
+            checked={price.quantity == 1}
+            onChange={() => updateUserTickets(price.key, 'quantity', 1)}
+          />
+        </div>
+      );
+    }
+  );
 
   const ticketMultipleDisplay = userChoices.tickets.map((price, index) => {
-    const eventDetails = event!.prices
-      .filter((item) => item.key == price.name)
+    const eventDetails = event!
+      .prices!.filter((item) => item.key == price.key)
       .map((item) => {
         return {
           fixedPrice: item.fixedPrice,
@@ -111,14 +114,14 @@ const BookingPageOne = ({
       })[0];
     return (
       <div className="select-input-container" key={index}>
-        <label htmlFor={price.name}>
-          {price.name}{' '}
+        <label htmlFor={price.key}>
+          {price.key}
           <span className="prices-span">
             {eventDetails.fixedPrice ? (
               `£${eventDetails.minPrice} per ticket`
             ) : (
               <input
-                id={price.name}
+                id={price.key}
                 type="range"
                 ref={(el) => addInput(el)}
                 min={eventDetails.minPrice}
@@ -131,9 +134,9 @@ const BookingPageOne = ({
         <select
           ref={(el) => addInput(el)}
           defaultValue={price.quantity}
-          name={price.name}
+          name={price.key}
           onChange={(e) =>
-            updateUserTickets(price.name, 'quantity', parseInt(e.target.value))
+            updateUserTickets(price.key, 'quantity', parseInt(e.target.value))
           }
         >
           <option value="0">0</option>

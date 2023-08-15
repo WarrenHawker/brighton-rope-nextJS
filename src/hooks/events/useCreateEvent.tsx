@@ -1,10 +1,6 @@
 import { decodeEventAdmin } from '@/utils/functions';
-import {
-  Address,
-  EventDBAdmin,
-  EventDateTime,
-  Prices,
-} from '@/utils/interfaces';
+import { EventDateTime, EventDBAdmin } from '@/utils/types/events';
+import { Prices, Address } from '@/utils/types/globals';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export type CreateEventData = {

@@ -1,11 +1,13 @@
 import { prismaClient } from '@/lib/prisma/client';
-import { ApiParams, Position } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import validator from 'validator';
-import { Prisma } from '@prisma/client';
+import { Position, Prisma } from '@prisma/client';
 import { handleError } from '@/utils/functions';
+import { ApiParams } from '@/utils/types/globals';
+
+//TODO Add validation for all inputs
 
 //get single teacher by userEmail
 export const GET = async (request: NextRequest, { params }: ApiParams) => {

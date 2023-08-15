@@ -1,8 +1,10 @@
 'use client';
 
 import useFetchTeachers from '@/hooks/teachers/useFetchTeachers';
-import { TeacherDB } from '@/utils/interfaces';
+import { TeacherDB } from '@/utils/types/teachers';
 import MDEditor from '@uiw/react-md-editor';
+
+//TODO Remove commented out code after testing
 
 const TeachersDisplay = () => {
   const { data: teachers, status } = useFetchTeachers();

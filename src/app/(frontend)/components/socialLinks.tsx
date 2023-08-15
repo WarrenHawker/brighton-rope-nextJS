@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+//TODO Implement nextjs Image component
+
 const SocialLinks = () => {
   return (
     <div className="social-links">

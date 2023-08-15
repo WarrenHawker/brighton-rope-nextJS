@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import BookingsList from '../components/bookings/BookingsList';
 import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
-import Waitlist from '../components/waitlists/Waitlists';
 import useFetchEvents from '@/hooks/events/useFetchEvents';
 import AddEditEvent from '../components/events/AddEditEvent';
+import Waitlist from '../components/waitlists/waitlists';
 
 const AdminEvents = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);

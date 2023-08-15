@@ -1,4 +1,4 @@
-import { Position } from '@/utils/interfaces';
+import { Position } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

@@ -3,8 +3,6 @@ import Script from 'next/script';
 import FooterFrontend from './components/layout/FooterFrontend';
 import HeaderFrontend from './components/layout/HeaderFrontend';
 import './styles/frontend.css';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
   return (

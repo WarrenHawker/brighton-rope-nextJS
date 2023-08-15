@@ -1,19 +1,16 @@
 'use client';
-
-import {
-  BookingsData,
-  EditBookingsData,
-  EventsData,
-  TicketChoices,
-} from '@/utils/interfaces';
 import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { BookingClient, TicketChoices } from '@/utils/types/bookings';
+import { EventDBAdmin } from '@/utils/types/events';
+
+// TODO Add edit and delete mutations
+// TODO Refactor move booking function
 
 interface BookingDetailsProps {
-  booking: BookingsData | null;
-  setSelectedBooking: (value: BookingsData | null) => void;
+  booking: BookingClient | null;
+  setSelectedBooking: (value: BookingClient | null) => void;
   setIsModalOpen: (value: boolean) => void;
-  events: EventsData[];
+  events: EventDBAdmin[];
 }
 
 const BookingsDetails = ({
@@ -31,43 +28,6 @@ const BookingsDetails = ({
   const [additionalInfo, setAdditionalInfo] = useState(booking?.additionalInfo);
   const [adminNotes, setAdminNotes] = useState(booking?.adminNotes);
 
-  const queryClient = useQueryClient();
-
-  const deleteBooking = useMutation(
-    () =>
-      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
-        method: 'DELETE',
-      }),
-    {
-      onSuccess: async () => {
-        queryClient.invalidateQueries({
-          queryKey: ['bookings', booking!.eventId],
-        });
-        setSelectedBooking(null);
-        setIsModalOpen(false);
-      },
-    }
-  );
-
-  const editBooking = useMutation(
-    (updatedBooking: EditBookingsData) =>
-      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedBooking),
-      }),
-    {
-      onSuccess: async () => {
-        queryClient.invalidateQueries({
-          queryKey: ['bookings', booking!.eventId],
-        });
-        setEditing(false);
-      },
-    }
-  );
-
   useEffect(() => {
     if (booking) {
       setFirstName(booking.contact.firstName);
@@ -79,7 +39,7 @@ const BookingsDetails = ({
   }, [booking]);
 
   const saveEdits = async () => {
-    const data: EditBookingsData = {
+    const data = {
       contact: JSON.stringify({
         firstName: firstName,
         lastName: lastName,
@@ -88,7 +48,6 @@ const BookingsDetails = ({
       additionalInfo: additionalInfo,
       adminNotes: adminNotes,
     };
-    editBooking.mutate(data);
   };
 
   const cancelEdits = () => {
@@ -106,33 +65,7 @@ const BookingsDetails = ({
         'Are you sure you want to delete this booking? This process is irreversible'
       )
     ) {
-      deleteBooking.mutate();
     } else return;
-  };
-
-  const moveMutation = useMutation(
-    (data: EditBookingsData) =>
-      fetch(`/api/events/${booking?.eventId}/bookings/${booking!.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['bookings', booking!.eventId],
-        });
-        setIsModalOpen(false);
-        setSelectedBooking(null);
-        setMove(false);
-      },
-    }
-  );
-
-  const moveBooking = async () => {
-    if (moveSelect.current && moveSelect.current.value != '') {
-      const data = { eventId: parseInt(moveSelect.current.value) };
-      moveMutation.mutate(data);
-    }
   };
 
   if (!booking) {
@@ -179,7 +112,7 @@ const BookingsDetails = ({
             <select ref={moveSelect}>
               <option value="" disabled hidden></option>
               {events
-                .filter((event) => event.ticketsRemaining > 1)
+                .filter((event) => !event.isFree && event.ticketsRemaining! > 1)
                 .map((event) => (
                   <option key={event.id} value={event.id}>
                     {event.title}
@@ -187,9 +120,7 @@ const BookingsDetails = ({
                 ))}
             </select>
           </div>
-          <button className="btn" onClick={moveBooking}>
-            Save
-          </button>
+          <button className="btn">Save</button>
           <button className="btn" onClick={() => setMove(false)}>
             Cancel
           </button>
@@ -209,7 +140,7 @@ const BookingsDetails = ({
           <tbody>
             {booking.tickets.map((ticket: TicketChoices, index: number) => (
               <tr key={index}>
-                <td>{ticket.name}</td>
+                <td>{ticket.key}</td>
                 <td>£{ticket.value}</td>
                 <td>{ticket.quantity}</td>
               </tr>

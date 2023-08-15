@@ -3,12 +3,13 @@
 import useFetchUsers from '@/hooks/users/useFetchUsers';
 import { getFullDate } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { UserDB, UserRole } from '@/utils/interfaces';
 import { useState } from 'react';
 import UserDetails from './UserDetails';
+import { UserDB } from '@/utils/types/users';
+import { Role } from '@prisma/client';
 
 interface UsersListProps {
-  role: UserRole | undefined;
+  role: Role | undefined;
 }
 
 const UsersList = ({ role }: UsersListProps) => {

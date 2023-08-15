@@ -3,8 +3,8 @@ import getQueryClient from '@/lib/react-query/getQueryClient';
 import { dehydrate } from '@tanstack/react-query';
 import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
 import { decodeEventAdmin, decodeEvent } from '@/utils/functions';
-import { EventClientAdmin, EventClient } from '@/utils/interfaces';
 import { headers } from 'next/headers';
+import { EventClient, EventClientAdmin } from '@/utils/types/events';
 
 const fetchEventsAll = async (url: string) => {
   const res = await fetch(url);

@@ -2,12 +2,12 @@
 
 import { getFullDate, getLongDate, getTimeString } from '@/utils/functions';
 import Overlay from '@/utils/globalComponents/Overlay';
-import { EventDateTime } from '@/utils/interfaces';
 import { useState } from 'react';
 import BookingForm from './bookingForm/BookingForm';
 import Link from 'next/link';
 import WaitingListForm from './WaitlistForm';
 import useFetchEvent from '@/hooks/events/useFetchEvent';
+import { EventDateTime } from '@/utils/types/events';
 
 interface Props {
   eventId: number;

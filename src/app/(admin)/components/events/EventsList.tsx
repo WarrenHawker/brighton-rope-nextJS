@@ -29,6 +29,7 @@ const EventsList = ({
       <table className="main-table events-list">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Title</th>
             <th>Date</th>
           </tr>
@@ -42,6 +43,7 @@ const EventsList = ({
                 selectedEvent?.id == event.id ? 'selected' : 'not-selected'
               }
             >
+              <td>{event.id}</td>
               <td>{event.title}</td>
               <td>{getFullDate(event.startDate)}</td>
             </tr>

@@ -2,9 +2,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { BookingClient, TicketChoices } from '@/utils/types/bookings';
 import { EventDBAdmin } from '@/utils/types/events';
+import useDeleteBooking from '@/hooks/bookings/useDeleteBooking';
+import useUpdateBooking from '@/hooks/bookings/useUpdateBooking';
+import useMoveBooking from '@/hooks/bookings/useMoveBooking';
 
-// TODO Add edit and delete mutations
-// TODO Refactor move booking function
+//TODO Test edit and delete functions
+//TODO restyle component
 
 interface BookingDetailsProps {
   booking: BookingClient | null;
@@ -27,6 +30,14 @@ const BookingsDetails = ({
   const [email, setEmail] = useState(booking?.contact.email);
   const [additionalInfo, setAdditionalInfo] = useState(booking?.additionalInfo);
   const [adminNotes, setAdminNotes] = useState(booking?.adminNotes);
+  const [error, setError] = useState<string | null>(null);
+  const [emptyFields, setEmptyFields] = useState([]);
+
+  const { mutateAsync: deleteMutate, status: deleteStatus } =
+    useDeleteBooking();
+  const { mutateAsync: updateMutate, status: updateStatus } =
+    useUpdateBooking();
+  const { mutateAsync: moveMutate, status: moveStatus } = useMoveBooking();
 
   useEffect(() => {
     if (booking) {
@@ -40,14 +51,22 @@ const BookingsDetails = ({
 
   const saveEdits = async () => {
     const data = {
-      contact: JSON.stringify({
+      contact: {
         firstName: firstName,
         lastName: lastName,
         email: email,
-      }),
+      },
       additionalInfo: additionalInfo,
       adminNotes: adminNotes,
     };
+    try {
+      await updateMutate({
+        url: `/api/events/${booking?.eventId}/bookings/${booking?.id}`,
+        updateData: data,
+      });
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
 
   const cancelEdits = () => {
@@ -65,7 +84,36 @@ const BookingsDetails = ({
         'Are you sure you want to delete this booking? This process is irreversible'
       )
     ) {
+      try {
+        await deleteMutate(
+          `/api/events/${booking?.eventId}/bookings/${booking?.id}`
+        );
+        setSelectedBooking(null);
+        setIsModalOpen(false);
+      } catch (error) {
+        setError((error as Error).message);
+      }
     } else return;
+  };
+
+  const moveBooking = async () => {
+    if (!moveSelect.current!.value) {
+      setError('could not move booking - no new class selected');
+    }
+    try {
+      await moveMutate({
+        url: `/api/move-booking/${booking!.id}`,
+        moveData: {
+          oldEventId: booking!.eventId,
+          newEventId: parseInt(moveSelect.current!.value),
+          ticketAmount: booking!.totalTickets,
+        },
+      });
+      setSelectedBooking(null);
+      setIsModalOpen(false);
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
 
   if (!booking) {
@@ -78,6 +126,15 @@ const BookingsDetails = ({
 
   return (
     <div className="booking-details">
+      {deleteStatus == 'loading' && (
+        <h3 className="center">Deleting Booking...</h3>
+      )}
+      {updateStatus == 'loading' && (
+        <h3 className="center">Updating Booking...</h3>
+      )}
+
+      {error && <h3 className="center error">{error}</h3>}
+
       <div className="button-container">
         {editing ? (
           <>
@@ -112,7 +169,12 @@ const BookingsDetails = ({
             <select ref={moveSelect}>
               <option value="" disabled hidden></option>
               {events
-                .filter((event) => !event.isFree && event.ticketsRemaining! > 1)
+                .filter(
+                  (event) =>
+                    !event.isFree &&
+                    event.ticketsRemaining! > 1 &&
+                    event.id != booking.eventId
+                )
                 .map((event) => (
                   <option key={event.id} value={event.id}>
                     {event.title}
@@ -120,7 +182,9 @@ const BookingsDetails = ({
                 ))}
             </select>
           </div>
-          <button className="btn">Save</button>
+          <button className="btn" onClick={moveBooking}>
+            Save
+          </button>
           <button className="btn" onClick={() => setMove(false)}>
             Cancel
           </button>

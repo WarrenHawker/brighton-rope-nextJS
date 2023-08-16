@@ -52,3 +52,13 @@ export interface CreateBookingData {
   additionalInfo: string;
   totalTickets: number;
 }
+
+export interface UpdateBookingData {
+  contact: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  };
+  additionalInfo?: string;
+  adminNotes?: string;
+}

@@ -13,6 +13,8 @@ interface EventDetailsProps {
   selectedEvent: EventClientAdmin | null;
 }
 
+//TODO Add confirmation to delete all bookings along with event
+
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);

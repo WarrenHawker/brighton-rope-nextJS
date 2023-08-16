@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Overlay from '@/utils/globalComponents/Overlay';
 import BookingsDetails from './BookingsDetails';
 import { getFullDate } from '@/utils/functions';

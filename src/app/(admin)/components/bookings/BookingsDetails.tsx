@@ -132,6 +132,7 @@ const BookingsDetails = ({
       {updateStatus == 'loading' && (
         <h3 className="center">Updating Booking...</h3>
       )}
+      {moveStatus == 'loading' && <h3 className="center">Moving Booking...</h3>}
 
       {error && <h3 className="center error">{error}</h3>}
 
@@ -172,7 +173,7 @@ const BookingsDetails = ({
                 .filter(
                   (event) =>
                     !event.isFree &&
-                    event.ticketsRemaining! > 1 &&
+                    event.ticketsRemaining! >= booking.totalTickets &&
                     event.id != booking.eventId
                 )
                 .map((event) => (

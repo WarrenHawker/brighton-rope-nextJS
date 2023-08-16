@@ -48,8 +48,6 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
     return <h3>Loading...</h3>;
   }
 
-  console.log(events);
-
   return (
     <section className="events-container">
       <h1>Our Upcoming Events</h1>

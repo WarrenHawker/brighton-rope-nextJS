@@ -33,7 +33,11 @@ export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
     //change booking eventId
     const movedBooking = await prismaClient.bookings.update({
       where: { id: bookingId },
-      data: { eventId: newEventId },
+      data: {
+        eventId: newEventId,
+        updatedOn: new Date(),
+        updatedBy: loggedInUser,
+      },
     });
 
     //change old event ticket info

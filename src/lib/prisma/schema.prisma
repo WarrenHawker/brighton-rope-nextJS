@@ -54,6 +54,7 @@ model Waitlists {
   contact         Json //object contains firstname, lastname and email
   createdOn       String
   additionalInfo  String
+  totalTickets    Int
   adminNotes      String
   updatedOn       DateTime?
   updatedBy       Json? //object contains userID, email

@@ -2,7 +2,7 @@ import { EventClient } from '@/utils/types/events';
 import { CreateWaitlistData } from '@/utils/types/waitlists';
 import { useState } from 'react';
 
-//TODO Create and test updateChoices function
+//TODO Test updateChoices function
 //TODO Create and test submit form function
 //TODO Handle input field validation
 //TODO Import useCreateWaitlist hook
@@ -24,7 +24,35 @@ const WaitlistForm = ({ event }: WaitlistFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
 
-  const updateChoices = (key: string, value: string) => {};
+  const validateInputs = () => {};
+
+  const updateChoices = (key: string, value: string) => {
+    setChoices((prevChoices) => {
+      switch (key) {
+        case 'firstName':
+          return {
+            ...prevChoices,
+            contact: { ...prevChoices.contact, firstName: value },
+          };
+        case 'lastName':
+          return {
+            ...prevChoices,
+            contact: { ...prevChoices.contact, lastName: value },
+          };
+        case 'email':
+          return {
+            ...prevChoices,
+            contact: { ...prevChoices.contact, email: value },
+          };
+        case 'tickets':
+          return { ...prevChoices, totalTickets: parseInt(value) };
+        case 'additionalInfo':
+          return { ...prevChoices, additionalInfo: value };
+        default:
+          return prevChoices;
+      }
+    });
+  };
 
   const submitForm = async () => {};
 

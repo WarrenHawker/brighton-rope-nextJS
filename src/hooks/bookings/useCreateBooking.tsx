@@ -27,14 +27,14 @@ const useCreateBooking = () => {
   return useMutation<BookingClient, Error, CreateBookingOptions>(
     createBooking,
     {
-      onSuccess: (event) => {
+      onSuccess: (booking) => {
         queryClient.setQueryData(
           ['bookings'],
           (prevData: BookingClient[] | undefined) => {
             if (!prevData) {
-              return [event];
+              return [booking];
             }
-            return [...prevData, event];
+            return [...prevData, booking];
           }
         );
       },

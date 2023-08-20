@@ -54,7 +54,7 @@ export interface CreateBookingData {
 }
 
 export interface UpdateBookingData {
-  contact: {
+  contact?: {
     firstName?: string;
     lastName?: string;
     email?: string;

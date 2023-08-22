@@ -1,4 +1,4 @@
-import { UserDB } from '@/utils/interfaces';
+import { UserDB } from '@/utils/types/users';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const deleteUserByEmail = async (url: string) => {

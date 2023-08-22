@@ -12,7 +12,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WaitingListForm from './WaitlistForm';
 import useFetchEvents from '@/hooks/events/useFetchEvents';
-import { EventClient } from '@/utils/interfaces';
+import { EventClient } from '@/utils/types/events';
 
 interface EventsDisplayProps {
   page: string;
@@ -47,8 +47,6 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
   if (status == 'loading') {
     return <h3>Loading...</h3>;
   }
-
-  console.log(events);
 
   return (
     <section className="events-container">

@@ -1,4 +1,4 @@
-import { EventDBAdmin } from '@/utils/interfaces';
+import { EventDBAdmin } from '@/utils/types/events';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const deleteEventById = async (url: string) => {

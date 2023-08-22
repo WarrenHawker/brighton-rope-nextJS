@@ -1,10 +1,13 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prismaClient } from '@/lib/prisma/client';
 import { handleError } from '@/utils/functions';
-import { ApiParams } from '@/utils/interfaces';
+import { ApiParams } from '@/utils/types/globals';
 import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
 import validator from 'validator';
+
+//TODO Add validation for all inputs
+//TODO automatically move firt waitlist inquiry to bookings on booking deletion
 
 //edit booking by bookingId
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {
@@ -106,7 +109,11 @@ export const DELETE = async (request: NextRequest, { params }: ApiParams) => {
     const booking = await prismaClient.bookings.delete({
       where: { id: bookingId },
     });
-    const event = await prismaClient.events.update({
+    const event = await prismaClient.events.findUnique({
+      where: { id: eventId },
+      include: { waitingList: true },
+    });
+    await prismaClient.events.update({
       where: { id: eventId },
       data: {
         ticketsSold: { decrement: booking.totalTickets },

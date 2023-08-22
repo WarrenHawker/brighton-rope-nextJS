@@ -1,5 +1,5 @@
 import { decodeUser } from '@/utils/functions';
-import { UserClient, UserUpdateData } from '@/utils/interfaces';
+import { UserUpdateData, UserClient } from '@/utils/types/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 

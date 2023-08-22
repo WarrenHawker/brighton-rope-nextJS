@@ -5,7 +5,7 @@ import { dehydrate } from '@tanstack/react-query';
 import { ReactQueryHydrate } from '@/lib/react-query/ReactQueryHydrate';
 import { headers } from 'next/headers';
 import { decodeEventAdmin, decodeEvent } from '@/utils/functions';
-import { EventClientAdmin, EventClient } from '@/utils/interfaces';
+import { EventClient, EventClientAdmin } from '@/utils/types/events';
 
 const fetchEventsHome = async (url: string) => {
   const res = await fetch(url);

@@ -2,6 +2,8 @@ import { prismaClient } from '@/lib/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { handleError } from '@/utils/functions';
 
+//TODO Add validation for all inputs
+
 //get all teacher bios, excludes email field
 export const GET = async (request: NextRequest) => {
   //try fetching teacher bios from database

@@ -1,9 +1,11 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prismaClient } from '@/lib/prisma/client';
 import { handleError } from '@/utils/functions';
-import { ApiParams } from '@/utils/interfaces';
+import { ApiParams } from '@/utils/types/globals';
 import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
+
+//TODO Add validation for all inputs
 
 //edit waitlist entry by waitlistId
 export const PATCH = async (request: NextRequest, { params }: ApiParams) => {

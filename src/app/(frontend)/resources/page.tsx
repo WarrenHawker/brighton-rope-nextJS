@@ -1,3 +1,5 @@
+//TODO Resource Adding functions?
+
 const ResourcesPage = () => {
   return (
     <main>

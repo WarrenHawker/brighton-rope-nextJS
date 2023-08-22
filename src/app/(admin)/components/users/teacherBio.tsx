@@ -3,7 +3,8 @@
 import useFetchTeacher from '@/hooks/teachers/useFetchTeacher';
 import useUpdateTeacher from '@/hooks/teachers/useUpdateTeacher';
 import { getFullDate } from '@/utils/functions';
-import { Position, TeacherUpdateData, UserRole } from '@/utils/interfaces';
+import { TeacherUpdateData } from '@/utils/types/teachers';
+import { Position, Role } from '@prisma/client';
 import MDEditor from '@uiw/react-md-editor';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -11,7 +12,7 @@ import validator from 'validator';
 
 interface TeacherBioProps {
   userEmail: string;
-  role?: UserRole | undefined;
+  role?: Role | undefined;
 }
 
 interface EditingData {

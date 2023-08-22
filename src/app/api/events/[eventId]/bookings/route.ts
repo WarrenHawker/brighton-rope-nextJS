@@ -1,10 +1,12 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prismaClient } from '@/lib/prisma/client';
 import { handleError } from '@/utils/functions';
-import { ApiParams } from '@/utils/interfaces';
+import { ApiParams } from '@/utils/types/globals';
 import { getServerSession } from 'next-auth/next';
 import { NextResponse, NextRequest } from 'next/server';
 import validator from 'validator';
+
+//TODO Add validation for all inputs
 
 //create new booking and update ticket numbers for associated event
 export const POST = async (request: NextRequest, { params }: ApiParams) => {
@@ -17,7 +19,7 @@ export const POST = async (request: NextRequest, { params }: ApiParams) => {
 
   //sanitise inputs
   const bookingData = {
-    eventId,
+    eventId: parseInt(params.eventId),
     tickets: body.tickets,
     contact: {
       firstName: validator.escape(body.contact.firstName).trim(),
@@ -26,7 +28,7 @@ export const POST = async (request: NextRequest, { params }: ApiParams) => {
     },
     totalTickets: body.totalTickets,
     amountToPay: body.amountToPay,
-    hasPaid: body.hasPaid,
+    hasPaid: false,
     createdOn: new Date(),
     additionalInfo: validator.escape(body.additionalInfo).trim(),
     adminNotes: '',

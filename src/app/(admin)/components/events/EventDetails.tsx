@@ -2,19 +2,18 @@
 
 import { useState } from 'react';
 import { getFullDate } from '../../../../utils/functions';
-import {
-  Address,
-  EventClientAdmin,
-  EventDateTime,
-  Prices,
-} from '@/utils/interfaces';
+
 import MDEditor from '@uiw/react-md-editor';
 import useDeleteEvent from '@/hooks/events/useDeleteEvent';
 import AddEditEvent from './AddEditEvent';
+import { EventClientAdmin, EventDateTime } from '@/utils/types/events';
+import { Prices, Address } from '@/utils/types/globals';
 
 interface EventDetailsProps {
   selectedEvent: EventClientAdmin | null;
 }
+
+//TODO Add confirmation to delete all bookings along with event
 
 const EventDetails = ({ selectedEvent }: EventDetailsProps) => {
   const [editing, setEditing] = useState(false);

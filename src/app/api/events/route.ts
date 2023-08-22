@@ -4,12 +4,10 @@ import { NextResponse, NextRequest } from 'next/server';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { handleError } from '@/utils/functions';
 import validator from 'validator';
-import {
-  Address,
-  EventDateTime,
-  Prices,
-  UserIdEmail,
-} from '@/utils/interfaces';
+import { EventDateTime } from '@/utils/types/events';
+import { UserIdEmail, Prices, Address } from '@/utils/types/globals';
+
+//TODO Add validation for all inputs
 
 interface CreateEventData {
   title: string;

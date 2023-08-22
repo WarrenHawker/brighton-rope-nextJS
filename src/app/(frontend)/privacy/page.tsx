@@ -1,3 +1,5 @@
+//TODO Fill out privacy policy
+
 const PrivacyPolicy = () => {
   return (
     <main>

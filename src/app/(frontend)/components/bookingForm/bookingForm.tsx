@@ -1,21 +1,23 @@
 'use client';
 
 import { isContact } from '@/utils/functions';
-import { EventsData, UserChoices, TicketChoices } from '@/utils/interfaces';
 import { useState } from 'react';
 import BookingPageOne from './bookingFormPages/BookingPageOne';
 import BookingPageThree from './bookingFormPages/BookingPageThree';
 import BookingPageTwo from './bookingFormPages/BookingPageTwo';
+import useCreateBooking from '@/hooks/bookings/useCreateBooking';
+import { EventClient } from '@/utils/types/events';
+import { TicketChoices } from '@/utils/types/bookings';
 
 interface BookingFormProps {
-  event: EventsData;
+  event: EventClient;
 }
 
 const BookingForm = ({ event }: BookingFormProps) => {
   const [activePage, setActivePage] = useState(1);
-  const [userChoices, setUserChoices] = useState<UserChoices>({
-    tickets: event.prices.map((item) => ({
-      name: item.key,
+  const [userChoices, setUserChoices] = useState({
+    tickets: event.prices!.map((item) => ({
+      key: item.key,
       value: item.value.maxPrice ? item.value.maxPrice : item.value.minPrice,
       quantity: 0,
     })),
@@ -28,6 +30,8 @@ const BookingForm = ({ event }: BookingFormProps) => {
     amountToPay: 0,
     additionalInfo: '',
   });
+
+  const { mutateAsync: createMutate, status } = useCreateBooking();
 
   const updateAmountToPay = (tickets: TicketChoices[]): number => {
     let newAmount = 0;
@@ -54,18 +58,18 @@ const BookingForm = ({ event }: BookingFormProps) => {
     value: number
   ) => {
     setUserChoices((prevChoices) => {
-      const updatedTickets = prevChoices.tickets.map((item: TicketChoices) => {
+      const updatedTickets = prevChoices.tickets.map((item) => {
         if (property == 'value') {
-          if (item.name == ticketName) {
+          if (item.key == ticketName) {
             return { ...item, value: value };
           } else return { ...item };
         } else {
           if (event?.allowMultipleTickets) {
-            if (item.name == ticketName) {
+            if (item.key == ticketName) {
               return { ...item, quantity: value };
             } else return { ...item };
           } else {
-            if (item.name == ticketName) {
+            if (item.key == ticketName) {
               return { ...item, quantity: 1 };
             } else return { ...item, quantity: 0 };
           }
@@ -92,24 +96,17 @@ const BookingForm = ({ event }: BookingFormProps) => {
   };
 
   const submitForm = async () => {
-    const booking = {
-      eventId: event.id,
+    const bookingData = {
       tickets: userChoices.tickets,
       contact: userChoices.contact,
       amountToPay: userChoices.amountToPay,
       additionalInfo: userChoices.additionalInfo,
-      hasPaid: false,
-      bookingDate: new Date(),
-      adminNotes: '',
       totalTickets: userChoices.totalTickets,
     };
 
-    const res = await fetch(`/api/events/${event.id}/bookings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(booking),
+    await createMutate({
+      url: `/api/events/${event.id}/bookings`,
+      bookingData,
     });
   };
 

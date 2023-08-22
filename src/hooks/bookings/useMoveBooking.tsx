@@ -1,33 +1,38 @@
-import { BookingClient, UpdateBookingData } from '@/utils/types/bookings';
+import { BookingClient } from '@/utils/types/bookings';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-type UpdateBookingOptions = {
+type MoveBookingOptions = {
   url: string;
-  updateData: UpdateBookingData;
+  moveData: {
+    oldEventId: number;
+    newEventId: number;
+    ticketAmount: number;
+  };
 };
 
-export const updateBookingById = async (options: UpdateBookingOptions) => {
+export const moveBookingById = async (options: MoveBookingOptions) => {
   const res = await fetch(options.url, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(options.updateData),
+    body: JSON.stringify(options.moveData),
   });
   const data = await res.json();
   if (!res.ok) {
     throw new Error(data.error);
   }
 
-  return data.updatedBooking;
+  return data.movedBooking;
 };
 
-const useUpdateBooking = () => {
+const useMoveBooking = () => {
   const queryClient = useQueryClient();
-  return useMutation<BookingClient, Error, UpdateBookingOptions>(
-    updateBookingById,
+  return useMutation<BookingClient, Error, MoveBookingOptions>(
+    moveBookingById,
     {
-      onSuccess: (updatedBooking) => {
+      onSuccess: (movedBooking) => {
+        queryClient.invalidateQueries(['events']);
         queryClient.setQueryData(
           ['bookings'],
           (prevData: BookingClient[] | undefined) => {
@@ -35,8 +40,8 @@ const useUpdateBooking = () => {
               return [];
             }
             return prevData.map((item) => {
-              if (item.id == updatedBooking.id) {
-                return updatedBooking;
+              if (item.id == movedBooking.id) {
+                return movedBooking;
               } else return item;
             });
           }
@@ -46,4 +51,4 @@ const useUpdateBooking = () => {
   );
 };
 
-export default useUpdateBooking;
+export default useMoveBooking;

@@ -4,14 +4,10 @@ import useCreateEvent, { CreateEventData } from '@/hooks/events/useCreateEvent';
 import useDeleteEvent from '@/hooks/events/useDeleteEvent';
 import useUpdateEvent, { UpdateEventData } from '@/hooks/events/useUpdateEvent';
 import CountrySelector from '@/utils/globalComponents/CountrySelector';
-import {
-  Address,
-  EventClientAdmin,
-  EventDateTime,
-  Prices,
-} from '@/utils/interfaces';
+import { EventClientAdmin, EventDateTime } from '@/utils/types/events';
+import { Prices, Address } from '@/utils/types/globals';
 import MDEditor from '@uiw/react-md-editor';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import validator from 'validator';
 
 interface Props {
@@ -38,6 +34,7 @@ const AddEditEvent = ({ event, setActive }: Props) => {
   const [isFree, setIsFree] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
+  const maxTicketInput = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: deleteMutate, status: deleteStatus } = useDeleteEvent();
   const { mutateAsync: createMutate, status: createStatus } = useCreateEvent();
@@ -119,6 +116,9 @@ const AddEditEvent = ({ event, setActive }: Props) => {
         setPrices(event.prices!);
         setMaxTickets(event.maxTickets!);
         setAllowMultipleTickets(event.allowMultipleTickets!);
+        if (maxTicketInput.current) {
+          maxTicketInput.current.value = event.maxTickets!.toString();
+        }
       }
     }
   }, [event]);
@@ -667,6 +667,7 @@ const AddEditEvent = ({ event, setActive }: Props) => {
                 type="number"
                 name="capacity"
                 defaultValue={maxTickets}
+                ref={maxTicketInput}
                 onChange={(e) => {
                   setEmptyFields((prev) =>
                     prev?.filter((item) => item != 'max tickets')

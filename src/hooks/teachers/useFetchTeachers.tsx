@@ -1,5 +1,5 @@
 import { decodeTeacher } from '@/utils/functions';
-import { TeacherDB } from '@/utils/interfaces';
+import { TeacherDB } from '@/utils/types/teachers';
 import { useQuery } from '@tanstack/react-query';
 
 export const fetchTeachers = async (url: string) => {

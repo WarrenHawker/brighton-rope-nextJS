@@ -1,5 +1,6 @@
 import { decodeUser } from '@/utils/functions';
-import { UserClient, UserRole } from '@/utils/interfaces';
+import { UserClient } from '@/utils/types/users';
+import { Role } from '@prisma/client';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 type CreateUserOptions = {
@@ -7,7 +8,7 @@ type CreateUserOptions = {
   userData: {
     email: string;
     password: string;
-    role: UserRole;
+    role: Role;
   };
 };
 

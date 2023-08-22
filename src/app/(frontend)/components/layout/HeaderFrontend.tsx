@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
+//TODO Implement nextjs Image component
+
 const HeaderFrontend = () => {
   const [showTopNav, setShowTopNav] = useState<boolean>(false);
   const pathname = usePathname();

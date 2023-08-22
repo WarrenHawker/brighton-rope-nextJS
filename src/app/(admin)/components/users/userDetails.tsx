@@ -1,24 +1,25 @@
 'use client';
 
-import { UserDB, UserRole, UserUpdateData } from '@/utils/interfaces';
 import { useEffect, useRef, useState } from 'react';
 import TeacherBio from './TeacherBio';
 import useUpdateUser from '@/hooks/users/useUpdateUser';
 import useDeleteUser from '@/hooks/users/useDeleteUser';
 import toast from 'react-hot-toast';
 import validator from 'validator';
+import { UserDB, UserUpdateData } from '@/utils/types/users';
+import { Role } from '@prisma/client';
 
 interface Props {
   user: UserDB;
   setSelectedUser?: (user: UserDB | null) => void;
   setIsModalOpen?: (value: boolean) => void;
-  role: UserRole | undefined;
+  role: Role | undefined;
 }
 
 interface UserDetails {
   email?: string | undefined;
   name?: string | undefined;
-  role?: UserRole | undefined;
+  role?: Role | undefined;
 }
 
 const UserDetails = ({
@@ -41,7 +42,7 @@ const UserDetails = ({
     setUserDetails({
       email: user.email,
       name: user.name ? user.name : '',
-      role: user.role as UserRole,
+      role: user.role as Role,
     });
 
     if (emailInput.current) {
@@ -51,7 +52,7 @@ const UserDetails = ({
       nameInput.current.value = user.name ? user.name : '';
     }
     if (roleInput.current) {
-      roleInput.current.value = user.role as UserRole;
+      roleInput.current.value = user.role as Role;
     }
   }, [user]);
 
@@ -103,12 +104,12 @@ const UserDetails = ({
     setUserDetails({
       email: user.email,
       name: user.name ? user.name : '',
-      role: user.role as UserRole,
+      role: user.role as Role,
     });
     emailInput.current!.value = user.email;
     nameInput.current!.value = user.name ? user.name : '';
     if (user.role == 'SUPERADMIN') {
-      roleInput.current!.value = user.role as UserRole;
+      roleInput.current!.value = user.role as Role;
     }
     setError(null);
   };
@@ -204,7 +205,7 @@ const UserDetails = ({
                   onChange={(e) =>
                     setUserDetails((prev) => ({
                       ...prev,
-                      role: e.target.value as UserRole,
+                      role: e.target.value as Role,
                     }))
                   }
                 >

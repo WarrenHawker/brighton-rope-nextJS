@@ -1,4 +1,4 @@
-import { BookingPageProps } from '@/utils/interfaces';
+import { BookingPageProps } from '@/utils/types/bookings';
 import { MouseEvent, useRef, useState } from 'react';
 import validator from 'validator';
 

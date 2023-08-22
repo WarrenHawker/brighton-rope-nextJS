@@ -1,11 +1,13 @@
 import { prismaClient } from '@/lib/prisma/client';
-import { ApiParams } from '@/utils/interfaces';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import bcrypt from 'bcrypt';
 import { handleError } from '@/utils/functions';
 import validator from 'validator';
+import { ApiParams } from '@/utils/types/globals';
+
+//TODO Add validation for all inputs
 
 //get single user by userEmail
 export const GET = async (request: NextRequest, { params }: ApiParams) => {

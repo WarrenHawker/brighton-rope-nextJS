@@ -5,7 +5,6 @@ import { getFullDate } from '@/utils/functions';
 import { useState } from 'react';
 import WaitlistDetails from './WaitlistDetails';
 import { EventClientAdmin } from '@/utils/types/events';
-import { BookingClient } from '@/utils/types/bookings';
 import useFetchWaitlists from '@/hooks/waitlists/useFetchWaitlists';
 import { WaitlistClient } from '@/utils/types/waitlists';
 

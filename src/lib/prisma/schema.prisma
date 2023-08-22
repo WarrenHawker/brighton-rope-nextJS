@@ -52,7 +52,7 @@ model Waitlists {
   eventId         Int
   event           Events       @relation(fields: [eventId], references: [id])
   contact         Json //object contains firstname, lastname and email
-  createdOn       String
+  createdOn       DateTime
   additionalInfo  String
   totalTickets    Int
   adminNotes      String

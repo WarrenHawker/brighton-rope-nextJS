@@ -6,40 +6,60 @@ import { useState } from 'react';
 import WaitlistDetails from './WaitlistDetails';
 import { EventClientAdmin } from '@/utils/types/events';
 import { BookingClient } from '@/utils/types/bookings';
-
-//TODO Add Waitlist query
+import useFetchWaitlists from '@/hooks/waitlists/useFetchWaitlists';
+import { WaitlistClient } from '@/utils/types/waitlists';
 
 interface WaitlistProps {
-  selectedEvent: EventClientAdmin | null;
+  selectedEvent: EventClientAdmin;
 }
 
 const Waitlist = ({ selectedEvent }: WaitlistProps) => {
   const [eventInfo, setEventInfo] = useState({
-    title: selectedEvent?.title,
-    date: selectedEvent?.startDate,
+    title: selectedEvent.title,
+    date: selectedEvent.startDate,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedInquiry, setSelectedInquiry] = useState<BookingClient | null>(
-    null
-  );
-  const [displayedBookings, setDisplayedBookings] = useState<BookingClient[]>(
-    []
-  );
+  const [selectedWaitlist, setSelectedWaitlist] =
+    useState<WaitlistClient | null>(null);
+
+  const {
+    data: waitlists,
+    status,
+    error,
+  } = useFetchWaitlists(selectedEvent.id);
+
+  const showWaitlistDetails = (waitlist: WaitlistClient) => {
+    setSelectedWaitlist(waitlist);
+    setIsModalOpen(true);
+  };
+
+  if (status == 'loading') {
+    return <h3 className="center">Loading...</h3>;
+  }
+
+  if (status == 'error') {
+    return <h3 className="center error">{(error as Error).message}</h3>;
+  }
+
   return (
     <div className="waiting-list">
       <Overlay
         header={
           <div className="booking-details-header">
-            <h2>Inquiry Details</h2>
-            <p>Inquiry ID: {selectedInquiry?.id}</p>
-            <p>Event ID: {selectedInquiry?.eventId}</p>
-            <p>Inquiry Date: {getFullDate(selectedInquiry?.createdOn)}</p>
+            <h2>Waitlist Inquiry Details</h2>
+            <p>Waitlist ID: {selectedWaitlist?.id}</p>
+            <p>Event ID: {selectedWaitlist?.eventId}</p>
+            <p>Waitlist Date: {getFullDate(selectedWaitlist?.createdOn)}</p>
           </div>
         }
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
       >
-        <WaitlistDetails />
+        <WaitlistDetails
+          waitlist={selectedWaitlist}
+          setSelectedWaitlist={setSelectedWaitlist}
+          setIsModalOpen={setIsModalOpen}
+        />
       </Overlay>
 
       {eventInfo ? (
@@ -58,14 +78,17 @@ const Waitlist = ({ selectedEvent }: WaitlistProps) => {
             </tr>
           </thead>
           <tbody>
-            {displayedBookings.map((booking) => (
-              <tr key={booking.id}>
-                <td>{booking.id}</td>
+            {waitlists.map((waitlist: WaitlistClient) => (
+              <tr
+                key={waitlist.id}
+                onClick={() => showWaitlistDetails(waitlist)}
+              >
+                <td>{waitlist.id}</td>
                 <td>
-                  {booking.contact.firstName} {booking.contact.lastName}
+                  {waitlist.contact.firstName} {waitlist.contact.lastName}
                 </td>
-                <td className="hide-mobile">{booking.contact.email}</td>
-                <td>{getFullDate(booking.createdOn)}</td>
+                <td className="hide-mobile">{waitlist.contact.email}</td>
+                <td>{getFullDate(waitlist.createdOn)}</td>
               </tr>
             ))}
           </tbody>

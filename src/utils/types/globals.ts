@@ -39,3 +39,10 @@ export type Contact = {
   lastName: string;
   email: string;
 };
+
+export type SendEmailData = {
+  recipient: string;
+  subject: string;
+  text: string;
+  html: string;
+};

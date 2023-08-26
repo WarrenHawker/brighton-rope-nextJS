@@ -7,8 +7,8 @@ import EventDetails from '../components/events/EventDetails';
 import EventsList from '../components/events/EventsList';
 import useFetchEvents from '@/hooks/events/useFetchEvents';
 import AddEditEvent from '../components/events/AddEditEvent';
-import Waitlist from '../components/waitlists/waitlists';
-import { EventClientAdmin, EventDBAdmin } from '@/utils/types/events';
+import Waitlist from '../components/waitlists/Waitlists';
+import { EventClientAdmin } from '@/utils/types/events';
 
 const AdminEvents = () => {
   const [addEvent, setAddEvent] = useState<boolean>(false);

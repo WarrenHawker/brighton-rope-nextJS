@@ -10,6 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Emails {
+  id                    Int             @id @default(autoincrement())
+  recipient             String
+  sender                String
+  subject               String
+  text                  String
+  html                  String
+  createdOn             DateTime
+}
+
 model Events {
   id                    Int             @id @default(autoincrement())
   title                 String   

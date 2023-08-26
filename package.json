@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.6",
-    "@prisma/client": "^5.1.1",
+    "@prisma/client": "^5.2.0",
+    "@sendgrid/mail": "^7.7.0",
     "@tanstack/react-query-devtools": "^4.29.25",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
@@ -33,7 +34,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/node": "^20.4.5",
     "@types/validator": "^13.7.17",
-    "prisma": "^5.1.1"
+    "prisma": "^5.2.0"
   },
   "prisma": {
     "schema": "src/lib/prisma/schema.prisma",

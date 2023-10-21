@@ -48,10 +48,14 @@ const EventsDisplay = ({ page }: EventsDisplayProps) => {
     return <h3>Loading...</h3>;
   }
 
+  if (!events) {
+    return <h3>Loading...</h3>;
+  }
+
   return (
     <section className="events-container">
       <h1>Our Upcoming Events</h1>
-      {events.length == 0 ? (
+      {!events.length ? (
         <h2 className="center">I&apos;m sorry, there are no upcoming events</h2>
       ) : (
         <>
